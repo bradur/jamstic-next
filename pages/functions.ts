@@ -1,0 +1,39 @@
+import fs from 'fs'
+import path from 'path'
+import { FoundFile } from './games/types'
+
+class FileFinder {
+  files: FoundFile[] = []
+
+  getFilesRecursively(directoryPath: string) {
+    const filesInDirectory = fs.readdirSync(directoryPath)
+    for (const file of filesInDirectory) {
+      const absolute = path.join(directoryPath, file)
+      if (fs.statSync(absolute).isDirectory()) {
+        this.getFilesRecursively(absolute)
+      } else {
+        this.files.push({
+          fileName: file,
+          fullPath: absolute,
+          parentDirectory: path.basename(path.dirname(directoryPath)),
+        })
+      }
+    }
+  }
+}
+
+export const getFiles = (directoryPath: string) => {
+  const finder = new FileFinder()
+  finder.getFilesRecursively(directoryPath)
+  return finder.files
+}
+
+export const readFileToJson = (file: FoundFile): object => {
+  let fileContents
+  try {
+    fileContents = fs.readFileSync(file.fullPath, 'utf-8')
+  } catch (err) {
+    return { error: true }
+  }
+  return JSON.parse(fileContents)
+}

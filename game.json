@@ -1,0 +1,228 @@
+{
+    "id": 80,
+    "event_id": 4,
+    "event_name": "1st-alakajam",
+    "name": "To Brew A Love Potion...",
+    "title": "To Brew A Love Potion...",
+    "description": "Gather ingredients for a love potion, then use the potion how you see fit!",
+    "links": [
+        {
+            "url": "https://github.com/bradur/Alakajam-1/releases/download/release/AlakaJam.1.-.To.Brew.A.Love.Potion.Windows.zip"
+        },
+        {
+            "url": "https://github.com/bradur/Alakajam-1/releases/download/release/AlakaJam.1.-.To.Brew.A.Love.Potion.Linux.zip"
+        },
+        {
+            "url": "https://github.com/bradur/Alakajam-1/releases/download/release/AlakaJam.1.-.To.Brew.A.Love.Potion.Mac.app.zip"
+        }
+    ],
+    "pictures": {
+        "previews": [
+            "/data/uploads/entry/80.png"
+        ],
+        "thumbnail": "/data/uploads/entry/80-thumb.png",
+        "icon": "/data/uploads/entry/80-icon.png"
+    },
+    "comment_count": 13,
+    "karma": "96.000",
+    "division": "solo",
+    "url": "games/alakajam/1st-alakajam/to-brew-a-love-potion",
+    "body": "# Instructions\r\nWASD / Arrow keys to move. Aim the mouse to point your character.\r\nGo up the road to the alchemist and press Space to talk. Follow his instructions.\r\n\r\n# Keys\r\n- Right Click - Shoot crossbow\r\n- Left Click - Swing sword\r\n- Space - Talk (when near alchemist)\r\n- Shift - Use potion (when you get it)\r\n- Esc - Pause &amp; Open menu\r\n- P - Mute music\r\n- Q - Quit when in menu\r\n- R - Restart when in menu",
+    "optouts": [],
+    "rating_count": 12,
+    "results": {
+        "all": [],
+        "overall": {
+            "title": "",
+            "result": null
+        }
+    },
+    "comments": [
+        {
+            "id": 322,
+            "user_id": 42,
+            "parent_id": null,
+            "body": "Really like the top down style! Nice dialog and instructional gameplay!",
+            "created_at": "2017-09-24T22:46:17.879Z",
+            "updated_at": "2017-09-24T22:46:17.897Z"
+        },
+        {
+            "id": 328,
+            "user_id": 23,
+            "parent_id": null,
+            "body": "I was able to beat the game, so it wasn't too hard, which was nice. The only sound was the music, it would be interesting to see sound effects added.\r\n\r\nAlso an interesting subversion of the idea of a love potion.\r\n\r\n",
+            "created_at": "2017-09-24T23:23:58.053Z",
+            "updated_at": "2017-09-24T23:23:58.073Z"
+        },
+        {
+            "id": 489,
+            "user_id": 194,
+            "parent_id": null,
+            "body": "Nice Idea, good realization of the core concept. What it does is simple, but it does it good. Only problem I have is with the controls. When aiming and walking is the same movement, it gets kinda tricky to also dodge enemy bullets.",
+            "created_at": "2017-09-25T18:57:45.536Z",
+            "updated_at": "2017-09-25T18:57:45.553Z"
+        },
+        {
+            "id": 511,
+            "user_id": 152,
+            "parent_id": null,
+            "body": "Very nice, the game is complete and also quite polished. The gameplay is fun and humorous. One thing that was a bit of was the 'game feel', hitting stuff didn't really feel satisfying and moving around was a bit floaty. Stuff like sound effects and screen shake can fix that :p. ",
+            "created_at": "2017-09-25T21:00:49.046Z",
+            "updated_at": "2017-09-25T21:00:49.064Z"
+        },
+        {
+            "id": 518,
+            "user_id": 40,
+            "parent_id": null,
+            "body": "That poor old guy remembered the directions a bit off. I went to get violets at northeast, where they were supposed to be, but instead I found lotuses. And later I went to look for orchid but was attacked by a few guys. Too bad they didn't have any orchids for me. I took their bones as a revenge, though. The alchemist needed them as well.\r\n\r\nI noticed that I could have pushed the friendly guy whenever I wanted so that I could have walked less. Then I pushed him out of the screen so that I would not need to see him again. Too bad he walked back eventually and gave me the potion.\r\n\r\nThe idea of the potion is brilliant. It would have been interesting to actually use for something. On the other hand, there were quite a lot features already. And I still had fun playing with the potion and trying to see how small the guys could get. The miniguys still had pretty huge bones.\r\n\r\nThe combat was nice after getting used to it. Especially the fact that I could not slash when moving made me think approaching more carefully. Okay, I could have just fired away some arrows but I liked to get close, slash them far away, and finish with an arrow right away. Perhaps strafing sideways could have helped in combat?\r\n\r\nThe music gave a nice mood. I also liked the graphics effects and how the particles stayed on the ground. The animations were smooth but the mob movement was a bit funny. At least the movement helped aiming at them. Collectable arrows also made life maybe a bit too easy at times, but I still managed to die.\r\n\r\nOverall, a fun game that fits the theme well.",
+            "created_at": "2017-09-25T23:25:32.983Z",
+            "updated_at": "2017-09-25T23:25:33.005Z"
+        },
+        {
+            "id": 673,
+            "user_id": 165,
+            "parent_id": null,
+            "body": "Nice game! I like the gamplay and that you have dialogues and a working story line. I can imagine, this takes a lot of time to implement. It is nice to see those things working, even in a solo entry! The music is very nice, but the game lacks some sound effects. Graphics are working well and the combat system is also fun.",
+            "created_at": "2017-09-27T06:11:48.217Z",
+            "updated_at": "2017-09-27T06:11:48.238Z"
+        },
+        {
+            "id": 887,
+            "user_id": 185,
+            "parent_id": null,
+            "body": "The game if fine, i don`t want to repeat things listed above. I would suggest to stick to 1 visual style and not to make low detailed ground and high detailed icons. Just my opinion.",
+            "created_at": "2017-09-30T09:34:51.527Z",
+            "updated_at": "2017-09-30T09:34:51.527Z"
+        },
+        {
+            "id": 891,
+            "user_id": 56,
+            "parent_id": null,
+            "body": "A short fetch quest RPG, good going for 48h solo game. As others have said, it could just use a bit of work for game feel, even some some simple bfx sound fx would help quite alot i think. Somehow the input control scheme felt a bit awkward to me also. Music was nice, just a bit quiet. Fun enough to keep me playing til the end anyway.",
+            "created_at": "2017-09-30T13:17:07.638Z",
+            "updated_at": "2017-09-30T13:17:07.638Z"
+        },
+        {
+            "id": 934,
+            "user_id": 32,
+            "parent_id": null,
+            "body": "Game feels really polished, i like how you have limited crossbow bolts that you can pickup and that bandits also are using bolts that can be used by player. Gameplay was pretty entertaining even if it was fetch quest game it was still fun and for some reason i expected some cruel twist at the end. Like you killed so many things just to get a potion and it turns out that was necromacy potion or something. Sword could deal more damage to make it usable, as it is now crossbow is much more powerful. \r\nI didn't quite get the ending, you get 10 potions and can use them on creatures so they make mini-me, is there something else i missed? Animations feel smooth and i liked particle effects when you kill something. BTW not gonna lie i was moonwalking through the whole game. and there was a small visual bug when i was walking around (those line that appear on screen) https://imgur.com/a/Tcwg7\r\n\r\nIn general pretty fun game and nice combat mechanics",
+            "created_at": "2017-10-01T15:10:55.956Z",
+            "updated_at": "2017-10-01T15:10:55.956Z"
+        },
+        {
+            "id": 941,
+            "user_id": 161,
+            "parent_id": null,
+            "body": "Hi! We played your game with Danae on [this twitch channel](http://www.twitch.tv/danaeplays), and now the video is available on YouTube. Feel free to check it out :)\r\n\r\n[Danae plays: To Brew A Love Potion…](https://www.youtube.com/watch?v=iWrSSLFY5vI&amp;t=1h1m58s)",
+            "created_at": "2017-10-01T17:38:03.837Z",
+            "updated_at": "2017-10-01T17:38:03.837Z"
+        },
+        {
+            "id": 1015,
+            "user_id": 9,
+            "parent_id": null,
+            "body": "A solid game, although it's far too easy. Even the bandits didn't really challenge me, because they just got stuck behind their wall. But I like how you got several types of mobs in there, as well as quests and some funny ~~dia~~monologue. Particularly the ending (kudos for _having_ an ending!) made me smile :)\r\n\r\nGraphics are simple but consistent, and get the job done; I particularly liked the horrible amounts of blood coming from a single bunny. The music is alright, but does get repetitive quickly. Some sound effects would not gave gone amiss, but after having played some games with poorly made bfxr junk, I'm beginning to think that no sound effects can be preferable to that ;)",
+            "created_at": "2017-10-04T14:04:55.681Z",
+            "updated_at": "2017-10-04T14:04:55.681Z"
+        },
+        {
+            "id": 1065,
+            "user_id": 138,
+            "parent_id": null,
+            "body": "A competent yet middle of the road, top-down-shooter-fetch-quest. Specific enough? Not a lot to say that hasn't been said before. Could be more challenging of course. Even the bandits are push-over.\r\n\r\nCreated a race of mini-bandits who ended up killing me with arrows bigger than themselves... *Brilliant stuff!*\r\n\r\nThe theme isn't part of the interactivity, which is unfortunately. Yet it is still funny so some points for that.\r\n\r\nO 6, G 5, A 5, G 5, O 8, T 5",
+            "created_at": "2017-10-06T12:36:01.547Z",
+            "updated_at": "2017-10-06T12:36:01.547Z"
+        },
+        {
+            "id": 1250,
+            "user_id": 314,
+            "parent_id": null,
+            "body": "Interesting game! I included it in my Alakajam #1 compilation video series, if you’d like to take a look. :) https://youtu.be/fRBZG2NbaE8",
+            "created_at": "2017-12-01T11:38:26.790Z",
+            "updated_at": "2017-12-01T11:38:26.790Z"
+        }
+    ],
+    "users": [
+        {
+            "id": 36,
+            "name": "bradur",
+            "title": "bradur",
+            "avatar": "/data/uploads/user/36.jpg",
+            "is_mod": null,
+            "is_admin": null
+        }
+    ],
+    "path": "alakajam/1st-alakajam/to-brew-a-love-potion",
+    "cover": "alakajam/1st-alakajam/to-brew-a-love-potion/images/80.png",
+    "coverColors": {
+        "colors": [
+            {
+                "_rgb": [
+                    17,
+                    106,
+                    18,
+                    1
+                ]
+            },
+            {
+                "_rgb": [
+                    160,
+                    123,
+                    77,
+                    1
+                ]
+            },
+            {
+                "_rgb": [
+                    66,
+                    45,
+                    27,
+                    1
+                ]
+            },
+            {
+                "_rgb": [
+                    96,
+                    98,
+                    184,
+                    1
+                ]
+            },
+            {
+                "_rgb": [
+                    79,
+                    199,
+                    164,
+                    1
+                ]
+            }
+        ],
+        "css": "--one: rgba(17,106,18,1);--two: rgba(160,123,77,1);--three: rgba(66,45,27,1);--four: rgba(96,98,184,1);--five: rgba(79,199,164,1);"
+    },
+    "event": {
+        "id": 4,
+        "name": "1st-alakajam",
+        "title": "1st Alakajam!",
+        "display_dates": "22-24 September 2017",
+        "display_theme": "Alchemy",
+        "status": "closed",
+        "status_theme": "results",
+        "status_entry": "closed",
+        "status_results": "results",
+        "countdown_config": {
+            "message": "Results are out!",
+            "link": "results",
+            "date": false,
+            "phrase": "ran 22-24 September",
+            "enabled": false
+        },
+        "url": "https://alakajam.com/1st-alakajam"
+    },
+    "timestamp": "2017-9-23 23:00:00",
+    "subsubtype": "solo",
+    "ago": "4 years ago",
+    "eventName": "1st Alakajam!",
+    "eventType": "Alakajam",
+    "theme": "Alchemy"
+}
