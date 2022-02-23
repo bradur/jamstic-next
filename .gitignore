@@ -37,6 +37,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
+config/config.json
 
 # content
 content

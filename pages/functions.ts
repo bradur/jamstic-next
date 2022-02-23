@@ -15,7 +15,7 @@ class FileFinder {
         this.files.push({
           fileName: file,
           fullPath: absolute,
-          parentDirectory: path.basename(path.dirname(directoryPath)),
+          parentDirectory: path.basename(path.dirname(absolute)),
         })
       }
     }

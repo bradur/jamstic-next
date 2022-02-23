@@ -1,6 +1,6 @@
 import Markdown from 'marked-react'
 import styled from 'styled-components'
-import { getMarkedRenderer } from '../../markdownRenderer'
+import { getMarkedRenderer } from '../../lib/markdownRenderer'
 import { GameEntry, GamePageProps } from '../types'
 import { GameComments } from './GameComments'
 import { GameContainer } from './GameContainer'
@@ -12,7 +12,7 @@ const PageContainer = styled.div`
   background: var(--one);
   padding-bottom: 40px;
   margin: 0;
-  padding:0;
+  padding: 0;
 `
 
 const PageContainerWithCoverColors = styled(PageContainer)<{
@@ -47,17 +47,17 @@ export const GamePage = ({ error, data }: GamePageProps) => {
 
   return (
     <PageContainerWithCoverColors coverColors={game.coverColors.css}>
-        <PageBreadcrumb route={'games'}/>
+      <PageBreadcrumb route={'games'} />
 
-        <GameContainer>
-          <GameTitle>{game.name}</GameTitle>
-          <div className="game-content">
-            <Markdown renderer={renderer} value={game.body} />
-            <GameImages {...entry} />
-          </div>
-          <GameMeta {...entry} />
-          <GameComments {...entry} />
-        </GameContainer>
+      <GameContainer>
+        <GameTitle>{game.name}</GameTitle>
+        <div className='game-content'>
+          <Markdown renderer={renderer} value={game.body} />
+          <GameImages {...entry} />
+        </div>
+        <GameMeta {...entry} />
+        <GameComments {...entry} />
+      </GameContainer>
     </PageContainerWithCoverColors>
   )
 }

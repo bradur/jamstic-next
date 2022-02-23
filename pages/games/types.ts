@@ -9,12 +9,12 @@ type GameEntryLink = {
   url: string
 }
 
-type SingleGameEntryResult = {
+export type SingleGameEntryResult = {
   title: string
-  average: number
+  rating: number
   result: number | null
 }
-type GameEntryResults = {
+export type GameEntryResults = {
   all: SingleGameEntryResult[]
   overall: SingleGameEntryResult
 }
@@ -22,17 +22,16 @@ type GameEntryResults = {
 type GameEntryCommentUser = {
   id: number
   name: string
+  avatarUrl: string
 }
 
-type GameEntryComment = {
+export type GameEntryComment = {
   id: number
   author: GameEntryCommentUser
   parent_id: number | null
   body: string
-  ago: string
-  timestamp: string
-  updated_ago: string
-  updated_at: string
+  created: Date
+  updated?: Date
 }
 
 type GameEntryUser = {
@@ -41,20 +40,19 @@ type GameEntryUser = {
   avatar: string
 }
 
-type GameEntryColor = {
+export type GameEntryColor = {
   css: string
 }
 
 type GameJamType = 'Ludum Dare' | 'LDJam' | 'Alakajam' | 'Global Game Jam'
 
-type GameEntryDivision = 'solo' | 'team'
+export type GameEntryDivision = 'solo' | 'team'
 
-type GameEntryEvent = {
+export type GameEntryEvent = {
   id: number
   name: string
   theme: string
   date: string
-  ago: string
   url: string
   eventType: GameJamType
 }
@@ -63,10 +61,17 @@ export type GameEntry = {
   id: number
   game: GameEntryDetails
   event: GameEntryEvent
+  path: string
+  originalData: object
 }
 
 export type GameEntryImage = {
   url: string
+}
+
+export type GameImageData = {
+  url: string
+  path: string
 }
 
 export type GameEntryDetails = {
@@ -75,7 +80,6 @@ export type GameEntryDetails = {
   description: string
   body: string
   url: string
-  path: string
   cover: string
   links: GameEntryLink[]
   results: GameEntryResults
@@ -89,4 +93,14 @@ export type GameEntryDetails = {
 export type GamePageProps = {
   error: boolean
   data: GameEntry | string
+}
+
+export type Jam = {
+  name: string
+  entries: GameEntry[]
+}
+
+export type GamesPageProps = {
+  error: boolean | string
+  jams: Jam[]
 }
