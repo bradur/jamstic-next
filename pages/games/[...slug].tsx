@@ -47,7 +47,6 @@ export const getStaticProps = async ({
     }
   }
   const gameJSON = readFileToJson(game) as GameEntry
-  //console.log(gameJSON)
   return {
     props: {
       error: false,
@@ -59,7 +58,6 @@ export const getStaticProps = async ({
 export const getStaticPaths = async (): Promise<GetStaticPathsResult<PageParams>> => {
   const files = getFiles('content/games')
 
-  console.log('paths')
   return {
     paths: files.map((file) => {
       const { game, event } = readFileToJson(file) as GameEntry

@@ -67,11 +67,8 @@ class AlakajamImporter implements Importer {
           cachedUser = userWithoutEntries as AlakajamUser
           this.userCache.push(cachedUser)
         }
-        console.log(`user: ${JSON.stringify(cachedUser)}`)
         gameComment.user = cachedUser
       }
-      console.log('after comments')
-      console.log(this.userCache)
 
       const event = await Alakajam.getEvent(akjGame.event_id)
       const { entries, ...eventWithoutEntries } = event.data
@@ -85,7 +82,7 @@ class AlakajamImporter implements Importer {
     const profile = profileResponse.data as AlakajamProfile
     const { profileEntries, ...profileWithoutEntries } = profileResponse.data
     this.userCache.push(profileWithoutEntries as AlakajamUser)
-    console.log(this.userCache)
+
     const newGames = this.options.refetchOldEntries
       ? this._filterOutExistingGames(
           existingGames,

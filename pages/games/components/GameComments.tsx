@@ -101,7 +101,6 @@ export const GameComment = (comment: GameEntryComment) => {
     const updated = parseDate(comment.updated)
     updateFormatted = formatDate(updated)
     const dif = Math.abs(created.getTime() - updated.getTime())
-    console.log(`dif: ${dif} (min ${minDifMs})`)
     updatedAgo = dif > minDifMs ? ago(updated) : false
   }
   return (
