@@ -1,6 +1,6 @@
+import { DEFAULT_MARKDOWN_OPTIONS } from '@lib/constants'
 import Markdown from 'marked-react'
 import styled from 'styled-components'
-import { getMarkedRenderer } from '../../lib/markdownRenderer'
 import { GameEntry, GamePageProps } from '../types'
 import { GameComments } from './GameComments'
 import { GameContainer } from './GameContainer'
@@ -9,10 +9,24 @@ import { GameMeta } from './GameMeta'
 import { PageBreadcrumb } from './PageNavigation'
 
 const PageContainer = styled.div`
-  background: var(--one);
+  background: linear-gradient(0deg, var(--one) 0%, var(--five) 100%);
   padding-bottom: 40px;
   margin: 0;
   padding: 0;
+`
+const GameContentContainer = styled.div`
+  position: relative;
+`
+
+const GameCoverImg = styled.div<{ imgUrl: string }>`
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  max-width: 920px;
+  height: 400px;
+  box-shadow: inset 0px 5px 3px 1px var(--one);
+  margin-bottom:5px;
+  background-image: url('${(props) => props.imgUrl}');
 `
 
 const PageContainerWithCoverColors = styled(PageContainer)<{
@@ -28,11 +42,17 @@ const GameTitle = styled.h1`
   padding: 0 20px;
   display: flex;
   align-items: center;
-  height: 200px;
-  border-bottom: 5px solid #eee;
-  background: linear-gradient(0deg, var(--five) 0%, var(--one) 100%);
+  border: 0;
+  background: linear-gradient(to top, var(--one), var(--five));
+  margin-bottom: 5px;
   text-shadow: 2px 2px 0px black;
   color: #fff;
+`
+
+const GameDescription = styled.div`
+  background: #fff;
+  font-style: italic;
+  padding: 20px;
 `
 
 export const GamePage = ({ error, data }: GamePageProps) => {
@@ -43,20 +63,22 @@ export const GamePage = ({ error, data }: GamePageProps) => {
   const entry = data as GameEntry
   const { game, event } = entry
 
-  const renderer = getMarkedRenderer()
-
   return (
     <PageContainerWithCoverColors coverColors={game.coverColors.css}>
       <PageBreadcrumb route={'games'} />
 
       <GameContainer>
         <GameTitle>{game.name}</GameTitle>
-        <div className='game-content'>
-          <Markdown renderer={renderer} value={game.body} />
-          <GameImages {...entry} />
-        </div>
         <GameMeta {...entry} />
-        <GameComments {...entry} />
+        <GameCoverImg className='game-meta-cover' imgUrl={game.cover.url} />
+        <GameContentContainer>
+          <GameDescription>{game.description}</GameDescription>
+          <div className='game-content'>
+            <Markdown {...DEFAULT_MARKDOWN_OPTIONS} value={game.body} />
+            <GameImages {...entry} />
+          </div>
+          <GameComments {...entry} />
+        </GameContentContainer>
       </GameContainer>
     </PageContainerWithCoverColors>
   )

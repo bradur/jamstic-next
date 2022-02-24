@@ -1,5 +1,6 @@
 import { slugifyUrl } from '@lib/file-helper'
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
+import Head from 'next/head'
 import { getFiles, readFileToJson } from '../functions'
 import { GamePage } from './components/GamePage'
 import { GameEntry, GamePageProps } from './types'
@@ -10,6 +11,9 @@ const Game = (props: GamePageProps) => {
   }
   return (
     <>
+      <Head>
+        <title>jamsticnext - {(props.data as GameEntry).game.name}</title>
+      </Head>
       <GamePage {...props} />
     </>
   )

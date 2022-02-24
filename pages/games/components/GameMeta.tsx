@@ -1,20 +1,7 @@
+import { ago, formatDate, parseDate } from '@lib/date'
 import styled from 'styled-components'
 import { GameEntry } from '../types'
 import { GameLink } from './GameLink'
-
-const GameCoverImg =
-  styled.div <
-  { imgUrl: string } >
-  `
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  width: 200px;
-  height: 200px;
-  box-shadow: inset 0px 5px 3px 1px var(--one);
-  border-bottom: 5px solid #eee;
-  background-image: url('${(props) => props.imgUrl}');
-`
 
 const GameMetaContainer = styled.div`
   position: absolute;
@@ -53,34 +40,42 @@ const GameMetaContainer = styled.div`
   }
 `
 
-export const GameMeta = ({ game, event }: GameEntry) => (
+export const GameMeta = ({ game, event, authors }: GameEntry) => (
   <GameMetaContainer>
-    <GameCoverImg className="game-meta-cover" imgUrl={game.cover} />
-    <div className="game-meta">
-      <div className="game-meta-section">
+    <div className='game-meta'>
+      <div className='game-meta-section'>
         <h2>Info</h2>
-        <div className="game-event">
-          {event.name}
-          <span className="game-event-type">Type: {game.division}</span>
-          <span className="game-event-theme">Theme: {event.theme}</span>
+        <div className='game-event'>
+          <GameLink key={event.url} href={event.url} title={event.name} />
+          <span className='game-event-type'>Type: {game.division}</span>
+          <span className='game-event-theme'>Theme: {event.theme}</span>
         </div>
-        <div className="game-publish-date" title={event.date}>
-          {event.ago}
+        <div className='game-publish-date' title={formatDate(event.date)}>
+          {ago(parseDate(event.date))}
         </div>
       </div>
-      <div className="game-meta-section">
-        <h2>Results</h2>
-        {game.results.all.map((result) => (
-          <div key={result.title} className="game-result">
-            <div className="game-result-title">{result.title}</div>
-            <div className="game-result-value">{result.result}</div>
+      <div className='game-meta-section'>
+        <h2>Author{authors.length > 1 ? 's' : ''}</h2>
+        {authors.map((author) => (
+          <div className='game-author'>
+            <GameLink key={author.url} href={author.url} title={author.name} />
           </div>
         ))}
       </div>
-      <div className="game-meta-section">
+      <div className='game-meta-section'>
+        <h2>Results</h2>
+        {game.results.all.map((result) => (
+          <div key={result.title} className='game-result'>
+            <div className='game-result-title'>{result.title}</div>
+            <div className='game-result-value'>{result.result}</div>
+          </div>
+        ))}
+      </div>
+      <div className='game-meta-section'>
         <h2>Links</h2>
+        <GameLink key={game.url} href={game.url} title='Original entry page' />
         {game.links.map((link) => (
-          <GameLink key={link.url} href={link.url} title={link.url} />
+          <GameLink key={link.url} href={link.url} title={link.title} />
         ))}
       </div>
     </div>

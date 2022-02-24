@@ -67,9 +67,14 @@ const GamesPageGameContainer = styled.a<{ coverColors: string }>`
   }
 `
 
-export const GamesPageGame = ({ game, event }: GameEntry) => {
+export const GamesPageGame = ({ game, event, path }: GameEntry) => {
   return (
-    <GamesPageGameContainer key={game.id} className='game-container' href={game.url} coverColors={game.coverColors.css}>
+    <GamesPageGameContainer
+      key={game.id}
+      className='game-container'
+      href={`games/${path}`}
+      coverColors={game.coverColors.css}
+    >
       <div className='game-meta'>
         <h3>{game.name}</h3>
         <div className='game-meta-event'>
@@ -80,7 +85,7 @@ export const GamesPageGame = ({ game, event }: GameEntry) => {
         </div>
       </div>
       <div className='game-picture-container'>
-        <img className='game-picture' src={game.cover} alt='Cover picture of {game.name}' />
+        <img className='game-picture' src={game.cover.url} alt='Cover picture of {game.name}' />
       </div>
       <div className='game-palette'>
         <div className='game-palette-one'></div>

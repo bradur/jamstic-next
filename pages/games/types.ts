@@ -4,7 +4,7 @@ export type FoundFile = {
   parentDirectory: string
 }
 
-type GameEntryLink = {
+export type GameEntryLink = {
   title: string
   url: string
 }
@@ -19,32 +19,27 @@ export type GameEntryResults = {
   overall: SingleGameEntryResult
 }
 
-type GameEntryCommentUser = {
+export type GameEntryComment = {
+  id: number
+  author: GameEntryUser
+  parent_id: number | null
+  body: string
+  created: number
+  updated?: number
+}
+
+export type GameEntryUser = {
   id: number
   name: string
   avatarUrl: string
-}
-
-export type GameEntryComment = {
-  id: number
-  author: GameEntryCommentUser
-  parent_id: number | null
-  body: string
-  created: Date
-  updated?: Date
-}
-
-type GameEntryUser = {
-  id: number
-  name: string
-  avatar: string
+  url: string
 }
 
 export type GameEntryColor = {
   css: string
 }
 
-type GameJamType = 'Ludum Dare' | 'LDJam' | 'Alakajam' | 'Global Game Jam'
+export type GameJamType = 'Ludum Dare' | 'LDJam' | 'Alakajam' | 'Global Game Jam'
 
 export type GameEntryDivision = 'solo' | 'team'
 
@@ -52,7 +47,7 @@ export type GameEntryEvent = {
   id: number
   name: string
   theme: string
-  date: string
+  date: number
   url: string
   eventType: GameJamType
 }
@@ -61,15 +56,12 @@ export type GameEntry = {
   id: number
   game: GameEntryDetails
   event: GameEntryEvent
+  authors: GameEntryUser[]
   path: string
   originalData: object
 }
 
 export type GameEntryImage = {
-  url: string
-}
-
-export type GameImageData = {
   url: string
   path: string
 }
@@ -80,12 +72,11 @@ export type GameEntryDetails = {
   description: string
   body: string
   url: string
-  cover: string
+  cover: GameEntryImage
   links: GameEntryLink[]
   results: GameEntryResults
   images: GameEntryImage[]
   comments: GameEntryComment[]
-  users: GameEntryUser[]
   coverColors: GameEntryColor
   division: GameEntryDivision
 }

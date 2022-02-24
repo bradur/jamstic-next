@@ -35,8 +35,8 @@ export const cleanUpGamePath = (gamePath: string) => gamePath.replace('/events/'
 export const createLocalImagePath = (url: string, gamePath: string, imagePath = '') => {
   return join(imagePath, cleanUpGamePath(gamePath), path.basename(url))
 }
-export const createRelativeImagePath = (url: string, gamePath: string) => {
-  return '/' + join(RELATIVE_IMAGE_PATH, cleanUpGamePath(gamePath), path.basename(url))
+export const createRelativeImagePath = (url: string, imagePath: string) => {
+  return '/' + join(RELATIVE_IMAGE_PATH, imagePath, path.basename(url))
 }
 
 export const downloadAndSaveFile = (url: string, savePath: string) =>
@@ -88,9 +88,9 @@ export const findGameCoverColors = async ({ game, path }: GameEntry): Promise<Ga
     console.log('Game cover empty, return default colors')
     return getDefaultColors()
   }
-  const coverPath = createLocalImagePath(game.cover, path, resolve(IMAGE_PATH))
-  console.log('Attempting to read colors...')
-  console.log(coverPath)
+  const coverPath = createLocalImagePath(game.cover.url, game.cover.path, resolve(IMAGE_PATH))
+  //const coverPath = game.cover.url
+  console.log(`Attempting to read colors from ${coverPath}...`)
   const imgFile = readFile(coverPath)
   const imgType = imageType(imgFile)
   if (imgType === null) {

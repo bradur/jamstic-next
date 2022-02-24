@@ -11,8 +11,8 @@ const GameLinkContainer = styled.div`
 `
 
 type GameLinkProps = {
-  href: string,
-  title: string,
+  href: string
+  title: string
 }
 
 export const GameLink = ({ href, title }: GameLinkProps) => {

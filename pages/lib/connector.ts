@@ -64,17 +64,23 @@ class Alakajam {
   static _apiUrl() {
     return 'https://alakajam.com'
   }
-  static getProfile(name: string) {
-    return get(`${this._apiUrl()}/api/user/${name}`)
+  static _userUrl() {
+    return 'https://alakajam.com/user'
   }
-  static getEntry(entryId: string) {
+  static getProfile(id: string | number) {
+    return get(`${this._apiUrl()}/api/user/${id}`)
+  }
+  static getEntry(entryId: number) {
     return get(`${this._apiUrl()}/api/entry/${entryId}`)
   }
-  static getEvent(eventId: string) {
+  static getEvent(eventId: number) {
     return get(`${this._apiUrl()}/api/event/${eventId}`)
   }
   static staticUrl(url: string) {
     return `${this._staticUrl()}/${url}`
+  }
+  static userUrl(url: string) {
+    return `${this._userUrl()}/${url}`
   }
   static getRatingTitle(index: number) {
     return ['Overall', 'Graphics', 'Audio', 'Gameplay', 'Originality', 'Theme'][index - 1]

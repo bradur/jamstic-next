@@ -1,6 +1,15 @@
+import { GameLink } from 'games/components/GameLink'
 import Image from 'next/image'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { solarizedLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
+import styled from 'styled-components'
+
+const VideoEmbedContainer = styled.div`
+  margin: 10px 0;
+  padding: 10px;
+  border-left: 10px solid #eee;
+  background: #f9f9f9;
+`
 
 export const getMarkedRenderer = () => {
   return {
@@ -13,11 +22,11 @@ export const getMarkedRenderer = () => {
     },
     image: (href: string, title: string, text: string) => {
       return (
-        <div className="jamstic-image">
+        <div className='jamstic-image'>
           <a href={href}>
             <Image alt={title} src={href} />
           </a>
-          <div className="jamstic-image-title">{text}</div>
+          <div className='jamstic-image-title'>{text}</div>
         </div>
       )
     },
@@ -38,7 +47,12 @@ export const getMarkedRenderer = () => {
             allowFullscreen: true,
             src: `//www.youtube.com/embed/${videoHash}`,
           }
-          return <iframe {...iframeOptions} />
+          return (
+            <VideoEmbedContainer>
+              <iframe {...iframeOptions} />
+              <GameLink href={href} title={href} />
+            </VideoEmbedContainer>
+          )
         }
       }
       return (

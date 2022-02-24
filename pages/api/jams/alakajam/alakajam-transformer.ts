@@ -1,0 +1,156 @@
+import { Alakajam } from '@lib/connector'
+import { parseAlakajamDate, parseDate } from '@lib/date'
+import { createRelativeImagePath } from '@lib/file-helper'
+import { findImageUrls } from '@lib/md-helper'
+import {
+  GameEntry,
+  GameEntryComment,
+  GameEntryDetails,
+  GameEntryDivision,
+  GameEntryEvent,
+  GameEntryLink,
+  GameEntryResults,
+  GameEntryUser,
+  SingleGameEntryResult,
+} from 'games/types'
+import { DEFAULT_PROFILE_PIC } from './constants'
+import { AlakajamEntry, AlakajamEvent, AlakajamGameWithDetails, AlakajamResults, AlakajamUser } from './types'
+
+type TransformerOptions = {
+  entry: AlakajamEntry
+}
+export default class AlakajamTransformer {
+  options: TransformerOptions
+  constructor(options: TransformerOptions) {
+    this.options = options
+  }
+
+  transform(): GameEntry {
+    const entry = this.options.entry
+    const game = this._transformGame()
+    return {
+      id: game.id,
+      path: this._getPath(entry),
+      event: this._transformEvent(entry.event),
+      authors: entry.game.users.map(this._transformUser),
+      game: game,
+      originalData: { ...entry },
+    }
+  }
+
+  _makeUrlsLocal(rawUrl: string, gamePath: string) {
+    findImageUrls(rawUrl).forEach((url) => {
+      rawUrl = rawUrl.replace(url, `(${createRelativeImagePath(url, gamePath)}`)
+    })
+    return rawUrl
+  }
+
+  _getPath({ event, game }: AlakajamEntry): string {
+    return `alakajam/${event.name}/${game.name}`
+  }
+
+  _transformComments(game: AlakajamGameWithDetails, path: string): GameEntryComment[] {
+    return game.comments.map(({ id, parent_id, body, created_at, updated_at, user }) => {
+      return {
+        id,
+        parent_id,
+        body: this._makeUrlsLocal(body, path),
+        author: {
+          id: user.id,
+          name: user.name,
+          avatarUrl:
+            user.avatar !== null
+              ? createRelativeImagePath(user.avatar, 'alakajam/user')
+              : createRelativeImagePath(DEFAULT_PROFILE_PIC, 'alakajam'),
+          url: Alakajam.userUrl(user.name),
+        },
+        created: parseDate(created_at).getTime(),
+        updated: parseDate(updated_at).getTime(),
+      }
+    })
+  }
+
+  _transformGrades(entry: AlakajamEntry): GameEntryResults {
+    const all = []
+    const max_ratings = 6
+    for (let index = 1; index <= max_ratings; index += 1) {
+      const results = this._getRatingResult(entry.game.results, index)
+      if (results !== null) {
+        all.push(results)
+      }
+    }
+    const overall = all.find((result) => result.title === 'Overall')
+    return {
+      all,
+      overall: overall ?? { title: '', rating: 0, result: null },
+    }
+  }
+
+  _getRatingResult = (results: AlakajamResults, index: number): SingleGameEntryResult | null => {
+    const rankingKey = `ranking_${index}`
+    const ratingKey = `rating_${index}`
+    if (Object.keys(results).includes(rankingKey) && Object.keys(results).includes(ratingKey)) {
+      const rating = results[rankingKey]
+      const result = results[ratingKey]
+      return {
+        title: Alakajam.getRatingTitle(index),
+        result: rating,
+        rating: result,
+      }
+    }
+    return null
+  }
+
+  _transformLinks(game: AlakajamGameWithDetails): GameEntryLink[] {
+    return game.links.map((link) => ({
+      url: link.url,
+      title: link.label,
+    }))
+  }
+
+  _transformEvent({ id, display_dates, display_theme, title, url }: AlakajamEvent): GameEntryEvent {
+    return {
+      id,
+      url,
+      name: title,
+      theme: id === 29 ? 'Depth' : display_theme,
+      date: parseAlakajamDate(display_dates).getTime(),
+      eventType: 'Alakajam',
+    }
+  }
+  _transformUser({ id, name, avatar }: AlakajamUser): GameEntryUser {
+    return {
+      id,
+      name,
+      avatarUrl: avatar,
+      url: Alakajam.userUrl(name),
+    }
+  }
+
+  _transformGame(): GameEntryDetails {
+    const entry = this.options.entry
+    const { game } = entry
+    const { id, title, body, url, description, pictures, division } = game
+    const [coverUrl] = pictures.previews
+    const gPath = this._getPath(entry)
+    return {
+      id,
+      description,
+      url,
+      body,
+      name: title,
+      results: this._transformGrades(entry),
+      links: this._transformLinks(game),
+      cover: {
+        url: createRelativeImagePath(coverUrl, 'alakajam/entry'),
+        path: `alakajam/entry`,
+      },
+      images: [],
+      comments: this._transformComments(game, gPath),
+      division: division as GameEntryDivision,
+      coverColors: {
+        css: '',
+      },
+    }
+  }
+}

@@ -70,6 +70,7 @@ export type AlakajamComment = {
   body: string
   created_at: string
   updated_at: string
+  user: AlakajamUser
 }
 
 export type AlakajamLink = {
@@ -81,4 +82,8 @@ export type AlakajamPictures = {
   previews: string[]
   thumbnail: string
   icon: string
+}
+
+export interface Importer {
+  import: () => void
 }

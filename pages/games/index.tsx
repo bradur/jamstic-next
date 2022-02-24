@@ -1,4 +1,5 @@
-import alakajamImporter from 'api/jams/alakajam/alakajam-importer'
+import config from '@config/config.json'
+import AlakajamImporter from 'api/jams/alakajam/alakajam-importer'
 import { GetStaticPropsResult } from 'next'
 import { getFiles, readFileToJson } from '../functions'
 import { GamesPage } from './components/GamesPage'
@@ -32,12 +33,18 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
   ]
   for (const jam of jams) {
     console.log('Fetching...')
-    const gameEntries = await alakajamImporter.getAll(true)
-    console.log('Fetch successful!')
-    const files = getFiles(`content/games/${jam.name.toLowerCase()}`)
-    console.log(files)
-    for (const file of files) {
-      jam.entries.push(readFileToJson(file) as GameEntry)
+    if (jam.name === 'Alakajam') {
+      const importer = new AlakajamImporter({
+        profileName: config.alakajam.profileName,
+        refetchOldEntries: true,
+      })
+      await importer.import()
+      console.log('Fetched and saved games as json files!')
+      const files = getFiles(`content/games/${jam.name.toLowerCase()}`)
+      console.log(files)
+      for (const file of files) {
+        jam.entries.push(readFileToJson(file) as GameEntry)
+      }
     }
   }
   console.log(jams)

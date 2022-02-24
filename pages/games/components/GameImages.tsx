@@ -17,7 +17,7 @@ const GameImageContainer = styled.div`
     border: 4px solid transparent;
   }
   .game-image-link:hover {
-    border: 4px solid var(--one);
+    border: 4px solid var(--five);
   }
   .game-image-link:hover img {
     object-fit: none;
@@ -34,13 +34,13 @@ export const GameImages = ({ game }: GameEntry) => {
       {game.images.length > 0 && (
         <>
           <h1>Screenshots</h1>
-          <div className="game-screenshot-container">
+          <div className='game-screenshot-container'>
             {game.images.map((image) => (
-              <a key={image.url} className="game-image-link" href={image.url}>
+              <a key={image.url} className='game-image-link' href={image.url}>
                 <Image
                   width={640}
                   height={360}
-                  className="game-image"
+                  className='game-image'
                   src={image.url}
                   alt={`Screenshot of ${game.name}`}
                 />
