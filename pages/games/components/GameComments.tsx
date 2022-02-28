@@ -7,9 +7,10 @@ import { GameEntry, GameEntryComment } from '../types'
 import { GameLink } from './GameLink'
 
 const GameCommentsContainer = styled.div`
-  border-top: 5px solid #eee;
+  margin-top:5px;
   padding: 20px;
-  background: #f9f9f9;
+  padding-top:5px;
+  background: none;
 
   .game-comment-body {
     padding: 20px;
@@ -65,8 +66,15 @@ const GameCommentsContainer = styled.div`
   }
 
   .game-comment-meta {
-    margin-left: 100px;
+    margin-left: 110px;
     display: flex;
+    background: rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.5);
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0));
+    padding:0 10px;
+    
+    color:#eee;
+    margin-right:40px;
   }
 
   .game-comment-meta div:first-child {
@@ -74,14 +82,18 @@ const GameCommentsContainer = styled.div`
   }
 
   .game-comment-meta div {
-    margin: 0 10px;
+    margin: 0 5px;
+  }
+
+  .game-comments-container-title {
+
   }
 `
 const minDifMs = 60000 * 5
 export const GameComments = ({ game, event }: GameEntry) => {
   return (
     <GameCommentsContainer>
-      <h2>Comments</h2>
+      <h2 className='game-comments-container-title'>Comments</h2>
       <div className='game-comments-container'>
         {game.comments.map((comment) => (
           <GameComment {...comment} />
@@ -113,13 +125,13 @@ export const GameComment = (comment: GameEntryComment) => {
           <GameLink href={comment.author.url} title={comment.author.name} />
         </div>
         <div className='game-comment-created' title={createdFormatted}>
-          on {createdFormatted} ({createdAgo})
+          on {createdFormatted} ({createdAgo}){' '}
+          {updatedAgo && (
+            <span className='game-comment-updated' title={`updated on ${updateFormatted} (${updatedAgo})`}>
+              *
+            </span>
+          )}
         </div>
-        {updatedAgo && (
-          <div className='game-comment-updated' title={updateFormatted}>
-            , updated on {updateFormatted} ({updatedAgo})
-          </div>
-        )}
       </div>
       <div className='game-comment-body'>
         <Markdown {...DEFAULT_MARKDOWN_OPTIONS} value={comment.body} />

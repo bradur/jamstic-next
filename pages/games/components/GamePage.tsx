@@ -27,6 +27,10 @@ const GameCoverImg = styled.div<{ imgUrl: string }>`
   box-shadow: inset 0px 5px 3px 1px var(--one);
   margin-bottom:5px;
   background-image: url('${(props) => props.imgUrl}');
+
+  &:hover {
+    background-size: contain;
+  }
 `
 
 const PageContainerWithCoverColors = styled(PageContainer)<{

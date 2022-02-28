@@ -2,7 +2,7 @@ export type AlakajamUser = {
   id: number
   name: string
   title: string
-  avatar: string
+  avatar: string | null
   is_mod: boolean
   is_admin: boolean | null
 }

@@ -58,8 +58,21 @@ class AlakajamImporter implements Importer {
 
     for (const akjGame of games) {
       const game = (await Alakajam.getEntry(akjGame.id)).data as AlakajamGameWithDetails
+      if (game.event_id === null) {
+        continue
+      }
 
       for (const gameComment of game.comments) {
+        if (gameComment.user_id === -1) {
+          this.userCache.push({
+            id: -1,
+            name: 'Anonymous',
+            title: 'Anonymous',
+            is_mod: false,
+            is_admin: null,
+            avatar: null,
+          })
+        }
         let cachedUser = this.userCache.find((user) => user.id === gameComment.user_id)
         if (cachedUser === undefined) {
           const fetchedUser = await Alakajam.getProfile(gameComment.user_id)
@@ -86,7 +99,7 @@ class AlakajamImporter implements Importer {
     const newGames = this.options.refetchOldEntries
       ? this._filterOutExistingGames(
           existingGames,
-          profile.entries.filter((entry) => entry.event_id !== null && entry.id === 80),
+          profile.entries.filter((entry) => entry.event_id !== null),
         )
       : profile.entries
 
@@ -125,7 +138,7 @@ class AlakajamImporter implements Importer {
     const userAvatarUrls = this.userCache
       .filter((user) => user.avatar !== null)
       .map((user) => ({
-        url: Alakajam.staticUrl(user.avatar),
+        url: user.avatar !== null ? Alakajam.staticUrl(user.avatar) : '',
         path: `alakajam/user`,
       }))
 

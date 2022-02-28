@@ -35,7 +35,7 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
     if (jam.name === 'Alakajam') {
       const importer = new AlakajamImporter({
         profileName: config.alakajam.profileName,
-        refetchOldEntries: true,
+        refetchOldEntries: false,
       })
       await importer.import()
 
