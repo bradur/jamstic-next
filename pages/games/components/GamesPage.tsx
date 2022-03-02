@@ -42,7 +42,7 @@ export const GamesPage = ({ jams }: GamesPageProps) => {
           <h2>{jam.name}</h2>
           <div className='games-container'>
             {jam.entries.map((entry) => (
-              <GamesPageGame {...entry} />
+              <GamesPageGame key={entry.id} {...entry} />
             ))}
           </div>
         </div>

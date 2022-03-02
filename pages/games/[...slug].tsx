@@ -1,9 +1,9 @@
 import { slugifyUrl } from '@lib/file-helper'
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import Head from 'next/head'
-import { getFiles, readFileToJson } from '../functions'
+import { getFiles, readFileFromPath, readFileToJson } from '../functions'
 import { GamePage } from './components/GamePage'
-import { GameEntry, GamePageProps } from './types'
+import { GameEntry, GameEntryUser, GamePageProps } from './types'
 
 const Game = (props: GamePageProps) => {
   if (props.error !== false) {
@@ -38,11 +38,17 @@ export const getStaticProps = async ({
     return file.parentDirectory === gameName
   })
 
+  let usersJSON = readFileFromPath(`content/games/alakajam/users.json`)
+  if (usersJSON.error) {
+    usersJSON = []
+  }
+
   if (!game) {
     return {
       props: {
         error: true,
         data: "Couldn't find file!",
+        users: [],
       },
     }
   }
@@ -51,6 +57,7 @@ export const getStaticProps = async ({
     props: {
       error: false,
       data: gameJSON,
+      users: usersJSON as GameEntryUser[],
     },
   }
 }
@@ -59,13 +66,15 @@ export const getStaticPaths = async (): Promise<GetStaticPathsResult<PageParams>
   const files = getFiles('content/games')
 
   return {
-    paths: files.map((file) => {
-      const { game, event } = readFileToJson(file) as GameEntry
-      const slg = { slug: [slugifyUrl(event.eventType), slugifyUrl(event.name), slugifyUrl(game.name)] }
-      return {
-        params: slg,
-      }
-    }),
+    paths: files
+      .filter((file) => file.fileName === 'game.json')
+      .map((file) => {
+        const { game, event } = readFileToJson(file) as GameEntry
+        const slg = { slug: [slugifyUrl(event.eventType), slugifyUrl(event.name), slugifyUrl(game.name)] }
+        return {
+          params: slg,
+        }
+      }),
     fallback: false,
   }
 }

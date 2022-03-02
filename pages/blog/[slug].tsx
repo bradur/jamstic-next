@@ -1,6 +1,4 @@
-import {
-  GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult
-} from 'next'
+import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import { getFiles, readFileToJson } from '../functions'
 import { PostPageProps } from './types'
 
@@ -24,12 +22,9 @@ type PageParams = {
 
 export const getStaticProps = async ({
   params = { slug: '' },
-}: GetStaticPropsContext<PageParams>): Promise<
-  GetStaticPropsResult<GamePageProps>
-> => {
-  
+}: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<GamePageProps>> => {
   const files = getFiles('content/blog')
-  
+
   const { slug } = params
 
   const game = files.find((file) => file.parentDirectory === slug)
@@ -49,11 +44,9 @@ export const getStaticProps = async ({
   }
 }
 
-export const getStaticPaths = async ({}): Promise<
-  GetStaticPathsResult<PageParams>
-> => {
-  const files = getFiles('content/games')
-  
+export const getStaticPaths = async ({}): Promise<GetStaticPathsResult<PageParams>> => {
+  const files = getFiles('content/blog')
+
   /*for (const file of files) {
     file
   }*/

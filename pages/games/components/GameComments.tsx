@@ -3,7 +3,7 @@ import { ago, formatDate, parseDate } from '@lib/date'
 import Markdown from 'marked-react'
 import Image from 'next/image'
 import styled from 'styled-components'
-import { GameEntry, GameEntryComment } from '../types'
+import { GameEntry, GameEntryComment, GameEntryUser } from '../types'
 import { GameLink } from './GameLink'
 
 const GameCommentsContainer = styled.div`
@@ -90,20 +90,40 @@ const GameCommentsContainer = styled.div`
   }
 `
 const minDifMs = 60000 * 5
-export const GameComments = ({ game, event }: GameEntry) => {
+
+type GameCommentsProps = {
+  entry: GameEntry
+  users: GameEntryUser[]
+}
+
+export const GameComments = ({ entry: { game, event, authors }, users }: GameCommentsProps) => {
   return (
     <GameCommentsContainer>
       <h2 className='game-comments-container-title'>Comments</h2>
       <div className='game-comments-container'>
-        {game.comments.map((comment) => (
-          <GameComment {...comment} />
-        ))}
+        {game.comments.map((comment) => {
+          let foundUser = users.find((user) => user.id === comment.author)
+          if (foundUser === undefined) {
+            foundUser = {
+              id: -1,
+              url: '#',
+              avatarUrl: '#',
+              name: 'Deleted',
+            }
+          }
+          return <GameComment comment={comment} user={foundUser} />
+        })}
       </div>
     </GameCommentsContainer>
   )
 }
 
-export const GameComment = (comment: GameEntryComment) => {
+type GameCommentProps = {
+  comment: GameEntryComment
+  user: GameEntryUser
+}
+
+export const GameComment = ({ comment, user }: GameCommentProps) => {
   const created = parseDate(comment.created)
   const createdAgo = ago(created)
   const createdFormatted = formatDate(created)
@@ -115,14 +135,15 @@ export const GameComment = (comment: GameEntryComment) => {
     const dif = Math.abs(created.getTime() - updated.getTime())
     updatedAgo = dif > minDifMs ? ago(updated) : false
   }
+
   return (
     <div key={comment.id} className='game-comment'>
       <div className='game-comment-author-image'>
-        {comment.author.avatarUrl && <Image width={80} height={80} src={comment.author.avatarUrl} />}
+        {user.avatarUrl && <Image width={80} height={80} src={user.avatarUrl} />}
       </div>
       <div className='game-comment-meta'>
         <div className='game-comment-author'>
-          <GameLink href={comment.author.url} title={comment.author.name} />
+          <GameLink href={user.url} title={user.name} />
         </div>
         <div className='game-comment-created' title={createdFormatted}>
           on {createdFormatted} ({createdAgo}){' '}

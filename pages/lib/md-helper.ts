@@ -1,18 +1,16 @@
-const urlRegex = /(\(\/\/\/.*?\))/g // matches start: '(///' end: ')'
-const formats = ['.png)', '.jpg)', '.gif)']
-
 const cleanUpUrl = (url: string) => url.replace(/\(\/\/\//g, '').replace(/\)/g, '')
 
-const findImageUrls = (imageUrl: string) => {
-  let urls = imageUrl.match(urlRegex)
-  if (urls !== null) {
-    urls = urls.filter((match) => {
-      return formats.some((format) => match.toLowerCase().endsWith(format))
-    })
-  } else {
-    urls = []
-  }
-  return urls
+// matches markdown image syntax: [title](url)
+const markdDownImageRegex = /!\[.*?\]\(.*?\)/g
+
+const findImageUrls = (text: string) => {
+  const matches = [...text.matchAll(markdDownImageRegex)]
+  return matches.map((match) => {
+    const [mdUrl] = match
+    const [title, urlString] = mdUrl.split('](')
+    const [url] = urlString.split(')')
+    return url
+  })
 }
 
 const getCleanUrls = (rawUrl: string) => findImageUrls(rawUrl).map((url: string) => cleanUpUrl(url))

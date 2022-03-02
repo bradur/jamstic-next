@@ -28,12 +28,16 @@ export const getFiles = (directoryPath: string) => {
   return finder.files
 }
 
-export const readFileToJson = (file: FoundFile): object => {
+export const readFileFromPath = (filePath: string) => {
   let fileContents
   try {
-    fileContents = fs.readFileSync(file.fullPath, 'utf-8')
+    fileContents = fs.readFileSync(filePath, 'utf-8')
   } catch (err) {
     return { error: true }
   }
   return JSON.parse(fileContents)
+}
+
+export const readFileToJson = (file: FoundFile): object => {
+  return readFileFromPath(file.fullPath)
 }

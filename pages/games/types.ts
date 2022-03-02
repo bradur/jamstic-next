@@ -21,7 +21,7 @@ export type GameEntryResults = {
 
 export type GameEntryComment = {
   id: number
-  author: GameEntryUser
+  author: number
   parent_id: number | null
   body: string
   created: number
@@ -56,9 +56,9 @@ export type GameEntry = {
   id: number
   game: GameEntryDetails
   event: GameEntryEvent
-  authors: GameEntryUser[]
+  authors: number[]
   path: string
-  originalData: object
+  originalData?: object
 }
 
 export type GameEntryImage = {
@@ -84,6 +84,7 @@ export type GameEntryDetails = {
 export type GamePageProps = {
   error: boolean
   data: GameEntry | string
+  users: GameEntryUser[]
 }
 
 export type Jam = {

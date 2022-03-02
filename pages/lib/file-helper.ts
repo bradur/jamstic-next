@@ -1,5 +1,5 @@
 import fs, { PathLike } from 'fs'
-import { GameEntry, GameEntryColor, GameImageData } from 'games/types'
+import { GameEntry, GameEntryColor, GameEntryImage } from 'games/types'
 import getColors from 'get-image-colors'
 import imageType from 'image-type'
 import path from 'path'
@@ -50,13 +50,21 @@ export const downloadAndSaveFile = (url: string, savePath: string) =>
       }),
   )
 
-export const downloadAndSaveImages = async (images: GameImageData[]) => {
+export const downloadAndSaveImages = async (images: GameEntryImage[]) => {
   console.log('Checking for new images...')
   let count = 0
   for (const image of images) {
-    console.log(`Saving image with url ${image.url} and path ${image.path}...`)
-    const imagePath = createLocalImagePath(image.url, image.path, resolve(IMAGE_PATH))
+    let url
+    try {
+      url = new URL(image.url)
+    } catch (error) {
+      console.log(`Error trying to parse url: ${image.url}`)
+      continue
+    }
+    const urlWithoutParams = `${url.origin}${url.pathname}`
+    const imagePath = createLocalImagePath(urlWithoutParams, image.path, resolve(IMAGE_PATH))
     if (createFolderIfItDoesntExist(imagePath)) {
+      console.log(`Saving image with url ${image.url} and path ${image.path} to ${imagePath}...`)
       count += 1
       await downloadAndSaveFile(image.url, imagePath)
     }
@@ -89,7 +97,7 @@ export const findGameCoverColors = async ({ game, path }: GameEntry): Promise<Ga
     return getDefaultColors()
   }
   const coverPath = createLocalImagePath(game.cover.url, game.cover.path, resolve(IMAGE_PATH))
-  //const coverPath = game.cover.url
+
   console.log(`Attempting to read colors from ${coverPath}...`)
   const imgFile = readFile(coverPath)
   const imgType = imageType(imgFile)
@@ -104,7 +112,6 @@ export const findGameCoverColors = async ({ game, path }: GameEntry): Promise<Ga
   const colors = await getColors(imgFile, imgType.mime)
 
   colorsRGBA = colors.map((color) => color.css())
-
   return {
     css: Object.entries({
       one: colorsRGBA[0],
@@ -116,17 +123,4 @@ export const findGameCoverColors = async ({ game, path }: GameEntry): Promise<Ga
       .map((entry) => `--${entry[0]}: ${entry[1]};`)
       .join(''),
   }
-
-  /*return {
-    colors: colors,
-    css: Object.entries({
-      one: colorsRGBA[0],
-      two: colorsRGBA[1],
-      three: colorsRGBA[2],
-      four: colorsRGBA[3],
-      five: colorsRGBA[4],
-    })
-      .map((entry) => `--${entry[0]}: ${entry[1]};`)
-      .join(''),
-  }*/
 }

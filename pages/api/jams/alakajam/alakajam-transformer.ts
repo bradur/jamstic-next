@@ -13,16 +13,20 @@ import {
   GameEntryUser,
   SingleGameEntryResult,
 } from 'games/types'
+import emoji from 'node-emoji'
 import { DEFAULT_PROFILE_PIC } from './constants'
 import { AlakajamEntry, AlakajamEvent, AlakajamGameWithDetails, AlakajamResults, AlakajamUser } from './types'
 
 type TransformerOptions = {
   entry: AlakajamEntry
+  userCache: GameEntryUser[]
 }
 export default class AlakajamTransformer {
   options: TransformerOptions
+  userCache: GameEntryUser[]
   constructor(options: TransformerOptions) {
     this.options = options
+    this.userCache = this.options.userCache
   }
 
   transform(): GameEntry {
@@ -32,17 +36,30 @@ export default class AlakajamTransformer {
       id: game.id,
       path: this._getPath(entry),
       event: this._transformEvent(entry.event),
-      authors: entry.game.users.map(this._transformUser),
+      authors: entry.game.users.map((user) => user.id),
       game: game,
       originalData: { ...entry },
     }
   }
 
-  _makeUrlsLocal(rawUrl: string, gamePath: string) {
-    findImageUrls(rawUrl).forEach((url) => {
-      rawUrl = rawUrl.replace(url, `(${createRelativeImagePath(url, gamePath)}`)
+  static transformUser({ id, name, avatar }: AlakajamUser): GameEntryUser {
+    return {
+      id,
+      name,
+      avatarUrl:
+        avatar === null
+          ? createRelativeImagePath(DEFAULT_PROFILE_PIC, 'alakajam')
+          : createRelativeImagePath(avatar, 'alakajam/user'),
+      url: Alakajam.userUrl(name),
+    }
+  }
+
+  _makeUrlsLocal(text: string, path: string) {
+    let replacedText = text
+    findImageUrls(replacedText).forEach((url) => {
+      replacedText = replacedText.replace(url, `${createRelativeImagePath(url, path)}`)
     })
-    return rawUrl
+    return replacedText
   }
 
   _getPath({ event, game }: AlakajamEntry): string {
@@ -50,24 +67,20 @@ export default class AlakajamTransformer {
   }
 
   _transformComments(game: AlakajamGameWithDetails, path: string): GameEntryComment[] {
-    return game.comments.map(({ id, parent_id, body, created_at, updated_at, user }) => {
+    return game.comments.map(({ id, parent_id, body, created_at, updated_at, user_id }) => {
       return {
         id,
         parent_id,
-        body: this._makeUrlsLocal(body, path),
-        author: {
-          id: user.id,
-          name: user.name,
-          avatarUrl:
-            user.avatar !== null
-              ? createRelativeImagePath(user.avatar, 'alakajam/user')
-              : createRelativeImagePath(DEFAULT_PROFILE_PIC, 'alakajam'),
-          url: Alakajam.userUrl(user.name),
-        },
+        body: this._transformBody(body, `${path}/comment`),
+        author: user_id,
         created: parseDate(created_at).getTime(),
         updated: parseDate(updated_at).getTime(),
       }
     })
+  }
+
+  _transformBody(body: string, path: string): string {
+    return emoji.emojify(this._makeUrlsLocal(body, path))
   }
 
   _transformGrades(entry: AlakajamEntry): GameEntryResults {
@@ -87,6 +100,9 @@ export default class AlakajamTransformer {
   }
 
   _getRatingResult = (results: AlakajamResults, index: number): SingleGameEntryResult | null => {
+    if (results === undefined || results === null) {
+      return null
+    }
     const rankingKey = `ranking_${index}`
     const ratingKey = `rating_${index}`
     if (Object.keys(results).includes(rankingKey) && Object.keys(results).includes(ratingKey)) {
@@ -118,14 +134,6 @@ export default class AlakajamTransformer {
       eventType: 'Alakajam',
     }
   }
-  _transformUser({ id, name, avatar }: AlakajamUser): GameEntryUser {
-    return {
-      id,
-      name,
-      avatarUrl: avatar,
-      url: Alakajam.userUrl(name),
-    }
-  }
 
   _transformGame(): GameEntryDetails {
     const entry = this.options.entry
@@ -137,7 +145,7 @@ export default class AlakajamTransformer {
       id,
       description,
       url,
-      body,
+      body: this._transformBody(body, `${gPath}/body`),
       name: title,
       results: this._transformGrades(entry),
       links: this._transformLinks(game),

@@ -24,7 +24,7 @@ export const getMarkedRenderer = () => {
       return (
         <div className='jamstic-image'>
           <a href={href}>
-            <Image alt={title} src={href} />
+            <Image width={320} height={180} alt={title} src={href} />
           </a>
           <div className='jamstic-image-title'>{text}</div>
         </div>

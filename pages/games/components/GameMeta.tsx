@@ -1,6 +1,6 @@
 import { ago, formatDate, parseDate } from '@lib/date'
 import styled from 'styled-components'
-import { GameEntry } from '../types'
+import { GameEntry, GameEntryUser } from '../types'
 import { GameLink } from './GameLink'
 
 const GameMetaContainer = styled.div`
@@ -40,7 +40,12 @@ const GameMetaContainer = styled.div`
   }
 `
 
-export const GameMeta = ({ game, event, authors }: GameEntry) => (
+type GameMetaProps = {
+  entry: GameEntry
+  users: GameEntryUser[]
+}
+
+export const GameMeta = ({ entry: { game, event, authors }, users }: GameMetaProps) => (
   <GameMetaContainer>
     <div className='game-meta'>
       <div className='game-meta-section'>
@@ -56,11 +61,17 @@ export const GameMeta = ({ game, event, authors }: GameEntry) => (
       </div>
       <div className='game-meta-section'>
         <h2>Author{authors.length > 1 ? 's' : ''}</h2>
-        {authors.map((author) => (
-          <div className='game-author'>
-            <GameLink key={author.url} href={author.url} title={author.name} />
-          </div>
-        ))}
+        {authors.map((author) => {
+          const user = users.find((user) => user.id === author)
+          if (user === undefined) {
+            return <div className='game-author'>Unknown</div>
+          }
+          return (
+            <div className='game-author'>
+              <GameLink key={user.url} href={user.url} title={user.name} />
+            </div>
+          )
+        })}
       </div>
       <div className='game-meta-section'>
         <h2>Results</h2>

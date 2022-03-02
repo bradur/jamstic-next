@@ -70,7 +70,6 @@ export type AlakajamComment = {
   body: string
   created_at: string
   updated_at: string
-  user: AlakajamUser
 }
 
 export type AlakajamLink = {

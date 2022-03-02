@@ -59,7 +59,7 @@ const GameDescription = styled.div`
   padding: 20px;
 `
 
-export const GamePage = ({ error, data }: GamePageProps) => {
+export const GamePage = ({ error, data, users }: GamePageProps) => {
   if (error) {
     return <p>{data}</p>
   }
@@ -73,7 +73,7 @@ export const GamePage = ({ error, data }: GamePageProps) => {
 
       <GameContainer>
         <GameTitle>{game.name}</GameTitle>
-        <GameMeta {...entry} />
+        <GameMeta entry={entry} users={users} />
         <GameCoverImg className='game-meta-cover' imgUrl={game.cover.url} />
         <GameContentContainer>
           <GameDescription>{game.description}</GameDescription>
@@ -81,7 +81,7 @@ export const GamePage = ({ error, data }: GamePageProps) => {
             <Markdown {...DEFAULT_MARKDOWN_OPTIONS} value={game.body} />
             <GameImages {...entry} />
           </div>
-          <GameComments {...entry} />
+          <GameComments entry={entry} users={users} />
         </GameContentContainer>
       </GameContainer>
     </PageContainerWithCoverColors>

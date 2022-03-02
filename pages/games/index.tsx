@@ -1,7 +1,7 @@
 import config from '@config/config.json'
 import AlakajamImporter from 'api/jams/alakajam/alakajam-importer'
 import { GetStaticPropsResult } from 'next'
-import { getFiles, readFileToJson } from '../functions'
+import { getFiles, readFileFromPath, readFileToJson } from '../functions'
 import { GamesPage } from './components/GamesPage'
 import { GameEntry, GamesPageProps, Jam } from './types'
 
@@ -33,17 +33,24 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
   ]
   for (const jam of jams) {
     if (jam.name === 'Alakajam') {
+      let users = readFileFromPath(`content/games/${jam.name.toLowerCase()}/users.json`)
+      if (users.error) {
+        users = []
+      }
       const importer = new AlakajamImporter({
         profileName: config.alakajam.profileName,
         refetchOldEntries: false,
+        userCache: users,
       })
       await importer.import()
 
-      const files = getFiles(`content/games/${jam.name.toLowerCase()}`)
+      const files = getFiles(`content/games/${jam.name.toLowerCase()}/jams`)
 
-      for (const file of files) {
-        jam.entries.push(readFileToJson(file) as GameEntry)
-      }
+      const entries: GameEntry[] = files
+        .map((file) => readFileToJson(file) as GameEntry)
+        .sort((entry, otherEntry) => otherEntry.event.date - entry.event.date)
+
+      jam.entries = entries
     }
   }
 
