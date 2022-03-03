@@ -16,14 +16,14 @@ const PageBreadcrumbContainer = styled.div`
 `
 
 type PageBreadcrumbProps = {
-  route: string,
-  title?: string,
+  route: string
+  title?: string
 }
 
 export const PageBreadcrumb = ({ route, title = 'back' }: PageBreadcrumbProps) => {
   return (
     <PageBreadcrumbContainer>
-      <a className="breadcrumb-back" href={route}>
+      <a className='breadcrumb-back' href={`/${route}`}>
         &lt;- {title}
       </a>
     </PageBreadcrumbContainer>

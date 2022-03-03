@@ -54,12 +54,12 @@ const SiteNavigation = () => {
     <SiteNavigationContainer>
       <ul>
         <li>
-          <a rel="prefetch" href="blog">
+          <a rel='prefetch' href='/blog'>
             blog
           </a>
         </li>
         <li>
-          <a rel="prefetch" href="games">
+          <a rel='prefetch' href='/games'>
             games
           </a>
         </li>
