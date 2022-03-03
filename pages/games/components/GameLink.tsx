@@ -1,3 +1,5 @@
+import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styled from 'styled-components'
 
 const GameLinkContainer = styled.div`
@@ -16,10 +18,11 @@ type GameLinkProps = {
 }
 
 export const GameLink = ({ href, title }: GameLinkProps) => {
+  const external = href.includes('http://') || href.includes('https://')
   return (
     <GameLinkContainer>
       <a href={href} title={title}>
-        {title}
+        {title} {external && <FontAwesomeIcon icon={faArrowUpRightFromSquare} />}
       </a>
     </GameLinkContainer>
   )
