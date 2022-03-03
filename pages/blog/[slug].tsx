@@ -4,7 +4,7 @@ import { PostPageProps } from './types'
 
 const Post = (props: PostPageProps) => {
   if (props.error !== false) {
-    return <p>{props.error}</p>
+    return <div>{props.error}</div>
   }
   return (
     <>

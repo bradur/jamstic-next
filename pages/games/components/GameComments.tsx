@@ -111,7 +111,7 @@ export const GameComments = ({ entry: { game, event, authors }, users }: GameCom
               name: 'Deleted',
             }
           }
-          return <GameComment comment={comment} user={foundUser} />
+          return <GameComment key={comment.id} comment={comment} user={foundUser} />
         })}
       </div>
     </GameCommentsContainer>

@@ -7,7 +7,7 @@ import { GameEntry, GameEntryUser, GamePageProps } from './types'
 
 const Game = (props: GamePageProps) => {
   if (props.error !== false) {
-    return <p>{props.error}</p>
+    return <div>{props.error}</div>
   }
   return (
     <>

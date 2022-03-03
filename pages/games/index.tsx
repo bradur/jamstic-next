@@ -7,7 +7,7 @@ import { GameEntry, GamesPageProps, Jam } from './types'
 
 const Games = (props: GamesPageProps) => {
   if (props.error !== false) {
-    return <p>{props.error}</p>
+    return <div>{props.error}</div>
   }
 
   return (

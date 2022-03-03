@@ -61,7 +61,7 @@ const GameDescription = styled.div`
 
 export const GamePage = ({ error, data, users }: GamePageProps) => {
   if (error) {
-    return <p>{data}</p>
+    return <div>{data}</div>
   }
 
   const entry = data as GameEntry

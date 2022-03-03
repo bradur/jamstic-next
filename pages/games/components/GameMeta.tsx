@@ -61,14 +61,18 @@ export const GameMeta = ({ entry: { game, event, authors }, users }: GameMetaPro
       </div>
       <div className='game-meta-section'>
         <h2>Author{authors.length > 1 ? 's' : ''}</h2>
-        {authors.map((author) => {
+        {authors.map((author, index) => {
           const user = users.find((user) => user.id === author)
           if (user === undefined) {
-            return <div className='game-author'>Unknown</div>
+            return (
+              <div key={`${index}-${author}`} className='game-author'>
+                Unknown
+              </div>
+            )
           }
           return (
-            <div className='game-author'>
-              <GameLink key={user.url} href={user.url} title={user.name} />
+            <div key={user.url} className='game-author'>
+              <GameLink href={user.url} title={user.name} />
             </div>
           )
         })}

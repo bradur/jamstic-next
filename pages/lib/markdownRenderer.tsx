@@ -1,3 +1,4 @@
+import { createHash } from 'crypto'
 import { GameLink } from 'games/components/GameLink'
 import Image from 'next/image'
 import SyntaxHighlighter from 'react-syntax-highlighter'
@@ -11,8 +12,16 @@ const VideoEmbedContainer = styled.div`
   background: #f9f9f9;
 `
 
-export const getMarkedRenderer = () => {
-  return {
+const ParagraphAsDiv = styled.div`
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+`
+
+export const getMarkedRenderer = () => ({
+  renderer: {
     code: (source: string, lang = 'txt') => {
       return (
         <SyntaxHighlighter language={lang} style={solarizedLight}>
@@ -61,5 +70,9 @@ export const getMarkedRenderer = () => {
         </a>
       )
     },
-  }
-}
+    paragraph: (text: string) => {
+      const hash = createHash('md5').update(JSON.stringify(text)).digest('hex')
+      return <ParagraphAsDiv key={hash}>{text}</ParagraphAsDiv>
+    },
+  },
+})
