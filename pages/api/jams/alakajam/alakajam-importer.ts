@@ -3,13 +3,18 @@ import {
   createFolderIfItDoesntExist,
   downloadAndSaveImages,
   findGameCoverColors,
-  join,
   readJson,
-  resolve,
-  slugifyUrl,
   writeJson,
 } from '@lib/file-helper'
 import { findImageUrls } from '@lib/md-helper'
+import {
+  getDataFilePath,
+  getOriginalDataFilePath,
+  getRelativePath,
+  getSavedEntriesPath,
+  getUserCachePath,
+  RelativePathType,
+} from '@lib/path-helper'
 import { GameEntry, GameEntryImage, GameEntryUser } from 'games/types'
 import glob from 'glob'
 import AlakajamTransformer from './alakajam-transformer'
@@ -24,27 +29,31 @@ import {
 } from './types'
 
 type ImporterOptions = {
+  path: string
   profileName: string
   refetchOldEntries: boolean
   userCache: GameEntryUser[]
 }
 
 class AlakajamImporter implements Importer {
-  //userCache: AlakajamUser[] = []
   userCache: GameEntryUser[] = []
-  options: ImporterOptions
   userImages: GameEntryImage[]
+  refetchOldEntries: boolean
+  path: string
+  profileName: string
   constructor(options: ImporterOptions) {
-    this.options = options
+    this.path = options.path
+    this.refetchOldEntries = options.refetchOldEntries
     this.userCache = [...options.userCache]
     this.userImages = []
+    this.profileName = options.profileName
   }
   async import() {
     const oldEntries = this._loadAllSavedEntries()
     console.log(`Old entries: ${oldEntries.length}`)
     const newEntries = await this._getEntries(oldEntries)
     const transformedEntries = newEntries.map((entry) => {
-      const transformer = new AlakajamTransformer({ entry, userCache: this.userCache })
+      const transformer = new AlakajamTransformer({ entry, userCache: this.userCache, path: this.path })
       return transformer.transform()
     })
     const entries = [...oldEntries, ...transformedEntries]
@@ -55,7 +64,7 @@ class AlakajamImporter implements Importer {
     return entries
   }
   _saveUserCacheAsFile() {
-    const filePath = join(resolve('./content/games/alakajam/'), 'users.json')
+    const filePath = getUserCachePath(this.path)
     writeJson(filePath, this.userCache)
   }
   _saveDataAsFile(entries: GameEntry[]) {
@@ -63,27 +72,17 @@ class AlakajamImporter implements Importer {
       const { event, game } = entry
       const { originalData, ...entryWithoutOriginalData } = entry
       if (originalData) {
-        const originalDataFilePath = join(
-          resolve('./content/debug/games/alakajam/jams'),
-          slugifyUrl(event.name),
-          slugifyUrl(game.name),
-          'originalData.json',
-        )
+        const originalDataFilePath = getOriginalDataFilePath(this.path, entry)
         createFolderIfItDoesntExist(originalDataFilePath)
         writeJson(originalDataFilePath, originalData)
       }
-      const filePath = join(
-        resolve('./content/games/alakajam/jams'),
-        slugifyUrl(event.name),
-        slugifyUrl(game.name),
-        'game.json',
-      )
+      const filePath = getDataFilePath(this.path, entry)
       createFolderIfItDoesntExist(filePath)
       writeJson(filePath, entryWithoutOriginalData)
     })
   }
   _loadAllSavedEntries(): GameEntry[] {
-    return glob.sync('content/games/alakajam/entries/**/*.json', {}).map((file) => readJson(file))
+    return glob.sync(getSavedEntriesPath(this.path), {}).map((file) => readJson(file))
   }
 
   async _fetchUser(userId: number): Promise<AlakajamUser> {
@@ -92,11 +91,11 @@ class AlakajamImporter implements Importer {
   }
 
   async _saveUserToCache(user: AlakajamUser) {
-    this.userCache.push(AlakajamTransformer.transformUser({ ...user }))
+    this.userCache.push(AlakajamTransformer.transformUser({ ...user }, this.path))
     if (user.avatar !== null) {
       this.userImages.push({
         url: Alakajam.staticUrl(user.avatar),
-        path: `alakajam/user`,
+        path: getRelativePath(this.path, RelativePathType.USER),
       })
     }
   }
@@ -125,13 +124,13 @@ class AlakajamImporter implements Importer {
   }
 
   async _getEntries(existingGames: GameEntry[]) {
-    const profileResponse = await Alakajam.getProfile(this.options.profileName)
+    const profileResponse = await Alakajam.getProfile(this.profileName)
     const profile = profileResponse.data as AlakajamProfile
     if (!this.userCache.find((user) => user.id === profile.id)) {
       this._saveUserToCache(profile as AlakajamUser)
     }
 
-    const newGames = this.options.refetchOldEntries
+    const newGames = this.refetchOldEntries
       ? profile.entries
       : this._filterOutExistingGames(
           existingGames,
@@ -165,17 +164,22 @@ class AlakajamImporter implements Importer {
     const entry = originalData as AlakajamEntry
     const [coverUrl] = entry.game.pictures.previews
 
-    const bodyUrls = findImageUrls(entry.game.body).map((url) => ({ url, path: `${path}/body` }))
+    const bodyUrls = findImageUrls(entry.game.body).map((url) => ({
+      url,
+      path: getRelativePath(path, RelativePathType.BODY),
+    }))
 
     const commentImageUrls = entry.game.comments
-      .map((comment) => findImageUrls(comment.body).map((url) => ({ url, path: `${path}/comment` })))
+      .map((comment) =>
+        findImageUrls(comment.body).map((url) => ({ url, path: getRelativePath(path, RelativePathType.COMMENT) })),
+      )
       .flat()
 
     return [
       ...bodyUrls,
       ...commentImageUrls,
       ...this.userImages,
-      { url: Alakajam.staticUrl(coverUrl), path: `alakajam/entry` },
+      { url: Alakajam.staticUrl(coverUrl), path: getRelativePath(this.path, RelativePathType.USER) },
     ]
   }
 }

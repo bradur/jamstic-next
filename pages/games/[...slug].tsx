@@ -1,4 +1,5 @@
 import { slugifyUrl } from '@lib/file-helper'
+import { DATA_FILE_NAME, GAMES_PATH, getUserCachePath } from '@lib/path-helper'
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import Head from 'next/head'
 import { getFiles, readFileFromPath, readFileToJson } from '../lib/functions'
@@ -29,7 +30,7 @@ type PageParams = {
 export const getStaticProps = async ({
   params = { slug: [] },
 }: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<GamePageProps>> => {
-  const files = getFiles('content/games')
+  const files = getFiles(GAMES_PATH)
 
   const { slug } = params
 
@@ -38,7 +39,7 @@ export const getStaticProps = async ({
     return file.parentDirectory === gameName
   })
 
-  let usersJSON = readFileFromPath(`content/games/alakajam/users.json`)
+  let usersJSON = readFileFromPath(getUserCachePath(eventType.toLowerCase()))
   if (usersJSON.error) {
     usersJSON = []
   }
@@ -63,11 +64,11 @@ export const getStaticProps = async ({
 }
 
 export const getStaticPaths = async (): Promise<GetStaticPathsResult<PageParams>> => {
-  const files = getFiles('content/games')
+  const files = getFiles(GAMES_PATH)
 
   return {
     paths: files
-      .filter((file) => file.fileName === 'game.json')
+      .filter((file) => file.fileName === DATA_FILE_NAME)
       .map((file) => {
         const { game, event } = readFileToJson(file) as GameEntry
         const slg = { slug: [slugifyUrl(event.eventType), slugifyUrl(event.name), slugifyUrl(game.name)] }

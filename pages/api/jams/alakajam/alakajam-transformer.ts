@@ -2,6 +2,7 @@ import { Alakajam } from '@lib/connector'
 import { parseAlakajamDate, parseDate } from '@lib/date'
 import { createRelativeImagePath } from '@lib/file-helper'
 import { findImageUrls } from '@lib/md-helper'
+import { getEntryPath, getRelativePath, RelativePathType } from '@lib/path-helper'
 import {
   GameEntry,
   GameEntryComment,
@@ -18,14 +19,17 @@ import { DEFAULT_PROFILE_PIC } from './constants'
 import { AlakajamEntry, AlakajamEvent, AlakajamGameWithDetails, AlakajamResults, AlakajamUser } from './types'
 
 type TransformerOptions = {
+  path: string
   entry: AlakajamEntry
   userCache: GameEntryUser[]
 }
 export default class AlakajamTransformer {
   options: TransformerOptions
+  path: string
   userCache: GameEntryUser[]
   constructor(options: TransformerOptions) {
     this.options = options
+    this.path = options.path
     this.userCache = this.options.userCache
   }
 
@@ -42,14 +46,14 @@ export default class AlakajamTransformer {
     }
   }
 
-  static transformUser({ id, name, avatar }: AlakajamUser): GameEntryUser {
+  static transformUser({ id, name, avatar }: AlakajamUser, path: string): GameEntryUser {
     return {
       id,
       name,
       avatarUrl:
         avatar === null
-          ? createRelativeImagePath(DEFAULT_PROFILE_PIC, 'alakajam')
-          : createRelativeImagePath(avatar, 'alakajam/user'),
+          ? createRelativeImagePath(DEFAULT_PROFILE_PIC, path)
+          : createRelativeImagePath(avatar, getRelativePath(path, RelativePathType.USER)),
       url: Alakajam.userUrl(name),
     }
   }
@@ -63,7 +67,7 @@ export default class AlakajamTransformer {
   }
 
   _getPath({ event, game }: AlakajamEntry): string {
-    return `alakajam/${event.name}/${game.name}`
+    return getEntryPath(this.path, event.name, game.name)
   }
 
   _transformComments(game: AlakajamGameWithDetails, path: string): GameEntryComment[] {
@@ -71,7 +75,7 @@ export default class AlakajamTransformer {
       return {
         id,
         parent_id,
-        body: this._transformBody(body, `${path}/comment`),
+        body: this._transformBody(body, getRelativePath(path, RelativePathType.COMMENT)),
         author: user_id,
         created: parseDate(created_at).getTime(),
         updated: parseDate(updated_at).getTime(),
@@ -141,17 +145,18 @@ export default class AlakajamTransformer {
     const { id, title, body, url, description, pictures, division } = game
     const [coverUrl] = pictures.previews
     const gPath = this._getPath(entry)
+    const relativeEntryPath = getRelativePath(this.path, RelativePathType.ENTRY)
     return {
       id,
       description,
       url,
-      body: this._transformBody(body, `${gPath}/body`),
+      body: this._transformBody(body, getRelativePath(gPath, RelativePathType.BODY)),
       name: title,
       results: this._transformGrades(entry),
       links: this._transformLinks(game),
       cover: {
-        url: createRelativeImagePath(coverUrl, 'alakajam/entry'),
-        path: `alakajam/entry`,
+        url: createRelativeImagePath(coverUrl, relativeEntryPath),
+        path: relativeEntryPath,
       },
       images: [],
       comments: this._transformComments(game, gPath),
