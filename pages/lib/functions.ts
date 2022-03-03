@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { FoundFile } from './games/types'
+import { FoundFile } from '../games/types'
 
 class FileFinder {
   files: FoundFile[] = []

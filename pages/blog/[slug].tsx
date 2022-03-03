@@ -1,5 +1,5 @@
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
-import { getFiles, readFileToJson } from '../functions'
+import { getFiles, readFileToJson } from '../lib/functions'
 import { PostPageProps } from './types'
 
 const Post = (props: PostPageProps) => {

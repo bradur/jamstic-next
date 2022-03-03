@@ -1,7 +1,7 @@
 import config from '@config/config.json'
 import AlakajamImporter from 'api/jams/alakajam/alakajam-importer'
 import { GetStaticPropsResult } from 'next'
-import { getFiles, readFileFromPath, readFileToJson } from '../functions'
+import { getFiles, readFileFromPath, readFileToJson } from '../lib/functions'
 import { GamesPage } from './components/GamesPage'
 import { GameEntry, GamesPageProps, Jam } from './types'
 

@@ -1,7 +1,7 @@
 import { slugifyUrl } from '@lib/file-helper'
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import Head from 'next/head'
-import { getFiles, readFileFromPath, readFileToJson } from '../functions'
+import { getFiles, readFileFromPath, readFileToJson } from '../lib/functions'
 import { GamePage } from './components/GamePage'
 import { GameEntry, GameEntryUser, GamePageProps } from './types'
 
