@@ -9,6 +9,7 @@ import {
 import { findImageUrls } from '@lib/md-helper'
 import { AbsolutePath, RelativePath, RelativePathType } from '@lib/path-helper'
 import { GameEntry, GameEntryImage, GameEntryUser } from 'games/types'
+import { Importer, ImporterOptions } from '../types'
 import AlakajamTransformer from './alakajam-transformer'
 import {
   AlakajamEntry,
@@ -17,17 +18,9 @@ import {
   AlakajamGameWithDetails,
   AlakajamProfile,
   AlakajamUser,
-  Importer,
 } from './types'
 
-type ImporterOptions = {
-  path: string
-  profileName: string
-  refetchOldEntries: boolean
-  userCache: GameEntryUser[]
-}
-
-class AlakajamImporter implements Importer {
+export default class AlakajamImporter implements Importer {
   userCache: GameEntryUser[] = []
   userImages: GameEntryImage[]
   refetchOldEntries: boolean
@@ -40,7 +33,7 @@ class AlakajamImporter implements Importer {
     this.userImages = []
     this.profileName = options.profileName
   }
-  async import() {
+  async import(): Promise<GameEntry[]> {
     const oldEntries = loadSavedEntries(this.path)
     console.log(`Old entries: ${oldEntries.length}`)
     const newEntries = await this._getEntries(oldEntries)
@@ -174,5 +167,3 @@ class AlakajamImporter implements Importer {
     ]
   }
 }
-
-export default AlakajamImporter

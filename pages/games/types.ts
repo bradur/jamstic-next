@@ -1,3 +1,5 @@
+import { IImporter } from 'api/jams/types'
+
 export type FoundFile = {
   fileName: string
   fullPath: string
@@ -88,11 +90,33 @@ export type GamePageProps = {
 }
 
 export type Jam = {
+  title: string
   name: string
   entries: GameEntry[]
+}
+
+export type JamConfig = {
+  title: string
+  name: string
+  importer: IImporter
 }
 
 export type GamesPageProps = {
   error: boolean | string
   jams: Jam[]
+}
+
+export type ProfileInfo = { profileName: string }
+export type Profiles = { [jamName: string]: ProfileInfo }
+export type ProfileConfig = {
+  profiles: Profiles
+  repository: string
+  deploy: {
+    branch: string
+    repo: string
+    user: {
+      name: string
+      email: string
+    }
+  }
 }

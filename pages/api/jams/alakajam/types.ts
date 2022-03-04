@@ -82,7 +82,3 @@ export type AlakajamPictures = {
   thumbnail: string
   icon: string
 }
-
-export interface Importer {
-  import: () => void
-}

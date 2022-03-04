@@ -1,20 +1,25 @@
 {
-  "ldjam": {
+  "profiles": {
+    "ldjam": {
       "profileName": ""
-  },
-  "ludumdare": {
+    },
+    "ludumdare": {
       "profileName": ""
-  },
-  "alakajam": {
+    },
+    "alakajam": {
       "profileName": ""
+    },
+    "globalgamejam": {
+      "profileName": ""
+    }
   },
   "repository": "",
   "deploy": {
-      "branch": "gh-pages",
-      "repo": "https://github.com/user/repo.git",
-      "user": {
-          "name": "",
-          "email": ""
-      }
+    "branch": "gh-pages",
+    "repo": "https://github.com/user/repo.git",
+    "user": {
+      "name": "",
+      "email": ""
+    }
   }
 }
