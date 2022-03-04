@@ -1,36 +1,17 @@
 import { GameEntry } from 'games/types'
-import { join, resolve, slugifyUrl } from './file-helper'
+import { join, resolve } from 'path'
+import { slugifyUrl } from './file-helper'
 
-export const getUserCachePath = (jamPath: string) => {
-  return join(resolve(`./content/games/${jamPath}/`), 'users.json')
-}
-
-export const GAMES_PATH = 'content/games'
-export const DATA_FILE_NAME = 'game.json'
-
-export const getOriginalDataFilePath = (jamPath: string, entry: GameEntry) => {
-  return join(
-    resolve(`./content/debug/games/${jamPath}/jams`),
-    slugifyUrl(entry.event.name),
-    slugifyUrl(entry.game.name),
-    'originalData.json',
-  )
-}
-
-export const getDataFilePath = (jamPath: string, entry: GameEntry) => {
-  return join(
-    resolve(`./content/games/${jamPath}/jams`),
-    slugifyUrl(entry.event.name),
-    slugifyUrl(entry.game.name),
-    'game.json',
-  )
-}
-
-export const getEntryFilePath = (jamPath: string) => `content/games/${jamPath}/jams`
-
-export const getSavedEntriesPath = (jamPath: string) => {
-  return `content/games/${jamPath}/entries/**/*.json`
-}
+const CONTENT_FOLDER = 'content'
+const DEBUG_FOLDER = 'debug'
+const GAMES_FOLDER = 'games'
+const JAMS_FOLDER = 'jams'
+const DATA_FILE_NAME = 'game.json'
+const USER_CACHE_FILE_NAME = 'users.json'
+const DEBUG_DATA_FILE_NAME = 'originalData.json'
+const ANY_FOLDERS_IN_BETWEEN_WILDCARD = '**'
+const DEBUG_PATH = join(CONTENT_FOLDER, DEBUG_FOLDER, GAMES_FOLDER)
+const GAMES_PATH = join(CONTENT_FOLDER, GAMES_FOLDER)
 
 export enum RelativePathType {
   USER = 'user',
@@ -39,10 +20,32 @@ export enum RelativePathType {
   COMMENT = 'comment',
 }
 
-export const getRelativePath = (jamPath: string, pathType: RelativePathType) => {
-  return `${jamPath}/${pathType}`
+const absPath = (...pathArgs: string[]) => resolve(process.cwd(), ...pathArgs)
+export class AbsolutePath {
+  static UserCache = (jamFolder: string) => absPath(GAMES_PATH, jamFolder, USER_CACHE_FILE_NAME)
+
+  static DebugDataFile = (jamFolder: string, entry: GameEntry) => {
+    return absPath(
+      RelativePath.Debug(jamFolder),
+      slugifyUrl(entry.event.name),
+      slugifyUrl(entry.game.name),
+      DEBUG_DATA_FILE_NAME,
+    )
+  }
+  static EntryDataFile = (jamFolder: string, entry: GameEntry) => {
+    return this.DataFile(jamFolder, slugifyUrl(entry.event.name), slugifyUrl(entry.game.name))
+  }
+  static DataFile = (jamFolder: string, eventName: string, gameName: string) => {
+    return absPath(RelativePath.Games(jamFolder), eventName, gameName, DATA_FILE_NAME)
+  }
+  static SavedEntries = (jamFolder: string) => {
+    return absPath(RelativePath.Games(jamFolder), ANY_FOLDERS_IN_BETWEEN_WILDCARD, DATA_FILE_NAME)
+  }
 }
 
-export const getEntryPath = (jamName: string, eventName: string, entryName: string) => {
-  return `${jamName}/${eventName}/${entryName}`
+export class RelativePath {
+  static Entry = (jamName: string, eventName: string, entryName: string) => join(jamName, eventName, entryName)
+  static Games = (jamName: string) => join(GAMES_PATH, jamName, JAMS_FOLDER)
+  static Debug = (jamName: string) => join(DEBUG_PATH, jamName, JAMS_FOLDER)
+  static ByType = (jamFolder: string, pathType: RelativePathType) => join(jamFolder, pathType)
 }

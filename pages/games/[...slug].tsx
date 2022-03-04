@@ -1,8 +1,8 @@
-import { slugifyUrl } from '@lib/file-helper'
-import { DATA_FILE_NAME, GAMES_PATH, getUserCachePath } from '@lib/path-helper'
+import { loadSavedEntries, readJson, slugifyUrl } from '@lib/file-helper'
+import { AbsolutePath } from '@lib/path-helper'
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import Head from 'next/head'
-import { getFiles, readFileFromPath, readFileToJson } from '../lib/functions'
+import { readFileFromPath } from '../lib/functions'
 import { GamePage } from './components/GamePage'
 import { GameEntry, GameEntryUser, GamePageProps } from './types'
 
@@ -27,24 +27,35 @@ type PageParams = {
   slug: string[]
 }
 
-export const getStaticProps = async ({
-  params = { slug: [] },
-}: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<GamePageProps>> => {
-  const files = getFiles(GAMES_PATH)
+type SlugInfo = {
+  gameName: string
+  eventName: string
+  jamFolder: string
+}
 
+const paramsToInfo = (params: PageParams): SlugInfo => {
   const { slug } = params
 
   const [eventType, eventName, gameName] = slug
-  const game = files.find((file) => {
-    return file.parentDirectory === gameName
-  })
+  return {
+    jamFolder: eventType.toLowerCase(),
+    eventName,
+    gameName,
+  }
+}
 
-  let usersJSON = readFileFromPath(getUserCachePath(eventType.toLowerCase()))
+export const getStaticProps = async ({
+  params = { slug: [] },
+}: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<GamePageProps>> => {
+  const { jamFolder, eventName, gameName } = paramsToInfo(params)
+  const entry = readJson(AbsolutePath.DataFile(jamFolder, eventName, gameName)) as GameEntry
+
+  let usersJSON = readFileFromPath(AbsolutePath.UserCache(jamFolder))
   if (usersJSON.error) {
     usersJSON = []
   }
 
-  if (!game) {
+  if (!entry) {
     return {
       props: {
         error: true,
@@ -53,29 +64,27 @@ export const getStaticProps = async ({
       },
     }
   }
-  const gameJSON = readFileToJson(game) as GameEntry
+
   return {
     props: {
       error: false,
-      data: gameJSON,
+      data: entry,
       users: usersJSON as GameEntryUser[],
     },
   }
 }
 
-export const getStaticPaths = async (): Promise<GetStaticPathsResult<PageParams>> => {
-  const files = getFiles(GAMES_PATH)
+export const getStaticPaths = async (params = { slug: [] }): Promise<GetStaticPathsResult<PageParams>> => {
+  const entries = loadSavedEntries('**')
 
   return {
-    paths: files
-      .filter((file) => file.fileName === DATA_FILE_NAME)
-      .map((file) => {
-        const { game, event } = readFileToJson(file) as GameEntry
-        const slg = { slug: [slugifyUrl(event.eventType), slugifyUrl(event.name), slugifyUrl(game.name)] }
-        return {
-          params: slg,
-        }
-      }),
+    paths: entries.map((entry) => {
+      const { game, event } = entry
+      const slg = { slug: [slugifyUrl(event.eventType), slugifyUrl(event.name), slugifyUrl(game.name)] }
+      return {
+        params: slg,
+      }
+    }),
     fallback: false,
   }
 }

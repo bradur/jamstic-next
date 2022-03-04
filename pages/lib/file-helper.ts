@@ -1,10 +1,12 @@
 import fs, { PathLike } from 'fs'
 import { GameEntry, GameEntryColor, GameEntryImage } from 'games/types'
 import getColors from 'get-image-colors'
+import glob from 'glob'
 import imageType from 'image-type'
-import path from 'path'
+import path, { join, resolve } from 'path'
 import slugify from 'slugify'
 import { stream } from './connector'
+import { AbsolutePath } from './path-helper'
 
 export const IMAGE_PATH = './public/images/'
 export const RELATIVE_IMAGE_PATH = './images/'
@@ -27,9 +29,11 @@ export const readJson = (filePath: PathLike) => {
   }
   return JSON.parse(fs.readFileSync(filePath, 'utf8'))
 }
+
+export const loadSavedEntries = (jamType: string): GameEntry[] => {
+  return glob.sync(AbsolutePath.SavedEntries(jamType), {}).map((file) => readJson(file) as GameEntry)
+}
 export const readFile = (filePath: string) => fs.readFileSync(filePath)
-export const join = path.posix.join
-export const resolve = path.resolve
 export const cleanUpGamePath = (gamePath: string) => gamePath.replace('/events/', '')
 
 export const createLocalImagePath = (url: string, gamePath: string, imagePath = '') => {

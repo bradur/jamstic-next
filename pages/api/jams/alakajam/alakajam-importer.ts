@@ -3,20 +3,12 @@ import {
   createFolderIfItDoesntExist,
   downloadAndSaveImages,
   findGameCoverColors,
-  readJson,
+  loadSavedEntries,
   writeJson,
 } from '@lib/file-helper'
 import { findImageUrls } from '@lib/md-helper'
-import {
-  getDataFilePath,
-  getOriginalDataFilePath,
-  getRelativePath,
-  getSavedEntriesPath,
-  getUserCachePath,
-  RelativePathType,
-} from '@lib/path-helper'
+import { AbsolutePath, RelativePath, RelativePathType } from '@lib/path-helper'
 import { GameEntry, GameEntryImage, GameEntryUser } from 'games/types'
-import glob from 'glob'
 import AlakajamTransformer from './alakajam-transformer'
 import {
   AlakajamEntry,
@@ -49,7 +41,7 @@ class AlakajamImporter implements Importer {
     this.profileName = options.profileName
   }
   async import() {
-    const oldEntries = this._loadAllSavedEntries()
+    const oldEntries = loadSavedEntries(this.path)
     console.log(`Old entries: ${oldEntries.length}`)
     const newEntries = await this._getEntries(oldEntries)
     const transformedEntries = newEntries.map((entry) => {
@@ -57,32 +49,28 @@ class AlakajamImporter implements Importer {
       return transformer.transform()
     })
     const entries = [...oldEntries, ...transformedEntries]
-    await this._findAndDownloadImages(entries)
+    await this._findAndDownloadImages(newEntries)
     await this._determineGameCoverColors(entries)
     this._saveDataAsFile(entries)
     this._saveUserCacheAsFile()
     return entries
   }
   _saveUserCacheAsFile() {
-    const filePath = getUserCachePath(this.path)
+    const filePath = AbsolutePath.UserCache(this.path)
     writeJson(filePath, this.userCache)
   }
   _saveDataAsFile(entries: GameEntry[]) {
     entries.forEach((entry) => {
-      const { event, game } = entry
       const { originalData, ...entryWithoutOriginalData } = entry
       if (originalData) {
-        const originalDataFilePath = getOriginalDataFilePath(this.path, entry)
+        const originalDataFilePath = AbsolutePath.DebugDataFile(this.path, entry)
         createFolderIfItDoesntExist(originalDataFilePath)
         writeJson(originalDataFilePath, originalData)
       }
-      const filePath = getDataFilePath(this.path, entry)
+      const filePath = AbsolutePath.EntryDataFile(this.path, entry)
       createFolderIfItDoesntExist(filePath)
       writeJson(filePath, entryWithoutOriginalData)
     })
-  }
-  _loadAllSavedEntries(): GameEntry[] {
-    return glob.sync(getSavedEntriesPath(this.path), {}).map((file) => readJson(file))
   }
 
   async _fetchUser(userId: number): Promise<AlakajamUser> {
@@ -95,7 +83,7 @@ class AlakajamImporter implements Importer {
     if (user.avatar !== null) {
       this.userImages.push({
         url: Alakajam.staticUrl(user.avatar),
-        path: getRelativePath(this.path, RelativePathType.USER),
+        path: RelativePath.ByType(this.path, RelativePathType.USER),
       })
     }
   }
@@ -146,9 +134,9 @@ class AlakajamImporter implements Importer {
     }
   }
 
-  async _findAndDownloadImages(entries: GameEntry[]) {
-    for (const gameEntry of entries) {
-      const images = this._findImages(gameEntry)
+  async _findAndDownloadImages(entries: AlakajamEntry[]) {
+    for (const akjEntry of entries) {
+      const images = this._findImages(akjEntry)
       await downloadAndSaveImages(images)
     }
   }
@@ -160,18 +148,21 @@ class AlakajamImporter implements Importer {
     })
   }
 
-  _findImages({ path, originalData }: GameEntry): GameEntryImage[] {
-    const entry = originalData as AlakajamEntry
+  _findImages(entry: AlakajamEntry): GameEntryImage[] {
     const [coverUrl] = entry.game.pictures.previews
+    const entryPath = RelativePath.Entry(this.path, entry.event.name, entry.game.name)
 
     const bodyUrls = findImageUrls(entry.game.body).map((url) => ({
       url,
-      path: getRelativePath(path, RelativePathType.BODY),
+      path: RelativePath.ByType(entryPath, RelativePathType.BODY),
     }))
 
     const commentImageUrls = entry.game.comments
       .map((comment) =>
-        findImageUrls(comment.body).map((url) => ({ url, path: getRelativePath(path, RelativePathType.COMMENT) })),
+        findImageUrls(comment.body).map((url) => ({
+          url,
+          path: RelativePath.ByType(entryPath, RelativePathType.COMMENT),
+        })),
       )
       .flat()
 
@@ -179,7 +170,7 @@ class AlakajamImporter implements Importer {
       ...bodyUrls,
       ...commentImageUrls,
       ...this.userImages,
-      { url: Alakajam.staticUrl(coverUrl), path: getRelativePath(this.path, RelativePathType.USER) },
+      { url: Alakajam.staticUrl(coverUrl), path: RelativePath.ByType(this.path, RelativePathType.USER) },
     ]
   }
 }

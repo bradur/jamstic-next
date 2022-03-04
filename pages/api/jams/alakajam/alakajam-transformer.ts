@@ -2,7 +2,7 @@ import { Alakajam } from '@lib/connector'
 import { parseAlakajamDate, parseDate } from '@lib/date'
 import { createRelativeImagePath } from '@lib/file-helper'
 import { findImageUrls } from '@lib/md-helper'
-import { getEntryPath, getRelativePath, RelativePathType } from '@lib/path-helper'
+import { RelativePath, RelativePathType } from '@lib/path-helper'
 import {
   GameEntry,
   GameEntryComment,
@@ -53,7 +53,7 @@ export default class AlakajamTransformer {
       avatarUrl:
         avatar === null
           ? createRelativeImagePath(DEFAULT_PROFILE_PIC, path)
-          : createRelativeImagePath(avatar, getRelativePath(path, RelativePathType.USER)),
+          : createRelativeImagePath(avatar, RelativePath.ByType(path, RelativePathType.USER)),
       url: Alakajam.userUrl(name),
     }
   }
@@ -67,7 +67,7 @@ export default class AlakajamTransformer {
   }
 
   _getPath({ event, game }: AlakajamEntry): string {
-    return getEntryPath(this.path, event.name, game.name)
+    return RelativePath.Entry(this.path, event.name, game.name)
   }
 
   _transformComments(game: AlakajamGameWithDetails, path: string): GameEntryComment[] {
@@ -75,7 +75,7 @@ export default class AlakajamTransformer {
       return {
         id,
         parent_id,
-        body: this._transformBody(body, getRelativePath(path, RelativePathType.COMMENT)),
+        body: this._transformBody(body, RelativePath.ByType(path, RelativePathType.COMMENT)),
         author: user_id,
         created: parseDate(created_at).getTime(),
         updated: parseDate(updated_at).getTime(),
@@ -145,12 +145,12 @@ export default class AlakajamTransformer {
     const { id, title, body, url, description, pictures, division } = game
     const [coverUrl] = pictures.previews
     const gPath = this._getPath(entry)
-    const relativeEntryPath = getRelativePath(this.path, RelativePathType.ENTRY)
+    const relativeEntryPath = RelativePath.ByType(this.path, RelativePathType.ENTRY)
     return {
       id,
       description,
       url,
-      body: this._transformBody(body, getRelativePath(gPath, RelativePathType.BODY)),
+      body: this._transformBody(body, RelativePath.ByType(gPath, RelativePathType.BODY)),
       name: title,
       results: this._transformGrades(entry),
       links: this._transformLinks(game),

@@ -1,5 +1,5 @@
 import config from '@config/config.json'
-import { getUserCachePath } from '@lib/path-helper'
+import { AbsolutePath } from '@lib/path-helper'
 import AlakajamImporter from 'api/jams/alakajam/alakajam-importer'
 import { GetStaticPropsResult } from 'next'
 import { readFileFromPath } from '../lib/functions'
@@ -34,7 +34,7 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
   ]
   for (const jam of jams) {
     const jamPath = jam.name.toLowerCase()
-    let users = readFileFromPath(getUserCachePath(jamPath))
+    let users = readFileFromPath(AbsolutePath.UserCache(jamPath))
     if (users.error) {
       users = []
     }
@@ -47,7 +47,7 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
         path: jamPath,
       })
       const entries = await importer.import()
-      jam.entries = entries
+      jam.entries = [...entries].sort((entry, otherEntry) => otherEntry.event.date - entry.event.date)
     }
   }
 
