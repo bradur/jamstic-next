@@ -1,5 +1,6 @@
 import { DEFAULT_MARKDOWN_OPTIONS } from '@lib/constants'
 import { ago, formatDate, parseDate } from '@lib/date'
+import { GameImageType, makeImageUrlsLocal, RelativePath } from '@lib/path-helper'
 import Markdown from 'marked-react'
 import Image from 'next/image'
 import styled from 'styled-components'
@@ -96,7 +97,8 @@ type GameCommentsProps = {
   users: GameEntryUser[]
 }
 
-export const GameComments = ({ entry: { game, event, authors }, users }: GameCommentsProps) => {
+export const GameComments = ({ entry, users }: GameCommentsProps) => {
+  const { game } = entry
   return (
     <GameCommentsContainer>
       <h2 className='game-comments-container-title'>Comments</h2>
@@ -107,11 +109,14 @@ export const GameComments = ({ entry: { game, event, authors }, users }: GameCom
             foundUser = {
               id: -1,
               url: '#',
-              avatarUrl: '#',
+              avatar: {
+                originalUrl: '',
+                pathType: GameImageType.AVATAR,
+              },
               name: 'Deleted',
             }
           }
-          return <GameComment key={comment.id} comment={comment} user={foundUser} />
+          return <GameComment key={comment.id} entry={entry} comment={comment} user={foundUser} />
         })}
       </div>
     </GameCommentsContainer>
@@ -119,11 +124,12 @@ export const GameComments = ({ entry: { game, event, authors }, users }: GameCom
 }
 
 type GameCommentProps = {
+  entry: GameEntry
   comment: GameEntryComment
   user: GameEntryUser
 }
 
-export const GameComment = ({ comment, user }: GameCommentProps) => {
+export const GameComment = ({ entry, comment, user }: GameCommentProps) => {
   const created = parseDate(comment.created)
   const createdAgo = ago(created)
   const createdFormatted = formatDate(created)
@@ -136,11 +142,12 @@ export const GameComment = ({ comment, user }: GameCommentProps) => {
     updatedAgo = dif > minDifMs ? ago(updated) : false
   }
 
+  const body = makeImageUrlsLocal(entry, comment.body, GameImageType.COMMENT)
+  const avatarUrl = RelativePath.Image(entry, user.avatar)
+
   return (
     <div key={comment.id} className='game-comment'>
-      <div className='game-comment-author-image'>
-        {user.avatarUrl && <Image width={80} height={80} src={user.avatarUrl} />}
-      </div>
+      <div className='game-comment-author-image'>{avatarUrl && <Image width={80} height={80} src={avatarUrl} />}</div>
       <div className='game-comment-meta'>
         <div className='game-comment-author'>
           <GameLink href={user.url} title={user.name} />
@@ -155,7 +162,7 @@ export const GameComment = ({ comment, user }: GameCommentProps) => {
         </div>
       </div>
       <div className='game-comment-body'>
-        <Markdown {...DEFAULT_MARKDOWN_OPTIONS} value={comment.body} />
+        <Markdown {...DEFAULT_MARKDOWN_OPTIONS} value={body} />
       </div>
     </div>
   )

@@ -1,10 +1,10 @@
 import { DEFAULT_MARKDOWN_OPTIONS } from '@lib/constants'
+import { GameImageType, makeImageUrlsLocal, RelativePath } from '@lib/path-helper'
 import Markdown from 'marked-react'
 import styled from 'styled-components'
 import { GameEntry, GamePageProps } from '../types'
 import { GameComments } from './GameComments'
 import { GameContainer } from './GameContainer'
-import { GameImages } from './GameImages'
 import { GameMeta } from './GameMeta'
 import { PageBreadcrumb } from './PageNavigation'
 
@@ -65,7 +65,11 @@ export const GamePage = ({ error, data, users }: GamePageProps) => {
   }
 
   const entry = data as GameEntry
-  const { game, event } = entry
+  const { game } = entry
+
+  const coverUrl = RelativePath.Image(entry, game.cover)
+
+  const body = makeImageUrlsLocal(entry, game.body, GameImageType.BODY)
 
   return (
     <PageContainerWithCoverColors coverColors={game.coverColors.css}>
@@ -74,12 +78,11 @@ export const GamePage = ({ error, data, users }: GamePageProps) => {
       <GameContainer>
         <GameTitle>{game.name}</GameTitle>
         <GameMeta entry={entry} users={users} />
-        <GameCoverImg className='game-meta-cover' imgUrl={game.cover.url} />
+        <GameCoverImg className='game-meta-cover' imgUrl={coverUrl} />
         <GameContentContainer>
           <GameDescription>{game.description}</GameDescription>
           <div className='game-content'>
-            <Markdown {...DEFAULT_MARKDOWN_OPTIONS} value={game.body} />
-            <GameImages {...entry} />
+            <Markdown {...DEFAULT_MARKDOWN_OPTIONS} value={body} />
           </div>
           <GameComments entry={entry} users={users} />
         </GameContentContainer>
@@ -87,4 +90,3 @@ export const GamePage = ({ error, data, users }: GamePageProps) => {
     </PageContainerWithCoverColors>
   )
 }
-//<pre>{JSON.stringify(data)}</pre>

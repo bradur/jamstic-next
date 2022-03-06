@@ -45,54 +45,57 @@ type GameMetaProps = {
   users: GameEntryUser[]
 }
 
-export const GameMeta = ({ entry: { game, event, authors }, users }: GameMetaProps) => (
-  <GameMetaContainer>
-    <div className='game-meta'>
-      <div className='game-meta-section'>
-        <h2>Info</h2>
-        <div className='game-event'>
-          <GameLink key={event.url} href={event.url} title={event.name} />
-          <span className='game-event-type'>Type: {game.division}</span>
-          <span className='game-event-theme'>Theme: {event.theme}</span>
+export const GameMeta = ({ entry: { game, event }, users }: GameMetaProps) => {
+  const { authors } = game
+  return (
+    <GameMetaContainer>
+      <div className='game-meta'>
+        <div className='game-meta-section'>
+          <h2>Info</h2>
+          <div className='game-event'>
+            <GameLink key={event.url} href={event.url} title={event.name} />
+            <span className='game-event-type'>Type: {game.division}</span>
+            <span className='game-event-theme'>Theme: {event.theme}</span>
+          </div>
+          <div className='game-publish-date' title={formatDate(event.date)}>
+            {ago(parseDate(event.date))}
+          </div>
         </div>
-        <div className='game-publish-date' title={formatDate(event.date)}>
-          {ago(parseDate(event.date))}
-        </div>
-      </div>
-      <div className='game-meta-section'>
-        <h2>Author{authors.length > 1 ? 's' : ''}</h2>
-        {authors.map((author, index) => {
-          const user = users.find((user) => user.id === author)
-          if (user === undefined) {
+        <div className='game-meta-section'>
+          <h2>Author{authors.length > 1 ? 's' : ''}</h2>
+          {authors.map((author, index) => {
+            const user = users.find((cachedUser) => cachedUser.id === author)
+            if (user === undefined) {
+              return (
+                <div key={`${index}-${author}`} className='game-author'>
+                  Unknown
+                </div>
+              )
+            }
             return (
-              <div key={`${index}-${author}`} className='game-author'>
-                Unknown
+              <div key={user.url} className='game-author'>
+                <GameLink href={user.url} title={user.name} />
               </div>
             )
-          }
-          return (
-            <div key={user.url} className='game-author'>
-              <GameLink href={user.url} title={user.name} />
+          })}
+        </div>
+        <div className='game-meta-section'>
+          <h2>Results</h2>
+          {game.results.all.map((result) => (
+            <div key={result.title} className='game-result'>
+              <div className='game-result-title'>{result.title}</div>
+              <div className='game-result-value'>{result.result}</div>
             </div>
-          )
-        })}
+          ))}
+        </div>
+        <div className='game-meta-section'>
+          <h2>Links</h2>
+          <GameLink key={game.url} href={game.url} title='Original entry page' />
+          {game.links.map((link) => (
+            <GameLink key={link.url} href={link.url} title={link.title} />
+          ))}
+        </div>
       </div>
-      <div className='game-meta-section'>
-        <h2>Results</h2>
-        {game.results.all.map((result) => (
-          <div key={result.title} className='game-result'>
-            <div className='game-result-title'>{result.title}</div>
-            <div className='game-result-value'>{result.result}</div>
-          </div>
-        ))}
-      </div>
-      <div className='game-meta-section'>
-        <h2>Links</h2>
-        <GameLink key={game.url} href={game.url} title='Original entry page' />
-        {game.links.map((link) => (
-          <GameLink key={link.url} href={link.url} title={link.title} />
-        ))}
-      </div>
-    </div>
-  </GameMetaContainer>
-)
+    </GameMetaContainer>
+  )
+}

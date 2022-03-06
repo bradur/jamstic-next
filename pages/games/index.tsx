@@ -23,15 +23,15 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
   const profileConfig = config as ProfileConfig
   const jams: Jam[] = []
   for (const jam of jamConfigs) {
-    const jamPath = jam.name
-    let users = readFileFromPath(AbsolutePath.UserCache(jamPath))
+    const jamSlug = jam.slug
+    let users = readFileFromPath(AbsolutePath.UserCache(jamSlug))
     if (users.error) {
       users = []
     }
 
-    const profile = Object.keys(profileConfig.profiles).find((jamName) => jamName === jamPath)
+    const profile = Object.keys(profileConfig.profiles).find((profileJamSlug) => profileJamSlug === jamSlug)
     if (profile === undefined) {
-      const error = `Couldn't find profile in config.json for '${jamPath}'`
+      const error = `Couldn't find profile in config.json for '${jamSlug}'`
       return {
         props: {
           error,
@@ -43,12 +43,12 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
       profileName: profileConfig.profiles[profile].profileName,
       refetchOldEntries: false,
       userCache: users,
-      path: jamPath,
+      jamSlug,
     })
     const entries = await importer.import()
     jams.push({
-      title: jam.title,
       name: jam.name,
+      slug: jam.slug,
       entries: [...entries].sort((entry, otherEntry) => otherEntry.event.date - entry.event.date),
     })
   }

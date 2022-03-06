@@ -1,5 +1,5 @@
-import { loadSavedEntries, readJson, slugifyUrl } from '@lib/file-helper'
-import { AbsolutePath } from '@lib/path-helper'
+import { loadSavedEntries, readJson } from '@lib/file-helper'
+import { AbsolutePath, slugifyPath } from '@lib/path-helper'
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import Head from 'next/head'
 import { readFileFromPath } from '../lib/functions'
@@ -18,9 +18,6 @@ const Game = (props: GamePageProps) => {
       <GamePage {...props} />
     </>
   )
-}
-const content = {
-  pages: {},
 }
 
 type PageParams = {
@@ -74,13 +71,13 @@ export const getStaticProps = async ({
   }
 }
 
-export const getStaticPaths = async (params = { slug: [] }): Promise<GetStaticPathsResult<PageParams>> => {
+export const getStaticPaths = async (): Promise<GetStaticPathsResult<PageParams>> => {
   const entries = loadSavedEntries('**')
 
   return {
     paths: entries.map((entry) => {
       const { game, event } = entry
-      const slg = { slug: [slugifyUrl(event.eventType), slugifyUrl(event.name), slugifyUrl(game.name)] }
+      const slg = { slug: [slugifyPath(event.eventType), slugifyPath(event.name), slugifyPath(game.name)] }
       return {
         params: slg,
       }

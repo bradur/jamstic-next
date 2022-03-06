@@ -38,7 +38,7 @@ export const GamesPage = ({ jams }: GamesPageProps) => {
       <h1>Games</h1>
 
       {jams.map((jam) => (
-        <div key={jam.name}>
+        <div key={jam.slug}>
           <h2>{jam.name}</h2>
           <div className='games-container'>
             {jam.entries.map((entry) => (

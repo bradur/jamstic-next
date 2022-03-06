@@ -1,18 +1,14 @@
 import fs, { PathLike } from 'fs'
-import { GameEntry, GameEntryColor, GameEntryImage } from 'games/types'
+import { GameEntry, GameEntryColor, GameEntryImage, GameEntryUser } from 'games/types'
 import getColors from 'get-image-colors'
 import glob from 'glob'
 import imageType from 'image-type'
-import path, { join, resolve } from 'path'
-import slugify from 'slugify'
+import path from 'path'
 import { stream } from './connector'
 import { AbsolutePath } from './path-helper'
 
-export const IMAGE_PATH = './public/images/'
-export const RELATIVE_IMAGE_PATH = './images/'
 const jsonIndentLength = 4
 
-export const slugifyUrl = (url: string) => slugify(url, { lower: true, remove: /[*+,~.()'"!:@]/g })
 export const writeStream = (savePath: PathLike) => fs.createWriteStream(savePath)
 export const createFolderIfItDoesntExist = (folderPath: PathLike) => {
   if (!fs.existsSync(folderPath)) {
@@ -31,17 +27,10 @@ export const readJson = (filePath: PathLike) => {
 }
 
 export const loadSavedEntries = (jamType: string): GameEntry[] => {
+  console.log('Load saved entries of ' + jamType)
   return glob.sync(AbsolutePath.SavedEntries(jamType), {}).map((file) => readJson(file) as GameEntry)
 }
 export const readFile = (filePath: string) => fs.readFileSync(filePath)
-export const cleanUpGamePath = (gamePath: string) => gamePath.replace('/events/', '')
-
-export const createLocalImagePath = (url: string, gamePath: string, imagePath = '') => {
-  return join(imagePath, cleanUpGamePath(gamePath), path.basename(url))
-}
-export const createRelativeImagePath = (url: string, imagePath: string) => {
-  return '/' + join(RELATIVE_IMAGE_PATH, imagePath, path.basename(url))
-}
 
 export const downloadAndSaveFile = (url: string, savePath: string) =>
   stream(url).then(
@@ -54,23 +43,41 @@ export const downloadAndSaveFile = (url: string, savePath: string) =>
       }),
   )
 
-export const downloadAndSaveImages = async (images: GameEntryImage[]) => {
+export const downloadAndSaveImages = async (entry: GameEntry, images: GameEntryImage[]) => {
   console.log('Checking for new images...')
   let count = 0
   for (const image of images) {
-    let url
-    try {
-      url = new URL(image.url)
-    } catch (error) {
-      console.log(`Error trying to parse url: ${image.url}`)
+    if (image.originalUrl === '') {
       continue
     }
-    const urlWithoutParams = `${url.origin}${url.pathname}`
-    const imagePath = createLocalImagePath(urlWithoutParams, image.path, resolve(IMAGE_PATH))
+    const imagePath = AbsolutePath.Image(entry, image)
     if (createFolderIfItDoesntExist(imagePath)) {
-      console.log(`Saving image with url ${image.url} and path ${image.path} to ${imagePath}...`)
+      console.log(`Saving image with url ${image.originalUrl} and path ${image.pathType} to ${imagePath}...`)
       count += 1
-      await downloadAndSaveFile(image.url, imagePath)
+      await downloadAndSaveFile(image.originalUrl, imagePath)
+    }
+  }
+  if (count > 0) {
+    console.log(`Done! Downloaded & saved ${count} images.`)
+  } else {
+    console.log('No new images detected.')
+  }
+}
+
+export const downloadAndSaveAvatars = async (jamSlug: string, users: GameEntryUser[]) => {
+  console.log('Checking for new images...')
+  let count = 0
+  for (const user of users) {
+    if (user.avatar.originalUrl === '') {
+      continue
+    }
+    const imagePath = AbsolutePath.Avatar(jamSlug, user.avatar)
+    if (createFolderIfItDoesntExist(imagePath)) {
+      console.log(
+        `Saving image with url ${user.avatar.originalUrl} and path ${user.avatar.pathType} to ${imagePath}...`,
+      )
+      count += 1
+      await downloadAndSaveFile(user.avatar.originalUrl, imagePath)
     }
   }
   if (count > 0) {
@@ -95,12 +102,14 @@ const getDefaultColors = () => ({
     .join(''),
 })
 
-export const findGameCoverColors = async ({ game, path }: GameEntry): Promise<GameEntryColor> => {
+export const findGameCoverColors = async (entry: GameEntry): Promise<GameEntryColor> => {
+  const { game } = entry
   if (!game.cover) {
     console.log('Game cover empty, return default colors')
     return getDefaultColors()
   }
-  const coverPath = createLocalImagePath(game.cover.url, game.cover.path, resolve(IMAGE_PATH))
+  console.log(JSON.stringify(game.cover))
+  const coverPath = AbsolutePath.Image(entry, game.cover)
 
   console.log(`Attempting to read colors from ${coverPath}...`)
   const imgFile = readFile(coverPath)
@@ -124,7 +133,7 @@ export const findGameCoverColors = async ({ game, path }: GameEntry): Promise<Ga
       four: colorsRGBA[3],
       five: colorsRGBA[4],
     })
-      .map((entry) => `--${entry[0]}: ${entry[1]};`)
+      .map(([name, color]) => `--${name}: ${color};`)
       .join(''),
   }
 }

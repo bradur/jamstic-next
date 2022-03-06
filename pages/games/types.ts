@@ -1,3 +1,4 @@
+import { GameImageType } from '@lib/path-helper'
 import { IImporter } from 'api/jams/types'
 
 export type FoundFile = {
@@ -33,7 +34,7 @@ export type GameEntryComment = {
 export type GameEntryUser = {
   id: number
   name: string
-  avatarUrl: string
+  avatar: GameEntryImage
   url: string
 }
 
@@ -48,6 +49,7 @@ export type GameEntryDivision = 'solo' | 'team'
 export type GameEntryEvent = {
   id: number
   name: string
+  slug: string
   theme: string
   date: number
   url: string
@@ -58,29 +60,28 @@ export type GameEntry = {
   id: number
   game: GameEntryDetails
   event: GameEntryEvent
-  authors: number[]
-  path: string
-  originalData?: object
+  jamSlug: string
 }
 
 export type GameEntryImage = {
-  url: string
-  path: string
+  originalUrl: string
+  pathType: GameImageType
 }
 
 export type GameEntryDetails = {
   id: number
   name: string
+  slug: string
   description: string
   body: string
   url: string
   cover: GameEntryImage
   links: GameEntryLink[]
   results: GameEntryResults
-  images: GameEntryImage[]
   comments: GameEntryComment[]
   coverColors: GameEntryColor
   division: GameEntryDivision
+  authors: number[]
 }
 
 export type GamePageProps = {
@@ -90,14 +91,14 @@ export type GamePageProps = {
 }
 
 export type Jam = {
-  title: string
   name: string
+  slug: string
   entries: GameEntry[]
 }
 
 export type JamConfig = {
-  title: string
   name: string
+  slug: string
   importer: IImporter
 }
 

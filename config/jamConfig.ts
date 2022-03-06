@@ -6,8 +6,8 @@ type JamConfigType = {
 }
 export const jamConfig: JamConfigType = {
   jams: [
-    //{ name: "LDJam", games: ldjamGames },
-    { title: 'Alakajam', name: 'alakajam', importer: AlakajamImporter },
+    //{ title: 'LDJam', name: 'ldjam', importer: LDJamImporter },
+    { name: 'Alakajam', slug: 'alakajam', importer: AlakajamImporter },
     //{ name: "Ludum Dare", games: ludumDareGames },
     //{ name: "Global Game Jam", games: ggjGames }
   ],

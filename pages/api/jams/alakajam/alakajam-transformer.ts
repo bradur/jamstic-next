@@ -1,35 +1,35 @@
-import { Alakajam } from '@lib/connector'
 import { parseAlakajamDate, parseDate } from '@lib/date'
-import { createRelativeImagePath } from '@lib/file-helper'
 import { findImageUrls } from '@lib/md-helper'
-import { RelativePath, RelativePathType } from '@lib/path-helper'
+import { GameImageType, slugifyPath } from '@lib/path-helper'
 import {
   GameEntry,
   GameEntryComment,
   GameEntryDetails,
   GameEntryDivision,
   GameEntryEvent,
+  GameEntryImage,
   GameEntryLink,
   GameEntryResults,
   GameEntryUser,
   SingleGameEntryResult,
 } from 'games/types'
 import emoji from 'node-emoji'
-import { DEFAULT_PROFILE_PIC } from './constants'
+import { AlakajamConnector } from './alakajam-connector'
 import { AlakajamEntry, AlakajamEvent, AlakajamGameWithDetails, AlakajamResults, AlakajamUser } from './types'
 
 type TransformerOptions = {
-  path: string
+  jamSlug: string
   entry: AlakajamEntry
   userCache: GameEntryUser[]
 }
+
 export default class AlakajamTransformer {
   options: TransformerOptions
-  path: string
+  images: GameEntryImage[]
   userCache: GameEntryUser[]
   constructor(options: TransformerOptions) {
     this.options = options
-    this.path = options.path
+    this.images = []
     this.userCache = this.options.userCache
   }
 
@@ -38,53 +38,39 @@ export default class AlakajamTransformer {
     const game = this._transformGame()
     return {
       id: game.id,
-      path: this._getPath(entry),
       event: this._transformEvent(entry.event),
-      authors: entry.game.users.map((user) => user.id),
       game: game,
-      originalData: { ...entry },
+      jamSlug: this.options.jamSlug,
     }
   }
 
-  static transformUser({ id, name, avatar }: AlakajamUser, path: string): GameEntryUser {
+  getImages(): GameEntryImage[] {
+    return this._findImages()
+  }
+
+  static transformUser({ id, name, avatar }: AlakajamUser): GameEntryUser {
     return {
       id,
       name,
-      avatarUrl:
-        avatar === null
-          ? createRelativeImagePath(DEFAULT_PROFILE_PIC, path)
-          : createRelativeImagePath(avatar, RelativePath.ByType(path, RelativePathType.USER)),
-      url: Alakajam.userUrl(name),
+      avatar: {
+        originalUrl: avatar === null ? '' : AlakajamConnector.staticUrl(avatar),
+        pathType: GameImageType.AVATAR,
+      },
+      url: AlakajamConnector.userUrl(name),
     }
   }
 
-  _makeUrlsLocal(text: string, path: string) {
-    let replacedText = text
-    findImageUrls(replacedText).forEach((url) => {
-      replacedText = replacedText.replace(url, `${createRelativeImagePath(url, path)}`)
-    })
-    return replacedText
-  }
-
-  _getPath({ event, game }: AlakajamEntry): string {
-    return RelativePath.Entry(this.path, event.name, game.name)
-  }
-
-  _transformComments(game: AlakajamGameWithDetails, path: string): GameEntryComment[] {
+  _transformComments(game: AlakajamGameWithDetails): GameEntryComment[] {
     return game.comments.map(({ id, parent_id, body, created_at, updated_at, user_id }) => {
       return {
         id,
         parent_id,
-        body: this._transformBody(body, RelativePath.ByType(path, RelativePathType.COMMENT)),
+        body: emoji.emojify(body),
         author: user_id,
         created: parseDate(created_at).getTime(),
         updated: parseDate(updated_at).getTime(),
       }
     })
-  }
-
-  _transformBody(body: string, path: string): string {
-    return emoji.emojify(this._makeUrlsLocal(body, path))
   }
 
   _transformGrades(entry: AlakajamEntry): GameEntryResults {
@@ -103,6 +89,10 @@ export default class AlakajamTransformer {
     }
   }
 
+  static getRatingTitle(index: number) {
+    return ['Overall', 'Graphics', 'Audio', 'Gameplay', 'Originality', 'Theme'][index - 1]
+  }
+
   _getRatingResult = (results: AlakajamResults, index: number): SingleGameEntryResult | null => {
     if (results === undefined || results === null) {
       return null
@@ -113,7 +103,7 @@ export default class AlakajamTransformer {
       const rating = results[rankingKey]
       const result = results[ratingKey]
       return {
-        title: Alakajam.getRatingTitle(index),
+        title: AlakajamTransformer.getRatingTitle(index),
         result: rating,
         rating: result,
       }
@@ -133,6 +123,7 @@ export default class AlakajamTransformer {
       id,
       url,
       name: title,
+      slug: slugifyPath(title),
       theme: id === 29 ? 'Depth' : display_theme,
       date: parseAlakajamDate(display_dates).getTime(),
       eventType: 'Alakajam',
@@ -144,26 +135,50 @@ export default class AlakajamTransformer {
     const { game } = entry
     const { id, title, body, url, description, pictures, division } = game
     const [coverUrl] = pictures.previews
-    const gPath = this._getPath(entry)
-    const relativeEntryPath = RelativePath.ByType(this.path, RelativePathType.ENTRY)
     return {
       id,
       description,
       url,
-      body: this._transformBody(body, RelativePath.ByType(gPath, RelativePathType.BODY)),
+      authors: game.users.map((user) => user.id),
+      body: emoji.emojify(body),
       name: title,
+      slug: slugifyPath(title),
       results: this._transformGrades(entry),
       links: this._transformLinks(game),
       cover: {
-        url: createRelativeImagePath(coverUrl, relativeEntryPath),
-        path: relativeEntryPath,
+        originalUrl: AlakajamConnector.staticUrl(coverUrl),
+        pathType: GameImageType.COVER,
       },
-      images: [],
-      comments: this._transformComments(game, gPath),
+      comments: this._transformComments(game),
       division: division as GameEntryDivision,
       coverColors: {
         css: '',
       },
     }
+  }
+
+  _findImages(): GameEntryImage[] {
+    const entry = this.options.entry
+    const [coverUrl] = entry.game.pictures.previews
+
+    const bodyUrls: GameEntryImage[] = findImageUrls(entry.game.body).map((url) => ({
+      originalUrl: url,
+      pathType: GameImageType.BODY,
+    }))
+
+    const commentImageUrls: GameEntryImage[] = entry.game.comments
+      .map((comment) =>
+        findImageUrls(comment.body).map((url) => ({
+          originalUrl: url,
+          pathType: GameImageType.COMMENT,
+        })),
+      )
+      .flat()
+
+    return [
+      ...bodyUrls,
+      ...commentImageUrls,
+      { originalUrl: AlakajamConnector.staticUrl(coverUrl), pathType: GameImageType.COVER },
+    ]
   }
 }

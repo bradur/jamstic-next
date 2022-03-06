@@ -9,7 +9,7 @@ export interface Importer {
 }
 
 export type ImporterOptions = {
-  path: string
+  jamSlug: string
   profileName: string
   refetchOldEntries: boolean
   userCache: GameEntryUser[]

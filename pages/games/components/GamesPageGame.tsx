@@ -1,3 +1,4 @@
+import { RelativePath } from '@lib/path-helper'
 import { GameEntry } from 'games/types'
 import styled from 'styled-components'
 
@@ -67,12 +68,13 @@ const GamesPageGameContainer = styled.a<{ coverColors: string }>`
   }
 `
 
-export const GamesPageGame = ({ game, event, path }: GameEntry) => {
+export const GamesPageGame = (entry: GameEntry) => {
+  const { game, event } = entry
   return (
     <GamesPageGameContainer
       key={game.id}
       className='game-container'
-      href={`games/${path}`}
+      href={`games/${RelativePath.Entry(entry)}`}
       coverColors={game.coverColors.css}
     >
       <div className='game-meta'>
@@ -85,14 +87,7 @@ export const GamesPageGame = ({ game, event, path }: GameEntry) => {
         </div>
       </div>
       <div className='game-picture-container'>
-        <img className='game-picture' src={game.cover.url} alt='Cover picture of {game.name}' />
-      </div>
-      <div className='game-palette'>
-        <div className='game-palette-one'></div>
-        <div className='game-palette-two'></div>
-        <div className='game-palette-three'></div>
-        <div className='game-palette-four'></div>
-        <div className='game-palette-five'></div>
+        <img className='game-picture' src={RelativePath.Image(entry, game.cover)} alt='Cover picture of {game.name}' />
       </div>
     </GamesPageGameContainer>
   )

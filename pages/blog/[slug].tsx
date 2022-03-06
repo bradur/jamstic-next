@@ -47,12 +47,6 @@ export const getStaticProps = async ({
 export const getStaticPaths = async ({}): Promise<GetStaticPathsResult<PageParams>> => {
   const files = getFiles('content/blog')
 
-  /*for (const file of files) {
-    file
-  }*/
-  /*path.resolve(
-    path.join('content/games/', gamePath.join(path.sep), '/game.json'),
-  )*/
   return {
     paths: files.map((file) => ({
       params: { slug: `${file.parentDirectory}` },
@@ -61,4 +55,4 @@ export const getStaticPaths = async ({}): Promise<GetStaticPathsResult<PageParam
   }
 }
 
-export default Game
+export default Post
