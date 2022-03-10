@@ -5,12 +5,18 @@ export interface IImporter {
 }
 
 export interface Importer {
-  import: () => Promise<GameEntry[]>
+  import: () => Promise<ImportedData>
+}
+
+export type ImportedData = {
+  entries: GameEntry[]
+  users: GameEntryUser[]
 }
 
 export type ImporterOptions = {
   jamSlug: string
   profileName: string
   refetchOldEntries: boolean
-  userCache: GameEntryUser[]
+  users: GameEntryUser[]
+  oldEntries: GameEntry[]
 }

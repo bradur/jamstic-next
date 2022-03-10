@@ -20,6 +20,7 @@ const ParagraphAsDiv = styled.div`
   margin-inline-end: 0px;
 `
 const attemptHash: { [key: string]: string } = {}
+
 export const getMarkedRenderer = () => ({
   code: (source: string, lang = 'txt') => {
     return (
@@ -64,7 +65,7 @@ export const getMarkedRenderer = () => ({
       }
     }
     return (
-      <a href={href} title={title}>
+      <a href={href} key={href + title} title={title}>
         {text}
       </a>
     )

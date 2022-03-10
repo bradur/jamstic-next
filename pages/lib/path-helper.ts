@@ -86,18 +86,21 @@ export class AbsolutePath {
   static Avatar = (jamSlug: string, image: GameEntryImage) => {
     return absPath(IMAGE_PATH, ...imgPath(image, jamSlug))
   }
+  static DefaultAvatar = (jamSlug: string) => {
+    return absPath(IMAGE_PATH, jamSlug, DEFAULT_PROFILE_PIC)
+  }
 }
 
 export class RelativePath {
   static Entry = (entry: GameEntry) => joinPosix(entry.jamSlug, entry.event.slug, entry.game.slug)
   static Image = (entry: GameEntry, image: GameEntryImage) => {
     if (image.pathType === GameImageType.AVATAR && image.originalUrl === '') {
-      return this.DefaultAvatar(entry)
+      return this.DefaultAvatar(entry.jamSlug)
     }
     const imagePath = imgPath(image, entry.jamSlug, entry.event.slug, entry.game.slug)
     return joinPosix(RELATIVE_IMAGE_PATH, ...imagePath)
   }
-  static DefaultAvatar = (entry: GameEntry) => {
-    return joinPosix(RELATIVE_IMAGE_PATH, entry.jamSlug, DEFAULT_PROFILE_PIC)
+  static DefaultAvatar = (jamSlug: string) => {
+    return joinPosix(RELATIVE_IMAGE_PATH, jamSlug, DEFAULT_PROFILE_PIC)
   }
 }

@@ -1,5 +1,14 @@
 import config from '@config/config.json'
 import { jamConfig } from '@config/jamConfig'
+import {
+  createFolderIfItDoesntExist,
+  downloadAndSaveAvatars,
+  downloadAndSaveFile,
+  downloadAndSaveImages,
+  findGameCoverColors,
+  loadSavedEntries,
+  writeJson,
+} from '@lib/file-helper'
 import { AbsolutePath } from '@lib/path-helper'
 import { GetStaticPropsResult } from 'next'
 import { readFileFromPath } from '../lib/functions'
@@ -39,17 +48,34 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
         },
       }
     }
+    const oldEntries = loadSavedEntries(jamSlug)
     const importer = new jam.importer({
       profileName: profileConfig.profiles[profile].profileName,
       refetchOldEntries: false,
-      userCache: users,
+      oldEntries,
       jamSlug,
+      users,
     })
-    const entries = await importer.import()
+    const importedData = await importer.import()
+    const defaultAvatarPath = AbsolutePath.DefaultAvatar(jamSlug)
+    if (jam.defaultAvatarUrl !== null) {
+      createFolderIfItDoesntExist(defaultAvatarPath)
+      await downloadAndSaveFile(jam.defaultAvatarUrl, defaultAvatarPath)
+    }
+    await downloadAndSaveImages(importedData.entries)
+    await downloadAndSaveAvatars(jamSlug, importedData.users)
+    for (const entry of importedData.entries) {
+      entry.game.coverColors = await findGameCoverColors(entry)
+      const filePath = AbsolutePath.EntryDataFile(jamSlug, entry)
+      createFolderIfItDoesntExist(filePath)
+      writeJson(filePath, entry)
+    }
+    const userFilePath = AbsolutePath.UserCache(jamSlug)
+    writeJson(userFilePath, importedData.users)
     jams.push({
       name: jam.name,
       slug: jam.slug,
-      entries: [...entries].sort((entry, otherEntry) => otherEntry.event.date - entry.event.date),
+      entries: [...importedData.entries].sort((entry, otherEntry) => otherEntry.event.date - entry.event.date),
     })
   }
 

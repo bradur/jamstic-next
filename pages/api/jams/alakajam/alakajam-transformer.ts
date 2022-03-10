@@ -1,5 +1,4 @@
 import { parseAlakajamDate, parseDate } from '@lib/date'
-import { findImageUrls } from '@lib/md-helper'
 import { GameImageType, slugifyPath } from '@lib/path-helper'
 import {
   GameEntry,
@@ -42,10 +41,6 @@ export default class AlakajamTransformer {
       game: game,
       jamSlug: this.options.jamSlug,
     }
-  }
-
-  getImages(): GameEntryImage[] {
-    return this._findImages()
   }
 
   static transformUser({ id, name, avatar }: AlakajamUser): GameEntryUser {
@@ -155,30 +150,5 @@ export default class AlakajamTransformer {
         css: '',
       },
     }
-  }
-
-  _findImages(): GameEntryImage[] {
-    const entry = this.options.entry
-    const [coverUrl] = entry.game.pictures.previews
-
-    const bodyUrls: GameEntryImage[] = findImageUrls(entry.game.body).map((url) => ({
-      originalUrl: url,
-      pathType: GameImageType.BODY,
-    }))
-
-    const commentImageUrls: GameEntryImage[] = entry.game.comments
-      .map((comment) =>
-        findImageUrls(comment.body).map((url) => ({
-          originalUrl: url,
-          pathType: GameImageType.COMMENT,
-        })),
-      )
-      .flat()
-
-    return [
-      ...bodyUrls,
-      ...commentImageUrls,
-      { originalUrl: AlakajamConnector.staticUrl(coverUrl), pathType: GameImageType.COVER },
-    ]
   }
 }

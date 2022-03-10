@@ -99,6 +99,7 @@ export type Jam = {
 export type JamConfig = {
   name: string
   slug: string
+  defaultAvatarUrl: string | null
   importer: IImporter
 }
 
