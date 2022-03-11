@@ -1,5 +1,3 @@
-import { createFolderIfItDoesntExist, findGameCoverColors, writeJson } from '@lib/file-helper'
-import { AbsolutePath } from '@lib/path-helper'
 import { GameEntry, GameEntryUser } from 'games/types'
 import { ImportedData, Importer, ImporterOptions } from '../types'
 import { AlakajamConnector } from './alakajam-connector'
@@ -39,22 +37,6 @@ export default class AlakajamImporter implements Importer {
       entries: [...this.oldEntries, ...transformedEntries],
       users: this.userCache,
     }
-  }
-  _saveUserCacheAsFile() {
-    const filePath = AbsolutePath.UserCache(this.jamSlug)
-    writeJson(filePath, this.userCache)
-  }
-  _saveOriginalData(data: AlakajamEntry, entry: GameEntry) {
-    const originalDataFilePath = AbsolutePath.DebugDataFile(this.jamSlug, entry)
-    createFolderIfItDoesntExist(originalDataFilePath)
-    writeJson(originalDataFilePath, data)
-  }
-  _saveDataAsFile(entries: GameEntry[]) {
-    entries.forEach((entry) => {
-      const filePath = AbsolutePath.EntryDataFile(this.jamSlug, entry)
-      createFolderIfItDoesntExist(filePath)
-      writeJson(filePath, entry)
-    })
   }
 
   async _fetchUser(userId: number): Promise<AlakajamUser> {
@@ -111,12 +93,6 @@ export default class AlakajamImporter implements Importer {
       : this._filterOutExistingGames(profile.entries.filter((entry) => entry.event_id !== null))
 
     return this._fetchNewEntries(newGames)
-  }
-
-  async _determineGameCoverColors(entries: GameEntry[]) {
-    for (const gameEntry of entries) {
-      gameEntry.game.coverColors = await findGameCoverColors(gameEntry)
-    }
   }
 
   _filterOutExistingGames(data: AlakajamGame[]): AlakajamGame[] {
