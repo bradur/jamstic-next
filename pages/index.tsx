@@ -6,8 +6,8 @@ const Home: NextPage = () => {
     <div>
       <Head>
         <title>jamsticnext</title>
-        <meta name="description" content="Jamstic-Next" />
-        <link rel="icon" type="image/png" href="/favicon.png" />
+        <meta name='description' content='Jamstic-Next' />
+        <link rel='icon' type='image/png' href='/favicon.png' />
       </Head>
       Hellou tiim
     </div>

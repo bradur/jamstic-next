@@ -10,10 +10,11 @@ import {
   writeJson,
 } from '@lib/file-helper'
 import { AbsolutePath } from '@lib/path-helper'
+import { GamesPageProps, Jam } from 'api/jams/types'
 import { GetStaticPropsResult } from 'next'
 import { readFileFromPath } from '../lib/functions'
 import { GamesPage } from './components/GamesPage'
-import { GamesPageProps, Jam, ProfileConfig } from './types'
+import { ProfileConfig } from './types'
 
 const Games = (props: GamesPageProps) => {
   if (props.error !== false) {

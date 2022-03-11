@@ -1,4 +1,4 @@
-import { GameEntry, GameEntryImage } from 'games/types'
+import { GameEntry, GameEntryImage, GameImageType } from 'games/types'
 import path, { join, resolve } from 'path'
 import slugify from 'slugify'
 import { findImageUrls } from './md-helper'
@@ -18,13 +18,6 @@ const RELATIVE_IMAGE_PATH = '/images/'
 const DEFAULT_PROFILE_PIC = 'default-avatar.png'
 
 const joinPosix = path.posix.join
-
-export enum GameImageType {
-  AVATAR = 'avatar',
-  COVER = 'cover',
-  BODY = 'body',
-  COMMENT = 'comment',
-}
 
 const debugJamsPath = (jamSlug: string) => join(DEBUG_PATH, jamSlug, JAMS_FOLDER)
 const jamsPath = (jamSlug: string) => join(GAMES_PATH, jamSlug, JAMS_FOLDER)

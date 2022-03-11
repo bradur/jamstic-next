@@ -1,5 +1,9 @@
-import { GameImageType } from '@lib/path-helper'
-import { IImporter } from 'api/jams/types'
+export enum GameImageType {
+  AVATAR = 'avatar',
+  COVER = 'cover',
+  BODY = 'body',
+  COMMENT = 'comment',
+}
 
 export type FoundFile = {
   fileName: string
@@ -88,24 +92,6 @@ export type GamePageProps = {
   error: boolean
   data: GameEntry | string
   users: GameEntryUser[]
-}
-
-export type Jam = {
-  name: string
-  slug: string
-  entries: GameEntry[]
-}
-
-export type JamConfig = {
-  name: string
-  slug: string
-  defaultAvatarUrl: string | null
-  importer: IImporter
-}
-
-export type GamesPageProps = {
-  error: boolean | string
-  jams: Jam[]
 }
 
 export type ProfileInfo = { profileName: string }

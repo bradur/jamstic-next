@@ -1,5 +1,5 @@
 import { parseAlakajamDate, parseDate } from '@lib/date'
-import { GameImageType, slugifyPath } from '@lib/path-helper'
+import { slugifyPath } from '@lib/path-helper'
 import {
   GameEntry,
   GameEntryComment,
@@ -10,6 +10,7 @@ import {
   GameEntryLink,
   GameEntryResults,
   GameEntryUser,
+  GameImageType,
   SingleGameEntryResult,
 } from 'games/types'
 import emoji from 'node-emoji'

@@ -1,12 +1,12 @@
 import fs, { PathLike } from 'fs'
-import { GameEntry, GameEntryColor, GameEntryImage, GameEntryUser } from 'games/types'
+import { GameEntry, GameEntryColor, GameEntryImage, GameEntryUser, GameImageType } from 'games/types'
 import getColors from 'get-image-colors'
 import glob from 'glob'
 import imageType from 'image-type'
 import path from 'path'
 import { stream } from './connector'
 import { findImageUrls } from './md-helper'
-import { AbsolutePath, GameImageType } from './path-helper'
+import { AbsolutePath } from './path-helper'
 
 const jsonIndentLength = 4
 
@@ -33,16 +33,16 @@ export const loadSavedEntries = (jamType: string): GameEntry[] => {
 }
 export const readFile = (filePath: string) => fs.readFileSync(filePath)
 
-export const downloadAndSaveFile = (url: string, savePath: string): Promise<string> => {
+export const downloadAndSaveFile = (url: string, savePath: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     if (fs.existsSync(savePath)) {
       console.log(`'${savePath}' already exists, not downloading...`)
-      resolve('')
+      resolve(false)
     } else {
       stream(url).then((response) =>
         response.data
           .pipe(writeStream(savePath))
-          .on('finish', () => resolve(''))
+          .on('finish', () => resolve(true))
           .on('error', (error: any) => reject(error)),
       )
     }
@@ -81,8 +81,10 @@ export const downloadAndSaveImages = async (entries: GameEntry[]) => {
       const imagePath = AbsolutePath.Image(entry, image)
       createFolderIfItDoesntExist(imagePath)
       console.log(`Saving image with url ${image.originalUrl} and path ${image.pathType} to ${imagePath}...`)
-      count += 1
-      await downloadAndSaveFile(image.originalUrl, imagePath)
+      const downloaded = await downloadAndSaveFile(image.originalUrl, imagePath)
+      if (downloaded) {
+        count += 1
+      }
     }
     if (count > 0) {
       console.log(`Done! Downloaded & saved ${count} images.`)
@@ -104,12 +106,14 @@ export const downloadAndSaveAvatars = async (jamSlug: string, users: GameEntryUs
       console.log(
         `Saving image with url ${user.avatar.originalUrl} and path ${user.avatar.pathType} to ${imagePath}...`,
       )
-      count += 1
-      await downloadAndSaveFile(user.avatar.originalUrl, imagePath)
+      const downloaded = await downloadAndSaveFile(user.avatar.originalUrl, imagePath)
+      if (downloaded) {
+        count += 1
+      }
     }
   }
   if (count > 0) {
-    console.log(`Done! Downloaded & saved ${count} images.`)
+    console.log(`Done! Downloaded & saved ${count} avatars.`)
   } else {
     console.log('No new images detected.')
   }

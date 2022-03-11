@@ -1,4 +1,4 @@
-import { GamesPageProps } from 'games/types'
+import { GamesPageProps } from 'api/jams/types'
 import styled from 'styled-components'
 import { GamesPageGame } from './GamesPageGame'
 

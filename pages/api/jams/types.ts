@@ -20,3 +20,21 @@ export type ImporterOptions = {
   users: GameEntryUser[]
   oldEntries: GameEntry[]
 }
+
+export type Jam = {
+  name: string
+  slug: string
+  entries: GameEntry[]
+}
+
+export type JamConfig = {
+  name: string
+  slug: string
+  defaultAvatarUrl: string | null
+  importer: IImporter
+}
+
+export type GamesPageProps = {
+  error: boolean | string
+  jams: Jam[]
+}

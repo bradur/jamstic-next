@@ -1,10 +1,10 @@
 import { DEFAULT_MARKDOWN_OPTIONS } from '@lib/constants'
 import { ago, formatDate, parseDate } from '@lib/date'
-import { GameImageType, makeImageUrlsLocal, RelativePath } from '@lib/path-helper'
+import { makeImageUrlsLocal, RelativePath } from '@lib/path-helper'
 import Markdown from 'marked-react'
 import Image from 'next/image'
 import styled from 'styled-components'
-import { GameEntry, GameEntryComment, GameEntryUser } from '../types'
+import { GameEntry, GameEntryComment, GameEntryUser, GameImageType } from '../types'
 import { GameLink } from './GameLink'
 
 const GameCommentsContainer = styled.div`
