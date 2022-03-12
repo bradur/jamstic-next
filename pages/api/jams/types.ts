@@ -1,6 +1,6 @@
 import { GameEntry, GameEntryUser } from 'games/types'
 
-export interface IImporter {
+interface IImporter {
   new (options: ImporterOptions): Importer
 }
 

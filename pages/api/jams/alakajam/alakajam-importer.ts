@@ -29,7 +29,7 @@ export default class AlakajamImporter implements Importer {
     const newEntries = await this._getEntries()
     const transformedEntries = []
     for (const entry of newEntries) {
-      const transformer = new AlakajamTransformer({ entry, userCache: this.userCache, jamSlug: this.jamSlug })
+      const transformer = new AlakajamTransformer({ entry, jamSlug: this.jamSlug })
       const transformedEntry = transformer.transform()
       transformedEntries.push(transformedEntry)
     }
@@ -39,16 +39,28 @@ export default class AlakajamImporter implements Importer {
     }
   }
 
+  async _getEntries() {
+    const profileResponse = await AlakajamConnector.getProfile(this.profileName)
+    const profile = profileResponse.data as AlakajamProfile
+    this._saveUserToCache(profile.id)
+
+    const newGames = this.refetchOldEntries
+      ? profile.entries
+      : this._filterOutExistingGames(profile.entries.filter((entry) => entry.event_id !== null))
+
+    return this._fetchNewEntries(newGames)
+  }
+
   async _fetchUser(userId: number): Promise<AlakajamUser> {
     const user = await AlakajamConnector.getProfile(userId)
     return user.data as AlakajamUser
   }
 
-  _cacheContains(userId: number) {
-    return userId === -1 || this.userCache.find((user) => user.id === userId)
-  }
-
-  async _saveUserToCache(user: AlakajamUser) {
+  async _saveUserToCache(userId: number) {
+    if (userId === -1 || this.userCache.find((cachedUser) => cachedUser.id === userId)) {
+      return
+    }
+    const user = await this._fetchUser(userId)
     this.userCache.push(AlakajamTransformer.transformUser({ ...user }))
   }
 
@@ -61,17 +73,11 @@ export default class AlakajamImporter implements Importer {
         continue
       }
       for (const author of game.users) {
-        if (!this._cacheContains(author.id)) {
-          const user = await this._fetchUser(author.id)
-          this._saveUserToCache(user)
-        }
+        await this._saveUserToCache(author.id)
       }
 
       for (const gameComment of game.comments) {
-        if (!this._cacheContains(gameComment.user_id)) {
-          const user = await this._fetchUser(gameComment.user_id)
-          this._saveUserToCache(user)
-        }
+        await this._saveUserToCache(gameComment.user_id)
       }
 
       const event = await AlakajamConnector.getEvent(akjGame.event_id)
@@ -79,20 +85,6 @@ export default class AlakajamImporter implements Importer {
       akjEntries.push({ game, event: eventWithoutEntries as AlakajamEvent })
     }
     return akjEntries
-  }
-
-  async _getEntries() {
-    const profileResponse = await AlakajamConnector.getProfile(this.profileName)
-    const profile = profileResponse.data as AlakajamProfile
-    if (this._cacheContains(profile.id)) {
-      this._saveUserToCache(profile as AlakajamUser)
-    }
-
-    const newGames = this.refetchOldEntries
-      ? profile.entries
-      : this._filterOutExistingGames(profile.entries.filter((entry) => entry.event_id !== null))
-
-    return this._fetchNewEntries(newGames)
   }
 
   _filterOutExistingGames(data: AlakajamGame[]): AlakajamGame[] {

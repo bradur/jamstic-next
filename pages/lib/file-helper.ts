@@ -10,7 +10,7 @@ import { AbsolutePath } from './path-helper'
 
 const jsonIndentLength = 4
 
-export const writeStream = (savePath: PathLike) => fs.createWriteStream(savePath)
+const writeStream = (savePath: PathLike) => fs.createWriteStream(savePath)
 export const createFolderIfItDoesntExist = (folderPath: PathLike) => {
   if (!fs.existsSync(folderPath)) {
     fs.mkdirSync(path.dirname(folderPath.toString()), { recursive: true })
@@ -31,7 +31,7 @@ export const loadSavedEntries = (jamType: string): GameEntry[] => {
   console.log('Load saved entries of ' + jamType)
   return glob.sync(AbsolutePath.SavedEntries(jamType), {}).map((file) => readJson(file) as GameEntry)
 }
-export const readFile = (filePath: string) => fs.readFileSync(filePath)
+const readFile = (filePath: string) => fs.readFileSync(filePath)
 
 export const downloadAndSaveFile = (url: string, savePath: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {

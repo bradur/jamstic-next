@@ -1,6 +1,7 @@
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import { getFiles, readFileToJson } from '../lib/functions'
-import { PostPageProps } from './types'
+import { PostPage } from './components/PostPage'
+import { PostEntry, PostPageProps } from './types'
 
 const Post = (props: PostPageProps) => {
   if (props.error !== false) {
@@ -12,9 +13,6 @@ const Post = (props: PostPageProps) => {
     </>
   )
 }
-const content = {
-  pages: {},
-}
 
 type PageParams = {
   slug: string
@@ -22,7 +20,7 @@ type PageParams = {
 
 export const getStaticProps = async ({
   params = { slug: '' },
-}: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<GamePageProps>> => {
+}: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<PostPageProps>> => {
   const files = getFiles('content/blog')
 
   const { slug } = params
@@ -31,20 +29,21 @@ export const getStaticProps = async ({
   if (!game) {
     return {
       props: {
-        error: "Couldn't find file!",
+        error: true,
+        post: "Couldn't find file!",
       },
     }
   }
-  const gameJSON = readFileToJson(game) as GameEntry
+  const postJSON = readFileToJson(game) as PostEntry
   return {
     props: {
       error: false,
-      data: gameJSON,
+      post: postJSON,
     },
   }
 }
 
-export const getStaticPaths = async ({}): Promise<GetStaticPathsResult<PageParams>> => {
+export const getStaticPaths = async (): Promise<GetStaticPathsResult<PageParams>> => {
   const files = getFiles('content/blog')
 
   return {

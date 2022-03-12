@@ -15,4 +15,4 @@ const findImageUrls = (text: string) => {
 
 const getCleanUrls = (rawUrl: string) => findImageUrls(rawUrl).map((url: string) => cleanUpUrl(url))
 
-export { findImageUrls, getCleanUrls }
+export { findImageUrls }

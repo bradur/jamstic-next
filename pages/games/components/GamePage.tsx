@@ -1,6 +1,7 @@
 import { DEFAULT_MARKDOWN_OPTIONS } from '@lib/constants'
 import { makeImageUrlsLocal, RelativePath } from '@lib/path-helper'
 import Markdown from 'marked-react'
+import emoji from 'node-emoji'
 import styled from 'styled-components'
 import { GameEntry, GameImageType, GamePageProps } from '../types'
 import { GameComments } from './GameComments'
@@ -69,7 +70,7 @@ export const GamePage = ({ error, data, users }: GamePageProps) => {
 
   const coverUrl = RelativePath.Image(entry, game.cover)
 
-  const body = makeImageUrlsLocal(entry, game.body, GameImageType.BODY)
+  const body = emoji.emojify(makeImageUrlsLocal(entry, game.body, GameImageType.BODY))
 
   return (
     <PageContainerWithCoverColors coverColors={game.coverColors.css}>

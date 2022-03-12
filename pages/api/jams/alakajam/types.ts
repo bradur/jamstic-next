@@ -62,8 +62,7 @@ export type AlakajamGameWithDetails = AlakajamGame & {
 }
 
 export type AlakajamResults = { [name: string]: number }
-
-export type AlakajamComment = {
+type AlakajamComment = {
   id: number
   user_id: number
   parent_id: number | null
@@ -72,12 +71,12 @@ export type AlakajamComment = {
   updated_at: string
 }
 
-export type AlakajamLink = {
+type AlakajamLink = {
   label: string
   url: string
 }
 
-export type AlakajamPictures = {
+type AlakajamPictures = {
   previews: string[]
   thumbnail: string
   icon: string

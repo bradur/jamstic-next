@@ -46,8 +46,6 @@ export type GameEntryColor = {
   css: string
 }
 
-export type GameJamType = 'Ludum Dare' | 'LDJam' | 'Alakajam' | 'Global Game Jam'
-
 export type GameEntryDivision = 'solo' | 'team'
 
 export type GameEntryEvent = {
@@ -57,7 +55,7 @@ export type GameEntryEvent = {
   theme: string
   date: number
   url: string
-  eventType: GameJamType
+  eventType: string
 }
 
 export type GameEntry = {
@@ -94,8 +92,8 @@ export type GamePageProps = {
   users: GameEntryUser[]
 }
 
-export type ProfileInfo = { profileName: string }
-export type Profiles = { [jamName: string]: ProfileInfo }
+type ProfileInfo = { profileName: string }
+type Profiles = { [jamName: string]: ProfileInfo }
 export type ProfileConfig = {
   profiles: Profiles
   repository: string

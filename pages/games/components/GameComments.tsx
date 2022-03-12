@@ -3,6 +3,7 @@ import { ago, formatDate, parseDate } from '@lib/date'
 import { makeImageUrlsLocal, RelativePath } from '@lib/path-helper'
 import Markdown from 'marked-react'
 import Image from 'next/image'
+import emoji from 'node-emoji'
 import styled from 'styled-components'
 import { GameEntry, GameEntryComment, GameEntryUser, GameImageType } from '../types'
 import { GameLink } from './GameLink'
@@ -129,7 +130,7 @@ type GameCommentProps = {
   user: GameEntryUser
 }
 
-export const GameComment = ({ entry, comment, user }: GameCommentProps) => {
+const GameComment = ({ entry, comment, user }: GameCommentProps) => {
   const created = parseDate(comment.created)
   const createdAgo = ago(created)
   const createdFormatted = formatDate(created)
@@ -142,7 +143,7 @@ export const GameComment = ({ entry, comment, user }: GameCommentProps) => {
     updatedAgo = dif > minDifMs ? ago(updated) : false
   }
 
-  const body = makeImageUrlsLocal(entry, comment.body, GameImageType.COMMENT)
+  const body = emoji.emojify(makeImageUrlsLocal(entry, comment.body, GameImageType.COMMENT))
   const avatarUrl = RelativePath.Image(entry, user.avatar)
 
   return (

@@ -1,5 +1,5 @@
 import AlakajamImporter from 'api/jams/alakajam/alakajam-importer'
-import { JamConfig } from 'games/types'
+import { JamConfig } from 'api/jams/types'
 
 type JamConfigType = {
   jams: JamConfig[]

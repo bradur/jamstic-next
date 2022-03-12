@@ -88,36 +88,6 @@ const eventDates: { [name: string]: { [eventNumber: number]: string } } = {
   },
 }
 
-const monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-]
-
-export const parseAlakajamDate = (timestamp: string): Date => {
-  const dateSplit = timestamp.split(' ')
-  let day = dateSplit[dateSplit.length - 3].trim()
-  if (day.includes('-')) {
-    day = day.split('-')[1].trim()
-  }
-  let monthName = dateSplit[dateSplit.length - 2].trim()
-  if (monthName === 'Nov.') {
-    monthName = 'November'
-  }
-  const month = monthNames.indexOf(monthName) + 1
-  const year = dateSplit[dateSplit.length - 1].trim()
-  return new Date(`${year}-${month}-${day}`)
-}
-
 export const getLudumDareEventDate = (eventName: string, eventNumber: number) => {
   if (!Object.keys(eventDates).includes(eventName)) {
     console.log(`Couldn't find Ludum Dare event ${eventName}`)
