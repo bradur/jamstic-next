@@ -72,6 +72,7 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
       writeJson(filePath, entry)
     }
     const userFilePath = AbsolutePath.UserCache(jamSlug)
+    createFolderIfItDoesntExist(userFilePath)
     writeJson(userFilePath, importedData.users)
     jams.push({
       name: jam.name,

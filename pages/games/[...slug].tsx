@@ -77,7 +77,7 @@ export const getStaticPaths = async (): Promise<GetStaticPathsResult<PageParams>
   return {
     paths: entries.map((entry) => {
       const { game, event } = entry
-      const slg = { slug: [slugifyPath(event.eventType), slugifyPath(event.name), slugifyPath(game.name)] }
+      const slg = { slug: [slugifyPath(event.eventType), event.slug, game.slug] }
       return {
         params: slg,
       }
