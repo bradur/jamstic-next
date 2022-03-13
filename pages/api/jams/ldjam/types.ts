@@ -1,8 +1,11 @@
 export type LDJamUser = {
   id: number
+  slug: string
   name: string
-  title: string
-  avatar: string
+  body: string
+  meta: {
+    avatar: string
+  }
 }
 
 export type LDJamProfile = LDJamUser & {
@@ -10,41 +13,63 @@ export type LDJamProfile = LDJamUser & {
   entries: LDJamGame[]
 }
 
-export type LDJamGame = {
-  id: number
-  name: string
-}
-
 export type LDJamEvent = {
   id: number
   name: string
+  slug: string
+  meta: {
+    'event-start': string
+    'event-end': string
+    'event-theme': string
+  }
+  path: string
+  body: string
 }
 
 export type LDJamEntry = {
   event: LDJamEvent
-  game: LDJamGameWithDetails
+  game: LDJamGame
+  comments: LDJamComment[]
 }
 
-export type LDJamGameWithDetails = LDJamGame & {
-  comments: LDJamComment[]
-  users: LDJamUser[]
-  results: LDJamResults
+export type LDJamTag = {
+  id: number
+  name: string
+  slug: string
+}
+
+export type LDJamGame = {
+  id: number
+  name: string
+  slug: string
+  path: string
+  parent: number
+  subsubtype: string
+  meta: {
+    cover: string
+    author: number[]
+    [key: string]: string | number[]
+  }
   cover: string
   body: string
+  magic: LDJamResults
 }
 
 export type LDJamResults = { [name: string]: number }
 
 export type LDJamComment = {
   id: number
+  author: number
   body: string
+  parent: number
+  created: string
+  modified: string
 }
 
 export type LDJamLink = {
   label: string
   url: string
 }
-
 
 export type LDJamResponse = {
   status: number
