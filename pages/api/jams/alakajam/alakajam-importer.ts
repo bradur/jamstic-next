@@ -1,5 +1,5 @@
-import { GameEntry, GameEntryUser } from 'games/types'
-import { ImportedData, Importer, ImporterOptions } from '../types'
+import GenericImporter from '../generic-importer'
+import { ImportedData } from '../types'
 import { AlakajamConnector } from './alakajam-connector'
 import AlakajamTransformer from './alakajam-transformer'
 import {
@@ -11,19 +11,7 @@ import {
   AlakajamUser,
 } from './types'
 
-export default class AlakajamImporter implements Importer {
-  userCache: GameEntryUser[] = []
-  refetchOldEntries: boolean
-  profileName: string
-  jamSlug: string
-  oldEntries: GameEntry[] = []
-  constructor(options: ImporterOptions) {
-    this.refetchOldEntries = options.refetchOldEntries
-    this.userCache = [...options.users]
-    this.oldEntries = [...options.oldEntries]
-    this.profileName = options.profileName
-    this.jamSlug = options.jamSlug
-  }
+export default class AlakajamImporter extends GenericImporter {
   async import(): Promise<ImportedData> {
     console.log(`Old entries: ${this.oldEntries.length}`)
     const newEntries = await this._getEntries()
