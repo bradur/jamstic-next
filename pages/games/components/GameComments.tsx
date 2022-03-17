@@ -102,24 +102,28 @@ export const GameComments = ({ entry, users }: GameCommentsProps) => {
   const { game } = entry
   return (
     <GameCommentsContainer>
-      <h2 className='game-comments-container-title'>Comments</h2>
-      <div className='game-comments-container'>
-        {game.comments.map((comment) => {
-          let foundUser = users.find((user) => user.id === comment.author)
-          if (foundUser === undefined) {
-            foundUser = {
-              id: -1,
-              url: '#',
-              avatar: {
-                originalUrl: '',
-                pathType: GameImageType.AVATAR,
-              },
-              name: 'Deleted',
-            }
-          }
-          return <GameComment key={comment.id} entry={entry} comment={comment} user={foundUser} />
-        })}
-      </div>
+      {game.comments.length > 0 && (
+        <>
+          <h2 className='game-comments-container-title'>Comments</h2>
+          <div className='game-comments-container'>
+            {game.comments.map((comment) => {
+              let foundUser = users.find((user) => user.id === comment.author)
+              if (foundUser === undefined) {
+                foundUser = {
+                  id: -1,
+                  url: '#',
+                  avatar: {
+                    originalUrl: '',
+                    pathType: GameImageType.AVATAR,
+                  },
+                  name: 'Deleted',
+                }
+              }
+              return <GameComment key={comment.id} entry={entry} comment={comment} user={foundUser} />
+            })}
+          </div>
+        </>
+      )}
     </GameCommentsContainer>
   )
 }

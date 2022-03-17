@@ -32,6 +32,7 @@ export type JamConfig = {
   slug: string
   defaultAvatarUrl: string | null
   importer: IImporter
+  enabled: boolean
 }
 
 export type GamesPageProps = {

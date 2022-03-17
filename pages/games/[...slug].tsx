@@ -1,5 +1,5 @@
 import { loadSavedEntries, readJson } from '@lib/file-helper'
-import { AbsolutePath, slugifyPath } from '@lib/path-helper'
+import { AbsolutePath } from '@lib/path-helper'
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import Head from 'next/head'
 import { readFileFromPath } from '../lib/functions'
@@ -77,7 +77,7 @@ export const getStaticPaths = async (): Promise<GetStaticPathsResult<PageParams>
   return {
     paths: entries.map((entry) => {
       const { game, event } = entry
-      const slg = { slug: [slugifyPath(event.eventType), event.slug, game.slug] }
+      const slg = { slug: [entry.jamSlug, event.slug, game.slug] }
       return {
         params: slg,
       }

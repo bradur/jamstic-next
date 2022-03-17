@@ -27,7 +27,7 @@ export default class LDJamImporter extends GenericImporter {
       path: [firstId, userId],
     } = profileResponse
 
-    const user = await this._loadUsers([userId])
+    await this._loadUsers([userId])
 
     const feedResponse = await LDJamConnector.getFeed(userId)
 
@@ -50,7 +50,6 @@ export default class LDJamImporter extends GenericImporter {
   }
 
   async _loadUsers(userIds: number[]) {
-    const users = this.userCache.filter((cachedUser) => userIds.includes(cachedUser.id))
     const usersNotInCache = userIds.filter(
       (userId) => userId !== 0 && this.userCache.find((cachedUser) => cachedUser.id === userId) === undefined,
     )
@@ -59,9 +58,7 @@ export default class LDJamImporter extends GenericImporter {
       const fetchedUsers = response.data.node as LDJamUser[]
       const transformedUsers = fetchedUsers.map(LDJamTransformer.transformUser)
       this.userCache.push(...transformedUsers)
-      users.push(...transformedUsers)
     }
-    return users
   }
 
   async _fetchNewEntries(entryIds: number[]): Promise<LDJamEntry[]> {

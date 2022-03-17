@@ -33,6 +33,9 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
   const profileConfig = config as ProfileConfig
   const jams: Jam[] = []
   for (const jam of jamConfigs) {
+    if (!jam.enabled) {
+      continue
+    }
     const jamSlug = jam.slug
     let users = readFileFromPath(AbsolutePath.UserCache(jamSlug))
     if (users.error) {
