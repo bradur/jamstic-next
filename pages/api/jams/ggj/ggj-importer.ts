@@ -53,12 +53,10 @@ export default class GGJImporter extends GenericImporter {
     const entries: string[] = []
 
     const oldGameUrls = this.oldEntries.map((entry) => entry.game.url)
-    console.log(oldGameUrls)
     const urlsToFetch = this.refetchOldEntries
       ? entryUrls
       : entryUrls.filter((entryUrl) => !oldGameUrls.includes(GGJConnector.url(entryUrl)))
     for (const entryUrl of urlsToFetch) {
-      console.log(entryUrl)
       const entryPage = await GGJConnector.getUrl(entryUrl)
       entries.push(entryPage.data)
     }

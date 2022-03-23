@@ -80,7 +80,7 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
     jams.push({
       name: jam.name,
       slug: jam.slug,
-      entries: [...importedData.entries].sort((entry, otherEntry) => otherEntry.event.date - entry.event.date),
+      entries: [...importedData.entries],
     })
   }
 

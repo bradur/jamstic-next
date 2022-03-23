@@ -77,6 +77,7 @@ export type GameEntryDetails = {
   description: string
   body: string
   url: string
+  tags: string[]
   cover: GameEntryImage
   links: GameEntryLink[]
   results: GameEntryResults

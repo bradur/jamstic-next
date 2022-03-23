@@ -33,6 +33,7 @@ export const EMPTY_GAME_ENTRY: GameEntry = {
         result: 0,
       },
     },
+    tags: ['solo'],
     cover: {
       originalUrl: '',
       pathType: GameImageType.COVER,

@@ -153,6 +153,7 @@ export default class AlakajamTransformer {
       slug: slugifyPath(title),
       results: this._transformGrades(entry),
       links: this._transformLinks(game),
+      tags: [division],
       cover: {
         originalUrl: AlakajamConnector.staticUrl(coverUrl),
         pathType: GameImageType.COVER,

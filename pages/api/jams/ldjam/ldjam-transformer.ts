@@ -4,7 +4,6 @@ import {
   GameEntry,
   GameEntryComment,
   GameEntryDetails,
-  GameEntryDivision,
   GameEntryEvent,
   GameEntryLink,
   GameEntryResults,
@@ -146,6 +145,7 @@ export default class LDJamTransformer {
   _transformGame(): GameEntryDetails {
     const entry = this.options.entry
     const { id, name, body, slug, path, subsubtype, meta } = entry.game
+    const division = subsubtype === 'jam' ? 'team' : 'solo'
     return {
       id,
       name,
@@ -156,12 +156,13 @@ export default class LDJamTransformer {
       url: LDJamConnector.baseUrl(path),
       results: this._transformGrades(),
       links: this._transformLinks(),
+      tags: [division],
       cover: {
         originalUrl: LDJamConnector.staticUrl(meta.cover),
         pathType: GameImageType.COVER,
       },
       comments: this._transformComments(),
-      division: (subsubtype === 'jam' ? 'team' : 'solo') as GameEntryDivision,
+      division: division,
       coverColors: {
         css: '',
       },

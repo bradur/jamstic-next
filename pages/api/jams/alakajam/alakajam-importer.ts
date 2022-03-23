@@ -22,7 +22,7 @@ export default class AlakajamImporter extends GenericImporter {
       transformedEntries.push(transformedEntry)
     }
     return {
-      entries: [...this.oldEntries, ...transformedEntries],
+      entries: this.refetchOldEntries ? [...transformedEntries] : [...this.oldEntries, ...transformedEntries],
       users: this.userCache,
     }
   }

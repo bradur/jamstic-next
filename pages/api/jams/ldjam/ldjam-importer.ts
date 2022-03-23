@@ -15,7 +15,7 @@ export default class LDJamImporter extends GenericImporter {
     })
 
     return {
-      entries: [...this.oldEntries, ...transformedEntries],
+      entries: this.refetchOldEntries ? [...transformedEntries] : [...this.oldEntries, ...transformedEntries],
       users: this.userCache,
     }
   }

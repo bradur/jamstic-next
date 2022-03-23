@@ -1,9 +1,10 @@
+import { FilterProvider } from '@lib/filterContext'
 import { GamesPageProps } from 'api/jams/types'
 import styled from 'styled-components'
-import { GamesPageGame } from './GamesPageGame'
+import { GamesGrid } from './GamesGrid'
 
 const GamesPageContainer = styled.div`
-  max-width: 1280px;
+  max-width: 1080px;
   margin: auto;
   padding-bottom: 100px;
 
@@ -17,6 +18,7 @@ const GamesPageContainer = styled.div`
     grid-template-columns: repeat(auto-fill, 256px);
     grid-auto-rows: 256px;
     grid-gap: 10px;
+    justify-content: center;
   }
 
   @media (max-width: 1300px) {
@@ -33,20 +35,14 @@ const GamesPageContainer = styled.div`
 `
 
 export const GamesPage = ({ jams }: GamesPageProps) => {
-  return (
-    <GamesPageContainer>
-      <h1>Games</h1>
+  const entries = jams.map((jam) => jam.entries).flat()
 
-      {jams.map((jam) => (
-        <div key={jam.slug}>
-          <h2>{jam.name}</h2>
-          <div className='games-container'>
-            {jam.entries.map((entry) => (
-              <GamesPageGame key={entry.id} {...entry} />
-            ))}
-          </div>
-        </div>
-      ))}
-    </GamesPageContainer>
+  return (
+    <FilterProvider>
+      <GamesPageContainer>
+        <h1>Games</h1>
+        <GamesGrid entries={entries}></GamesGrid>
+      </GamesPageContainer>
+    </FilterProvider>
   )
 }

@@ -109,15 +109,16 @@ export class GGJTransformer {
     const name = this.document.querySelector('meta[property="og:title"]')?.getAttribute('content') ?? ''
     const imageUrls = this._findImageUrls()
     const [rating] = this.document.querySelector('.rate-heart-info')?.textContent?.trim().split(' Hearts') ?? ['0']
+    const division = this.options.authors.length > 1 ? 'team' : 'solo'
     return {
       id: gameId ? parseInt(gameId, 10) : -1,
       name,
       body: this._transformBody(name, imageUrls),
-      links: this._transformLinks(url),
+      links: this._transformLinks(),
       coverColors: {
         css: '',
       },
-      division: this.options.authors.length > 1 ? 'team' : 'solo',
+      division,
       authors: this.options.authors.map((author) => author.id),
       results: {
         all: [
@@ -133,6 +134,7 @@ export class GGJTransformer {
           result: null,
         },
       },
+      tags: [division],
       comments: [],
       url,
       slug,
@@ -163,7 +165,7 @@ export class GGJTransformer {
     return originalCoverUrl
   }
 
-  _transformLinks(entryUrl: string) {
+  _transformLinks() {
     const links = Array.from(this.document.querySelectorAll('.field--type-link-field')).map((link) => {
       const linkTitle = link.querySelector('.field__label')?.textContent ?? ''
       const url = link.querySelector('a')?.getAttribute('href') ?? ''
