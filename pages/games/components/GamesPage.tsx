@@ -34,14 +34,14 @@ const GamesPageContainer = styled.div`
   }
 `
 
-export const GamesPage = ({ jams }: GamesPageProps) => {
+export const GamesPage = ({ jams, tags }: GamesPageProps) => {
   const entries = jams.map((jam) => jam.entries).flat()
 
   return (
     <FilterProvider>
       <GamesPageContainer>
         <h1>Games</h1>
-        <GamesGrid entries={entries}></GamesGrid>
+        <GamesGrid entries={entries} tags={tags}></GamesGrid>
       </GamesPageContainer>
     </FilterProvider>
   )

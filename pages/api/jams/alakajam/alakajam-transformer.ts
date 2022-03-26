@@ -10,7 +10,7 @@ import {
   GameEntryResults,
   GameEntryUser,
   GameImageType,
-  SingleGameEntryResult,
+  SingleGameEntryResult
 } from 'games/types'
 import { AlakajamConnector } from './alakajam-connector'
 import { AlakajamEntry, AlakajamGameWithDetails, AlakajamResults, AlakajamUser } from './types'
@@ -153,7 +153,7 @@ export default class AlakajamTransformer {
       slug: slugifyPath(title),
       results: this._transformGrades(entry),
       links: this._transformLinks(game),
-      tags: [division],
+      tags: [],
       cover: {
         originalUrl: AlakajamConnector.staticUrl(coverUrl),
         pathType: GameImageType.COVER,

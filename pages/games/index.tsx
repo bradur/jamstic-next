@@ -32,6 +32,7 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
   const jamConfigs = jamConfig.jams
   const profileConfig = config as ProfileConfig
   const jams: Jam[] = []
+  const tags: string[] = []
   for (const jam of jamConfigs) {
     if (!jam.enabled) {
       continue
@@ -48,6 +49,7 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
       return {
         props: {
           error,
+          tags: [],
           jams: [],
         },
       }
@@ -68,8 +70,16 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
     }
     await downloadAndSaveImages(importedData.entries)
     await downloadAndSaveAvatars(jamSlug, importedData.users)
+
     for (const entry of importedData.entries) {
       entry.game.coverColors = await findGameCoverColors(entry)
+      entry.game.tags.push(entry.game.division)
+      entry.game.tags.push(entry.jamSlug)
+      for (const tag of entry.game.tags) {
+        if (!tags.includes(tag)) {
+          tags.push(tag)
+        }
+      }
       const filePath = AbsolutePath.EntryDataFile(jamSlug, entry)
       createFolderIfItDoesntExist(filePath)
       writeJson(filePath, entry)
@@ -87,6 +97,7 @@ export const getStaticProps = async (): Promise<GetStaticPropsResult<GamesPagePr
   return {
     props: {
       error: false,
+      tags,
       jams,
     },
   }

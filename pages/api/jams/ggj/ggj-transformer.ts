@@ -134,7 +134,7 @@ export class GGJTransformer {
           result: null,
         },
       },
-      tags: [division],
+      tags: [],
       comments: [],
       url,
       slug,

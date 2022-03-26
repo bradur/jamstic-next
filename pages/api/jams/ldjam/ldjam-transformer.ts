@@ -156,7 +156,7 @@ export default class LDJamTransformer {
       url: LDJamConnector.baseUrl(path),
       results: this._transformGrades(),
       links: this._transformLinks(),
-      tags: [division],
+      tags: [],
       cover: {
         originalUrl: LDJamConnector.staticUrl(meta.cover),
         pathType: GameImageType.COVER,

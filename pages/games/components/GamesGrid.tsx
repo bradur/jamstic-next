@@ -20,8 +20,11 @@ const FilterInfoContainer = styled.div`
   border-top-right-radius: 5px;
   padding: 5px 15px;
 `
-
-export const GamesGrid = ({ entries }: { entries: GameEntry[] }) => {
+type Props = {
+  entries: GameEntry[]
+  tags: string[]
+}
+export const GamesGrid = ({ entries, tags }: Props) => {
   const { sorting, filter } = useFilter()
   const entryArray = entries.filter((entry) => {
     if (filter.tags.length > 0) {
@@ -64,7 +67,7 @@ export const GamesGrid = ({ entries }: { entries: GameEntry[] }) => {
     <>
       <FilterContainer>
         <SortingControl />
-        <FilterControl initialTags={['solo', 'team']} />
+        <FilterControl initialTags={tags} />
       </FilterContainer>
       <FilterInfoContainer>
         <div>
