@@ -64,6 +64,6 @@ export class LDJamConnector {
     return `${this._userUrl()}/${url}`
   }
   static baseUrl(path: string) {
-    return `${this._baseUrl}${path}`
+    return `${this._baseUrl()}${path}`
   }
 }

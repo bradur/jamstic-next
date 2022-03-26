@@ -82,8 +82,8 @@ export default class LDJamTransformer {
     if (results === undefined || results === null) {
       return null
     }
-    const rankingKey = `grade-${index}-result`
-    const ratingKey = `grade-${index}-average`
+    const rankingKey = `grade-0${index}-result`
+    const ratingKey = `grade-0${index}-average`
     if (Object.keys(results).includes(rankingKey) && Object.keys(results).includes(ratingKey)) {
       const rating = results[rankingKey]
       const result = results[ratingKey]
