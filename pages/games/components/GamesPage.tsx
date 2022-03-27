@@ -1,5 +1,5 @@
 import { FilterProvider } from '@lib/filterContext'
-import { GamesPageProps } from 'api/jams/types'
+import { GamesPageProps, Jam } from 'api/jams/types'
 import styled from 'styled-components'
 import { GamesGrid } from './GamesGrid'
 
@@ -34,9 +34,23 @@ const GamesPageContainer = styled.div`
   }
 `
 
-export const GamesPage = ({ jams, tags }: GamesPageProps) => {
-  const entries = jams.map((jam) => jam.entries).flat()
+const findTags = (jams: Jam[]) => {
+  const tags: string[] = []
+  for (const jam of jams) {
+    for (const entry of jam.entries) {
+      for (const tag of entry.game.tags) {
+        if (!tags.includes(tag)) {
+          tags.push(tag)
+        }
+      }
+    }
+  }
+  return tags
+}
 
+export const GamesPage = ({ jams }: GamesPageProps) => {
+  const entries = jams.map((jam) => jam.entries).flat()
+  const tags = findTags(jams)
   return (
     <FilterProvider>
       <GamesPageContainer>

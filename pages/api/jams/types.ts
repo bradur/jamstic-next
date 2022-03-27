@@ -37,6 +37,5 @@ export type JamConfig = {
 
 export type GamesPageProps = {
   error: boolean | string
-  tags: string[]
   jams: Jam[]
 }
