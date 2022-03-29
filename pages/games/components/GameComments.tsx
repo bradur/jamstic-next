@@ -9,9 +9,9 @@ import { GameEntry, GameEntryComment, GameEntryUser, GameImageType } from '../ty
 import { GameLink } from './GameLink'
 
 const GameCommentsContainer = styled.div`
-  margin-top:5px;
+  margin-top: 5px;
   padding: 20px;
-  padding-top:5px;
+  padding-top: 5px;
   background: none;
 
   .game-comment-body {
@@ -33,7 +33,7 @@ const GameCommentsContainer = styled.div`
     border-right-color: #fff;
     border-left: 0;
     border-top: 0;
-    z-index:10;
+    z-index: 10;
   }
   .game-comment-body:after {
     content: '';
@@ -46,7 +46,7 @@ const GameCommentsContainer = styled.div`
     border-right-color: #eee;
     border-left: 0;
     border-top: 0;
-    z:index:5;
+    z-index: 5;
   }
 
   .game-comment-body p {
@@ -73,10 +73,10 @@ const GameCommentsContainer = styled.div`
     background: rgba(255, 255, 255, 0.5);
     background: rgba(0, 0, 0, 0.5);
     background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0));
-    padding:0 10px;
-    
-    color:#eee;
-    margin-right:40px;
+    padding: 0 10px;
+
+    color: #eee;
+    margin-right: 40px;
   }
 
   .game-comment-meta div:first-child {
@@ -86,11 +86,8 @@ const GameCommentsContainer = styled.div`
   .game-comment-meta div {
     margin: 0 5px;
   }
-
-  .game-comments-container-title {
-
-  }
 `
+
 const minDifMs = 60000 * 5
 
 type GameCommentsProps = {
