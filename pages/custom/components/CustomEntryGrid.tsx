@@ -1,10 +1,10 @@
 import { useFilter } from '@lib/filterContext'
-import { filterGameEntries, findTagsFromJams, sortGameEntries } from '@lib/filterFunctions'
-import { Jam } from 'api/jams/types'
+import { filterEntries, findTags, sortEntries } from '@lib/filterFunctions'
+import { FilterControl } from 'components/FilterControl'
+import { SortingControl } from 'components/SortingControl'
+import { CustomPageProps } from 'custom/types'
 import styled from 'styled-components'
-import { FilterControl } from '../../components/FilterControl'
-import { SortingControl } from '../../components/SortingControl'
-import { GamesPageGame } from './GamesPageGame'
+import { CustomEntriesPageEntry } from './CustomEntriesPageEntry'
 
 const FilterContainer = styled.div`
   display: flex;
@@ -21,17 +21,13 @@ const FilterInfoContainer = styled.div`
   border-top-right-radius: 5px;
   padding: 5px 15px;
 `
-type Props = {
-  jams: Jam[]
-}
 
-export const GamesGrid = ({ jams }: Props) => {
-  const entries = jams.map((jam) => jam.entries).flat()
-  const tags = findTagsFromJams(jams)
+export const CustomEntryGrid = ({ entries }: CustomPageProps) => {
+  const tags = findTags(entries)
   const { sorting, filter } = useFilter()
-  const entryArray = entries.filter((entry) => filterGameEntries(filter, entry))
+  const entryArray = entries.filter((entry) => filterEntries(filter, entry))
 
-  entryArray.sort((entry, otherEntry) => sortGameEntries(sorting, entry, otherEntry))
+  entryArray.sort((entry, otherEntry) => sortEntries(sorting, entry, otherEntry))
 
   return (
     <>
@@ -41,12 +37,12 @@ export const GamesGrid = ({ jams }: Props) => {
       </FilterContainer>
       <FilterInfoContainer>
         <div>
-          {entryArray.length} / {entries.length} games
+          {entryArray.length} / {entries.length} projects
         </div>
       </FilterInfoContainer>
       <div className='games-container'>
         {entryArray.map((entry) => (
-          <GamesPageGame key={entry.id} {...entry} />
+          <CustomEntriesPageEntry key={entry.categorySlug + entry.slug} {...entry} />
         ))}
       </div>
     </>

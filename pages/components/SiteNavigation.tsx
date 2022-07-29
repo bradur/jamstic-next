@@ -63,6 +63,11 @@ const SiteNavigation = () => {
             games
           </a>
         </li>
+        <li>
+          <a rel='prefetch' href='/custom'>
+            custom
+          </a>
+        </li>
       </ul>
     </SiteNavigationContainer>
   )

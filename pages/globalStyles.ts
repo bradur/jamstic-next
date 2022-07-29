@@ -9,6 +9,12 @@ body {
   color: #333;  
 }
 
+body, html, [data-reactroot]  {
+  min-height:100%;
+  height:100%;
+}
+
+
 h1, h2, h3, h4, h5, h6 {
   margin: 1rem 0;
   font-weight: 700;

@@ -145,7 +145,7 @@ const GameComment = ({ entry, comment, user }: GameCommentProps) => {
   }
 
   const body = emoji.emojify(makeImageUrlsLocal(entry, comment.body, GameImageType.COMMENT))
-  const avatarUrl = RelativePath.Image(entry, user.avatar)
+  const avatarUrl = RelativePath.ImageFromGame(entry, user.avatar)
 
   return (
     <div key={comment.id} className='game-comment'>

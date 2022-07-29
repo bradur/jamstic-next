@@ -1,3 +1,4 @@
+import { GenericEntry } from 'custom/types'
 import fs, { PathLike } from 'fs'
 import { GameEntry, GameEntryColor, GameEntryImage, GameEntryUser, GameImageType } from 'games/types'
 import getColors from 'get-image-colors'
@@ -25,6 +26,11 @@ export const readJson = (filePath: PathLike) => {
     return null
   }
   return JSON.parse(fs.readFileSync(filePath, 'utf8'))
+}
+
+export const loadSavedGenericEntries = (jamType: string): GenericEntry[] => {
+  console.log('Load saved entries of ' + jamType)
+  return glob.sync(AbsolutePath.CustomEntries(jamType), {}).map((file) => readJson(file) as GenericEntry)
 }
 
 export const loadSavedEntries = (jamType: string): GameEntry[] => {
@@ -78,7 +84,7 @@ export const downloadAndSaveImages = async (entries: GameEntry[]) => {
       if (image.originalUrl === '') {
         continue
       }
-      const imagePath = AbsolutePath.Image(entry, image)
+      const imagePath = AbsolutePath.ImageFromGame(entry, image)
       createFolderIfItDoesntExist(imagePath)
       console.log(`Saving image with url ${image.originalUrl} and path ${image.pathType} to ${imagePath}...`)
       const downloaded = await downloadAndSaveFile(image.originalUrl, imagePath)
@@ -141,8 +147,11 @@ export const findGameCoverColors = async (entry: GameEntry): Promise<GameEntryCo
     return getDefaultColors()
   }
   console.log(JSON.stringify(game.cover))
-  const coverPath = AbsolutePath.Image(entry, game.cover)
+  const coverPath = AbsolutePath.ImageFromGame(entry, game.cover)
+  return findCoverColors(coverPath)
+}
 
+export const findCoverColors = async (coverPath: string): Promise<GameEntryColor> => {
   console.log(`Attempting to read colors from ${coverPath}...`)
   const imgFile = readFile(coverPath)
   const imgType = imageType(imgFile)

@@ -1,8 +1,8 @@
 import { RelativePath } from '@lib/path-helper'
-import { GameEntry } from 'games/types'
+import { GenericEntry } from 'custom/types'
 import styled from 'styled-components'
 
-const GamesPageGameContainer = styled.a<{ coverColors: string }>`
+const CustomEntriesPageEntryContainer = styled.a<{ coverColors: string }>`
   ${(props) => props.coverColors}
 
   position: relative;
@@ -68,31 +68,24 @@ const GamesPageGameContainer = styled.a<{ coverColors: string }>`
   }
 `
 
-export const GamesPageGame = (entry: GameEntry) => {
-  const { game, event } = entry
+export const CustomEntriesPageEntry = (entry: GenericEntry) => {
   return (
-    <GamesPageGameContainer
-      key={game.id}
+    <CustomEntriesPageEntryContainer
+      key={entry.categorySlug + entry.slug}
       className='game-container'
-      href={`games/${RelativePath.EntryFromGame(entry)}`}
-      coverColors={game.coverColors.css}
+      href={`${RelativePath.Entry('custom', entry.categorySlug, entry.slug)}`}
+      coverColors={entry.coverColors.css}
     >
       <div className='game-meta'>
-        <h3>{game.name}</h3>
-        <div className='game-meta-event'>
-          <div className='game-event-name'>{event.name}</div>
-          {game.results.overall.result !== null && (
-            <div className='game-event-result'>#{game.results.overall.result}</div>
-          )}
-        </div>
+        <h3>{entry.name}</h3>
       </div>
       <div className='game-picture-container'>
         <img
           className='game-picture'
-          src={RelativePath.ImageFromGame(entry, game.cover)}
-          alt='Cover picture of {game.name}'
+          src={RelativePath.Image('custom', entry.categorySlug, entry.slug, entry.cover)}
+          alt={`Cover picture of ${entry.name}`}
         />
       </div>
-    </GamesPageGameContainer>
+    </CustomEntriesPageEntryContainer>
   )
 }

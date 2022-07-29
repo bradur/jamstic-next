@@ -68,7 +68,7 @@ export const GamePage = ({ error, data, users }: GamePageProps) => {
   const entry = data as GameEntry
   const { game } = entry
 
-  const coverUrl = RelativePath.Image(entry, game.cover)
+  const coverUrl = RelativePath.ImageFromGame(entry, game.cover)
 
   const body = emoji.emojify(makeImageUrlsLocal(entry, game.body, GameImageType.BODY))
 

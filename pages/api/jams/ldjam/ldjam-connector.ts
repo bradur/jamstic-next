@@ -46,22 +46,22 @@ export class LDJamConnector {
   }
 
   static async getNodes(nodeIds: number[]) {
-    return get(`${this.apiUrl()}/node2/get/${nodeIds.join('+')}`)
+    return get(`${this.apiUrl()}node2/get/${nodeIds.join('+')}`)
   }
 
   static async getPlatforms() {
-    return get(`${this.apiUrl()}/tag/get/platform`)
+    return get(`${this.apiUrl()}tag/get/platform`)
   }
 
   static async getComments(nodeId: number) {
-    return get(`${this.apiUrl()}/comment/getbynode/${nodeId}`)
+    return get(`${this.apiUrl()}comment/getbynode/${nodeId}`)
   }
 
   static staticUrl(url: string) {
-    return `${this._staticUrl()}/${url}`
+    return `${this._staticUrl()}${url}`
   }
   static userUrl(url: string) {
-    return `${this._userUrl()}/${url}`
+    return `${this._userUrl()}${url}`
   }
   static baseUrl(path: string) {
     return `${this._baseUrl()}${path}`

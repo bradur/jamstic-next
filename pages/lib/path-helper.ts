@@ -1,3 +1,4 @@
+import { EntryImage } from 'custom/types'
 import { GameEntry, GameEntryImage, GameImageType } from 'games/types'
 import path, { join, resolve } from 'path'
 import slugify from 'slugify'
@@ -47,7 +48,7 @@ export const makeImageUrlsLocal = (entry: GameEntry, text: string, imageType: Ga
   findImageUrls(replacedText).forEach((url) => {
     replacedText = replacedText.replace(
       url,
-      RelativePath.Image(entry, {
+      RelativePath.ImageFromGame(entry, {
         originalUrl: url,
         pathType: imageType,
       }),
@@ -69,12 +70,20 @@ export class AbsolutePath {
   static DataFile = (jamSlug: string, eventName: string, gameName: string) => {
     return absPath(jamsPath(jamSlug), eventName, gameName, DATA_FILE_NAME)
   }
+  static CustomDataFile = (jamSlug: string, categorySlug: string, slug: string) => {
+    return absPath(CONTENT_FOLDER, jamSlug, categorySlug, `${slug}.json`)
+  }
+  static CustomEntries = (jamSlug: string) =>
+    absPath(CONTENT_FOLDER, jamSlug, ANY_FOLDERS_IN_BETWEEN_WILDCARD, '*.json')
   static SavedEntries = (jamSlug: string) => {
     return absPath(jamsPath(jamSlug), ANY_FOLDERS_IN_BETWEEN_WILDCARD, DATA_FILE_NAME)
   }
-  static Image = (entry: GameEntry, image: GameEntryImage) => {
+  static ImageFromGame = (entry: GameEntry, image: GameEntryImage) => {
     const imagePath = imgPath(image, entry.jamSlug, entry.event.slug, entry.game.slug)
     return absPath(IMAGE_PATH, ...imagePath)
+  }
+  static Image = (jamSlug: string, categorySlug: string, slug: string, image: EntryImage) => {
+    return absPath(IMAGE_PATH, jamSlug, categorySlug, slug, image.originalUrl)
   }
   static Avatar = (jamSlug: string, image: GameEntryImage) => {
     return absPath(IMAGE_PATH, ...imgPath(image, jamSlug))
@@ -85,8 +94,12 @@ export class AbsolutePath {
 }
 
 export class RelativePath {
-  static Entry = (entry: GameEntry) => joinPosix(entry.jamSlug, entry.event.slug, entry.game.slug)
-  static Image = (entry: GameEntry, image: GameEntryImage) => {
+  static EntryFromGame = (entry: GameEntry) => joinPosix(entry.jamSlug, entry.event.slug, entry.game.slug)
+  static Entry = (jamSlug: string, categorySlug: string, slug: string) => joinPosix(jamSlug, categorySlug, slug)
+  static Image = (jamSlug: string, categorySlug: string, slug: string, image: EntryImage) => {
+    return joinPosix(RELATIVE_IMAGE_PATH, jamSlug, categorySlug, slug, image.originalUrl)
+  }
+  static ImageFromGame = (entry: GameEntry, image: GameEntryImage) => {
     if (image.pathType === GameImageType.AVATAR && image.originalUrl === '') {
       return this.DefaultAvatar(entry.jamSlug)
     }

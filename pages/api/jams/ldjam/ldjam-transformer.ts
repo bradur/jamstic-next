@@ -38,7 +38,7 @@ export default class LDJamTransformer {
       id,
       name,
       avatar: {
-        originalUrl: avatar === undefined ? '' : LDJamConnector.staticUrl(avatar),
+        originalUrl: avatar === undefined ? '' : LDJamConnector.staticUrl(`${avatar}.png`),
         pathType: GameImageType.AVATAR,
       },
       url: LDJamConnector.userUrl(name),
