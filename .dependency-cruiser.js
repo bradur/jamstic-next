@@ -144,7 +144,7 @@ module.exports = {
         'section of your package.json. If this module is development only - add it to the ' +
         'from.pathNot re of the not-to-dev-dep rule in the dependency-cruiser configuration',
       from: {
-        path: '^(pages)',
+        path: '^(src)',
         pathNot: '\\.(spec|test)\\.(js|mjs|cjs|ts|ls|coffee|litcoffee|coffee\\.md)$'
       },
       to: {
@@ -238,7 +238,7 @@ module.exports = {
        "specify": for each dependency identify whether it only exists before compilation or also after
      */
     tsPreCompilationDeps: true,
-    
+
     /* list of extensions (typically non-parseable) to scan. Empty by default. */
     // extraExtensionsToScan: [".json", ".jpg", ".png", ".svg", ".webp"],
 
@@ -309,7 +309,7 @@ module.exports = {
 
         If you have an `exportsFields` attribute in your webpack config, that one
          will have precedence over the one specified here.
-      */ 
+      */
       exportsFields: ["exports"],
       /* List of conditions to check for in the exports field. e.g. use ['imports']
          if you're only interested in exposed es6 modules, ['require'] for commonjs,

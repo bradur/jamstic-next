@@ -1,7 +1,7 @@
-import AlakajamImporter from 'api/jams/alakajam/alakajam-importer'
-import GGJImporter from 'api/jams/ggj/ggj-importer'
-import LDJamImporter from 'api/jams/ldjam/ldjam-importer'
-import { JamConfig } from 'api/jams/types'
+import AlakajamImporter from 'backend/api/jams/alakajam/alakajam-importer'
+import GGJImporter from 'backend/api/jams/ggj/ggj-importer'
+import LDJamImporter from 'backend/api/jams/ldjam/ldjam-importer'
+import { JamConfig } from 'backend/api/jams/types'
 
 type JamConfigType = {
   jams: JamConfig[]

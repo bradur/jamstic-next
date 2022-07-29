@@ -6,13 +6,20 @@
     "dev": "next dev",
     "dev-ts": "concurrently -n NEXT,TS -c magenta,cyan \"next dev -p 3001\" \"npm run ts --watch\"",
     "ts": "tsc --noEmit --incremental --preserveWatchOutput --pretty",
-    "build": "npm run pre-commit && next build",
+    "build": "npm run pre-commit && next build && next export",
     "start": "next start",
     "lint": "next lint",
-    "depcruise": "depcruise --config .dependency-cruiser.js pages",
+    "depcruise": "depcruise --config .dependency-cruiser.js src",
     "find-deadcode": "ts-prune",
     "prepare": "husky install",
-    "pre-commit": "npm run ts && npm run depcruise && npm run find-deadcode && npm run lint"
+    "pre-commit": "npm run ts && npm run depcruise && npm run find-deadcode && npm run lint",
+    "deploy": "npm run build && node ./scripts/gh-pages.js"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false,
+    "net": false
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
@@ -56,9 +63,10 @@
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.3.0",
+    "gh-pages": "^4.0.0",
+    "husky": "^7.0.4",
     "prettier": "^2.6.1",
     "ts-prune": "^0.10.3",
-    "typescript": "4.6.3",
-    "husky": "^7.0.4"
+    "typescript": "4.6.3"
   }
 }

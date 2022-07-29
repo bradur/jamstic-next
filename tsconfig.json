@@ -14,8 +14,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": "pages",
-    "paths": { "@config/*": [".././config/*"], "@lib/*": ["lib/*"] }
+    "baseUrl": "src",
+    "paths": { "@config/*": [".././config/*"], "@lib/*": ["frontend/lib/*"], "@backendlib/*": ["backend/lib/*"] }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
