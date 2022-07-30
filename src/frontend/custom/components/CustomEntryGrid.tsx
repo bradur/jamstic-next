@@ -1,26 +1,12 @@
+import { EntriesContainer } from 'frontend/components/EntriesContainer'
+import { FilterContainer } from 'frontend/components/FilterContainer'
 import { FilterControl } from 'frontend/components/FilterControl'
+import { FilterInfoContainer } from 'frontend/components/FilterInfoContainer'
 import { SortingControl } from 'frontend/components/SortingControl'
 import { useFilter } from 'frontend/lib/filterContext'
 import { filterEntries, findTags, sortEntries } from 'frontend/lib/filterFunctions'
-import styled from 'styled-components'
 import { CustomPageProps } from '../../../types/types-custom'
 import { CustomEntriesPageEntry } from './CustomEntriesPageEntry'
-
-const FilterContainer = styled.div`
-  display: flex;
-  padding: 0 20px;
-  margin: 15px auto;
-`
-
-const FilterInfoContainer = styled.div`
-  margin-left: 15px;
-  display: inline-block;
-  background: cyan;
-  color: white;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  padding: 5px 15px;
-`
 
 export const CustomEntryGrid = ({ entries }: CustomPageProps) => {
   const tags = findTags(entries)
@@ -40,11 +26,11 @@ export const CustomEntryGrid = ({ entries }: CustomPageProps) => {
           {entryArray.length} / {entries.length} projects
         </div>
       </FilterInfoContainer>
-      <div className='games-container'>
+      <EntriesContainer>
         {entryArray.map((entry) => (
           <CustomEntriesPageEntry key={entry.categorySlug + entry.slug} {...entry} />
         ))}
-      </div>
+      </EntriesContainer>
     </>
   )
 }

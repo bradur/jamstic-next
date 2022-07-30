@@ -1,3 +1,4 @@
+import { JamsticLogger } from '@backendlib/logger'
 import GenericImporter from '../generic-importer'
 import { ImportedData } from '../types'
 import { AlakajamConnector } from './alakajam-connector'
@@ -13,7 +14,7 @@ import {
 
 export default class AlakajamImporter extends GenericImporter {
   async import(): Promise<ImportedData> {
-    console.log(`Old entries: ${this.oldEntries.length}`)
+    JamsticLogger.log(`Old entries: ${this.oldEntries.length}`)
     const newEntries = await this._getEntries()
     const transformedEntries = []
     for (const entry of newEntries) {

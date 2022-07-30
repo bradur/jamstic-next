@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { Router } from 'next/router'
 import styled from 'styled-components'
 
 const SiteNavigationContainer = styled.nav`
@@ -25,6 +27,7 @@ const SiteNavigationContainer = styled.nav`
   li {
     display: block;
     float: left;
+    border-bottom: 5px solid transparent;
   }
 
   [aria-current] {
@@ -47,27 +50,43 @@ const SiteNavigationContainer = styled.nav`
     padding: 1em 0.5em;
     display: block;
   }
-`
 
-const SiteNavigation = () => {
+  .active-route {
+    border-bottom-color: #ff3e00;
+  }
+`
+type Props = {
+  router: Router
+}
+const SiteNavigation = ({ router }: Props) => {
+  const normalizedRoute = router.route.replaceAll('/[...slug]', '')
+  const routes = [
+    {
+      href: '/blog',
+      name: 'blog',
+      title: 'blog',
+    },
+    {
+      href: '/games',
+      name: 'games',
+      title: 'games',
+    },
+    {
+      href: '/custom',
+      name: 'custom',
+      title: 'custom',
+    },
+  ]
   return (
     <SiteNavigationContainer>
       <ul>
-        <li>
-          <a rel='prefetch' href='/blog'>
-            blog
-          </a>
-        </li>
-        <li>
-          <a rel='prefetch' href='/games'>
-            games
-          </a>
-        </li>
-        <li>
-          <a rel='prefetch' href='/custom'>
-            custom
-          </a>
-        </li>
+        {routes.map((route) => (
+          <li key={route.href} className={route.href === normalizedRoute ? 'active-route' : ''}>
+            <Link href={route.href}>
+              <a rel='prefetch'>{route.title}</a>
+            </Link>
+          </li>
+        ))}
       </ul>
     </SiteNavigationContainer>
   )

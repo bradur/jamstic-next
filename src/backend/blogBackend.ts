@@ -9,17 +9,15 @@ type PageParams = {
 
 type SlugInfo = {
   yearSlug: string
-  monthSlug: string
   postSlug: string
 }
 
 const paramsToInfo = (params: PageParams): SlugInfo => {
   const { slug } = params
 
-  const [yearSlug, monthSlug, postSlug] = slug
+  const [yearSlug, postSlug] = slug
   return {
     yearSlug,
-    monthSlug,
     postSlug,
   }
 }
@@ -27,12 +25,11 @@ const paramsToInfo = (params: PageParams): SlugInfo => {
 export const blogStaticSlugProps = () => async ({
   params = { slug: [] },
 }: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<PostPageProps>> => {
-  console.log('staticslugprops')
   const files = getFiles('content/blog')
 
-  const { yearSlug, monthSlug, postSlug } = paramsToInfo(params)
+  const { yearSlug, postSlug } = paramsToInfo(params)
 
-  const post = files.find((file) => file.parentDirectory === monthSlug && file.fileName === postSlug)
+  const post = files.find((file) => file.parentDirectory === yearSlug && postPath(file) === postSlug)
   if (!post) {
     return {
       props: {
@@ -51,24 +48,23 @@ export const blogStaticSlugProps = () => async ({
 }
 
 export const blogStaticSlugPaths = () => async (): Promise<GetStaticPathsResult<PageParams>> => {
-  console.log('wtf')
   const files = getFiles('content/blog')
 
-  return {
+  const paths = {
     paths: files.map((file) => {
-      const slg = { slug: ['2022', file.parentDirectory, postPath(file)] }
+      const slg = { slug: [file.parentDirectory, postPath(file)] }
       return {
         params: slg,
       }
     }),
     fallback: false,
   }
+
+  return paths
 }
 
 export const blogStaticProps = () => async (): Promise<GetStaticPropsResult<PostsPageProps>> => {
-  console.log('staticprops')
   const files = getFiles('content/blog')
-  console.log(files)
   return {
     props: {
       error: false,

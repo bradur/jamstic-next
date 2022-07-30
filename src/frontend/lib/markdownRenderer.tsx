@@ -1,6 +1,6 @@
 import { createHash } from 'crypto'
 import { GameLink } from 'frontend/games/components/GameLink'
-import Image from 'next/image'
+import Link from 'next/link'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { solarizedLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 import styled from 'styled-components'
@@ -32,9 +32,9 @@ export const getMarkedRenderer = () => ({
   image: (href: string, title: string, text: string) => {
     return (
       <div className='jamstic-image' key={href}>
-        <a href={href}>
-          <Image width={320} height={180} alt={title} src={href} />
-        </a>
+        <Link href={href}>
+          <img width={320} height={180} alt={title} src={href} />
+        </Link>
         <div className='jamstic-image-title'>{text}</div>
       </div>
     )
@@ -53,7 +53,7 @@ export const getMarkedRenderer = () => ({
           width: 560,
           height: 315,
           frameBorder: 0,
-          allowFullscreen: true,
+          allowFullScreen: true,
           src: `//www.youtube.com/embed/${videoHash}`,
         }
         return (
@@ -65,9 +65,9 @@ export const getMarkedRenderer = () => ({
       }
     }
     return (
-      <a href={href} key={href + text} title={text}>
-        {text}
-      </a>
+      <Link key={href + text} href={href}>
+        <a title={text}>{text}</a>
+      </Link>
     )
   },
   paragraph: (text: string) => {

@@ -1,6 +1,6 @@
 import { stream } from '@backendlib/connector'
-import { findImageUrls } from 'frontend/lib/md-helper'
 import { AbsolutePath } from '@backendlib/path-helper'
+import { findImageUrls } from 'frontend/lib/md-helper'
 import fs, { PathLike } from 'fs'
 import getColors from 'get-image-colors'
 import glob from 'glob'
@@ -8,6 +8,7 @@ import imageType from 'image-type'
 import path from 'path'
 import { GenericEntry } from 'types/types-custom'
 import { GameEntry, GameEntryColor, GameEntryImage, GameEntryUser, GameImageType } from 'types/types-games'
+import { JamsticLogger } from './logger'
 
 const jsonIndentLength = 4
 
@@ -29,12 +30,12 @@ export const readJson = (filePath: PathLike) => {
 }
 
 export const loadSavedGenericEntries = (jamType: string): GenericEntry[] => {
-  console.log('Load saved entries of ' + jamType)
+  JamsticLogger.log('Load saved entries of ' + jamType)
   return glob.sync(AbsolutePath.CustomEntries(jamType), {}).map((file) => readJson(file) as GenericEntry)
 }
 
 export const loadSavedEntries = (jamType: string): GameEntry[] => {
-  console.log('Load saved entries of ' + jamType)
+  JamsticLogger.log('Load saved entries of ' + jamType)
   return glob.sync(AbsolutePath.SavedEntries(jamType), {}).map((file) => readJson(file) as GameEntry)
 }
 const readFile = (filePath: string) => fs.readFileSync(filePath)
@@ -42,7 +43,7 @@ const readFile = (filePath: string) => fs.readFileSync(filePath)
 export const downloadAndSaveFile = (url: string, savePath: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     if (fs.existsSync(savePath)) {
-      console.log(`'${savePath}' already exists, not downloading...`)
+      JamsticLogger.log(`'${savePath}' already exists, not downloading...`)
       resolve(false)
     } else {
       stream(url).then((response) =>
@@ -76,7 +77,7 @@ const findImages = (entry: GameEntry): GameEntryImage[] => {
 }
 
 export const downloadAndSaveImages = async (entries: GameEntry[]) => {
-  console.log('Checking for new images...')
+  JamsticLogger.log('Checking for new images...')
   for (const entry of entries) {
     let count = 0
     const images = findImages(entry)
@@ -86,22 +87,22 @@ export const downloadAndSaveImages = async (entries: GameEntry[]) => {
       }
       const imagePath = AbsolutePath.ImageFromGame(entry, image)
       createFolderIfItDoesntExist(imagePath)
-      console.log(`Saving image with url ${image.originalUrl} and path ${image.pathType} to ${imagePath}...`)
+      JamsticLogger.log(`Saving image with url ${image.originalUrl} and path ${image.pathType} to ${imagePath}...`)
       const downloaded = await downloadAndSaveFile(image.originalUrl, imagePath)
       if (downloaded) {
         count += 1
       }
     }
     if (count > 0) {
-      console.log(`Done! Downloaded & saved ${count} images.`)
+      JamsticLogger.log(`Done! Downloaded & saved ${count} images.`)
     } else {
-      console.log('No new images detected.')
+      JamsticLogger.log('No new images detected.')
     }
   }
 }
 
 export const downloadAndSaveAvatars = async (jamSlug: string, users: GameEntryUser[]) => {
-  console.log('Checking for new images...')
+  JamsticLogger.log('Checking for new images...')
   let count = 0
   for (const user of users) {
     if (user.avatar.originalUrl === '') {
@@ -109,7 +110,7 @@ export const downloadAndSaveAvatars = async (jamSlug: string, users: GameEntryUs
     }
     const imagePath = AbsolutePath.Avatar(jamSlug, user.avatar)
     if (createFolderIfItDoesntExist(imagePath)) {
-      console.log(
+      JamsticLogger.log(
         `Saving image with url ${user.avatar.originalUrl} and path ${user.avatar.pathType} to ${imagePath}...`,
       )
       const downloaded = await downloadAndSaveFile(user.avatar.originalUrl, imagePath)
@@ -119,9 +120,9 @@ export const downloadAndSaveAvatars = async (jamSlug: string, users: GameEntryUs
     }
   }
   if (count > 0) {
-    console.log(`Done! Downloaded & saved ${count} avatars.`)
+    JamsticLogger.log(`Done! Downloaded & saved ${count} avatars.`)
   } else {
-    console.log('No new images detected.')
+    JamsticLogger.log('No new images detected.')
   }
 }
 
@@ -143,20 +144,20 @@ const getDefaultColors = () => ({
 export const findGameCoverColors = async (entry: GameEntry): Promise<GameEntryColor> => {
   const { game } = entry
   if (!game.cover) {
-    console.log('Game cover empty, return default colors')
+    JamsticLogger.log('Game cover empty, return default colors')
     return getDefaultColors()
   }
-  console.log(JSON.stringify(game.cover))
+  JamsticLogger.log(JSON.stringify(game.cover))
   const coverPath = AbsolutePath.ImageFromGame(entry, game.cover)
   return findCoverColors(coverPath)
 }
 
 export const findCoverColors = async (coverPath: string): Promise<GameEntryColor> => {
-  console.log(`Attempting to read colors from ${coverPath}...`)
+  JamsticLogger.log(`Attempting to read colors from ${coverPath}...`)
   const imgFile = readFile(coverPath)
   const imgType = imageType(imgFile)
   if (imgType === null) {
-    console.log(`Couldn't find image type for ${imgFile}`)
+    JamsticLogger.log(`Couldn't find image type for ${imgFile}`)
     return {
       css: '',
     }

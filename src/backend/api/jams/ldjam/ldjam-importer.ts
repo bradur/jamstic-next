@@ -1,3 +1,4 @@
+import { JamsticLogger } from '@backendlib/logger'
 import GenericImporter from '../generic-importer'
 import { ImportedData } from '../types'
 import { LDJamConnector } from './ldjam-connector'
@@ -6,7 +7,7 @@ import { LDJamComment, LDJamEntry, LDJamEvent, LDJamFeed, LDJamGame, LDJamTag, L
 
 export default class LDJamImporter extends GenericImporter {
   async import(): Promise<ImportedData> {
-    console.log(`Old entries: ${this.oldEntries.length}`)
+    JamsticLogger.log(`Old entries: ${this.oldEntries.length}`)
     const platforms = (await LDJamConnector.getPlatforms()).data.tag as LDJamTag[]
     const newEntries = await this._getEntries()
     const transformedEntries = newEntries.map((entry) => {

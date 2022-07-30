@@ -11,6 +11,7 @@ const TagContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex: 1;
+  flex-wrap: wrap;
 `
 
 const TagButton = styled.button`

@@ -4,7 +4,6 @@ import { CustomEntryPage } from '../../frontend/custom/components/CustomEntryPag
 import { CustomEntryPageProps, GenericEntry } from '../../types/types-custom'
 
 const CustomEntry = (props: CustomEntryPageProps) => {
-  console.log('customEntry')
   if (props.error !== false) {
     return <div>{props.error}</div>
   }

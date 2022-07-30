@@ -1,8 +1,10 @@
+import { JamsticLogger } from '@backendlib/logger'
 import slugify from 'slugify'
 import { EntryImage } from 'types/types-custom'
 import { FoundFile, GameEntry, GameEntryImage, GameImageType } from 'types/types-games'
+import { findImageUrls } from './md-helper'
 
-const joinPath = (...args: string[]) => args.join('/')
+const joinPath = (...args: string[]) => args.join('/').replaceAll('///', '/').replaceAll('//', '/')
 const RELATIVE_IMAGE_PATH = '/images/'
 const DEFAULT_PROFILE_PIC = 'default-avatar.png'
 
@@ -11,7 +13,7 @@ const fileNameFromUrl = (url: string) => {
   try {
     processedUrl = new URL(url)
   } catch (error) {
-    console.log(`Error trying to parse url: ${url}`)
+    JamsticLogger.log(`Error trying to parse url: ${url}`)
     return 'error'
   }
   const pathname = processedUrl.pathname
@@ -19,11 +21,25 @@ const fileNameFromUrl = (url: string) => {
   return pathSplit.length > 0 ? pathSplit.at(-1) ?? pathname : pathname
 }
 
+export const makeImageUrlsLocal = (entry: GameEntry, text: string, imageType: GameImageType) => {
+  let replacedText = text
+  findImageUrls(replacedText).forEach((url) => {
+    replacedText = replacedText.replace(
+      url,
+      RelativePath.ImageFromGame(entry, {
+        originalUrl: url,
+        pathType: imageType,
+      }),
+    )
+  })
+  return replacedText
+}
+
 export const slugifyPath = (url: string) => slugify(url, { lower: true, remove: /[*+,~.()'"!:@]/g })
 
 const imgPath = (image: GameEntryImage, jamSlug: string, eventSlug = '', gameSlug = '') => {
   const imagePath = [jamSlug]
-  console.log(`Determining img path: ${gameSlug} ${image.pathType} ${image.originalUrl}`)
+  JamsticLogger.log(`Determining img path: ${gameSlug} ${image.pathType} ${image.originalUrl}`)
   if ([GameImageType.BODY, GameImageType.COMMENT].includes(image.pathType)) {
     imagePath.push(...[eventSlug, gameSlug])
   }
@@ -49,5 +65,5 @@ export class RelativePath {
   }
 }
 
-//export const postPath = (file: FoundFile) => slugifyPath(`${file.fileName.replaceAll('.json', '')}`)
-export const postPath = (file: FoundFile) => file.fileName
+export const postPath = (file: FoundFile) => slugifyPath(`${file.fileName.replaceAll('.json', '')}`)
+//export const postPath = (file: FoundFile) => file.fileName

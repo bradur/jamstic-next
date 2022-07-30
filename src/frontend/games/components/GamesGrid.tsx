@@ -1,26 +1,13 @@
+import { EntriesContainer } from 'frontend/components/EntriesContainer'
+import { FilterContainer } from 'frontend/components/FilterContainer'
+import { FilterInfoContainer } from 'frontend/components/FilterInfoContainer'
 import { useFilter } from 'frontend/lib/filterContext'
 import { filterGameEntries, findTagsFromJams, sortGameEntries } from 'frontend/lib/filterFunctions'
-import styled from 'styled-components'
 import { Jam } from '../../../backend/api/jams/types'
 import { FilterControl } from '../../components/FilterControl'
 import { SortingControl } from '../../components/SortingControl'
 import { GamesPageGame } from './GamesPageGame'
 
-const FilterContainer = styled.div`
-  display: flex;
-  padding: 0 20px;
-  margin: 15px auto;
-`
-
-const FilterInfoContainer = styled.div`
-  margin-left: 15px;
-  display: inline-block;
-  background: cyan;
-  color: white;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  padding: 5px 15px;
-`
 type Props = {
   jams: Jam[]
 }
@@ -44,11 +31,11 @@ export const GamesGrid = ({ jams }: Props) => {
           {entryArray.length} / {entries.length} games
         </div>
       </FilterInfoContainer>
-      <div className='games-container'>
+      <EntriesContainer>
         {entryArray.map((entry) => (
           <GamesPageGame key={entry.id} {...entry} />
         ))}
-      </div>
+      </EntriesContainer>
     </>
   )
 }

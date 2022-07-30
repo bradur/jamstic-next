@@ -1,5 +1,4 @@
-import { makeImageUrlsLocal } from '@backendlib/path-helper'
-import { RelativePath } from '@lib/relative-path-helper'
+import { makeImageUrlsLocal, RelativePath } from '@lib/relative-path-helper'
 import { DEFAULT_MARKDOWN_OPTIONS } from 'frontend/lib/constants'
 import Markdown from 'marked-react'
 import emoji from 'node-emoji'

@@ -1,3 +1,4 @@
+import { JamsticLogger } from '@backendlib/logger'
 import { GameEntryUser } from 'types/types-games'
 import GenericImporter from '../generic-importer'
 import { ImportedData } from '../types'
@@ -6,7 +7,7 @@ import { GGJTransformer } from './ggj-transformer'
 
 export default class GGJImporter extends GenericImporter {
   async import(): Promise<ImportedData> {
-    console.log(`Old entries: ${this.oldEntries.length}`)
+    JamsticLogger.log(`Old entries: ${this.oldEntries.length}`)
 
     const userPage = await this._fetchProfilePage(this.profileName)
     const entryUrls = GGJTransformer.getEntryUrls(userPage.data)

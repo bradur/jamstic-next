@@ -42,8 +42,6 @@ export const customStaticSlug = () => async ({
     entry.coverColors = await findCoverColors(AbsolutePath.Image('custom', entry.categorySlug, entry.slug, entry.cover))
     saveEntryData('custom', entry.categorySlug, entry.slug, entry)
   }
-  console.log(AbsolutePath.CustomDataFile('custom', categorySlug, slug))
-  console.log(entry)
   if (!entry) {
     return {
       props: {

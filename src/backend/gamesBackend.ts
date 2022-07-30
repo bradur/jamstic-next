@@ -5,14 +5,8 @@ import { GamesPageProps } from './api/jams/types'
 import { importData } from './lib/entry-importer'
 import { loadSavedEntries, readJson } from './lib/file-helper'
 import { readFileFromPath } from './lib/functions'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const net = require('net')
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs')
 
 export const gamesStaticProps = () => async (): Promise<GetStaticPropsResult<GamesPageProps>> => {
-  console.log(fs === true)
-  console.log(net === true)
   const { jams, error } = await importData()
 
   return {
@@ -47,8 +41,6 @@ const paramsToInfo = (params: PageParams): SlugInfo => {
 export const gamesStaticSlug = () => async ({
   params = { slug: [] },
 }: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<GamePageProps>> => {
-  console.log(fs === true)
-  console.log(net === true)
   const { jamFolder, eventName, gameName } = paramsToInfo(params)
   const entry = readJson(AbsolutePath.DataFile(jamFolder, eventName, gameName)) as GameEntry
 
@@ -77,8 +69,6 @@ export const gamesStaticSlug = () => async ({
 }
 
 export const gamesStaticPathsSlug = () => async (): Promise<GetStaticPathsResult<PageParams>> => {
-  console.log(fs === true)
-  console.log(net === true)
   const entries = loadSavedEntries('**')
 
   return {

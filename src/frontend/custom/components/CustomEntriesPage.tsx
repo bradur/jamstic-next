@@ -13,13 +13,6 @@ const CustomPageContainer = styled.div`
     height: 100%;
     object-fit: cover;
   }
-  .games-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 256px);
-    grid-auto-rows: 256px;
-    grid-gap: 10px;
-    justify-content: center;
-  }
 
   @media (max-width: 1300px) {
     .games-page {

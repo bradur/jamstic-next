@@ -1,9 +1,7 @@
-import { makeImageUrlsLocal } from '@backendlib/path-helper'
-import { RelativePath } from '@lib/relative-path-helper'
+import { makeImageUrlsLocal, RelativePath } from '@lib/relative-path-helper'
 import { DEFAULT_MARKDOWN_OPTIONS } from 'frontend/lib/constants'
 import { ago, formatDate, parseDate } from 'frontend/lib/date'
 import Markdown from 'marked-react'
-import Image from 'next/image'
 import emoji from 'node-emoji'
 import styled from 'styled-components'
 import { GameEntry, GameEntryComment, GameEntryUser, GameImageType } from '../../../types/types-games'
@@ -150,7 +148,7 @@ const GameComment = ({ entry, comment, user }: GameCommentProps) => {
 
   return (
     <div key={comment.id} className='game-comment'>
-      <div className='game-comment-author-image'>{avatarUrl && <Image width={80} height={80} src={avatarUrl} />}</div>
+      <div className='game-comment-author-image'>{avatarUrl && <img width={80} height={80} src={avatarUrl} />}</div>
       <div className='game-comment-meta'>
         <div className='game-comment-author'>
           <GameLink href={user.url} title={user.name} />

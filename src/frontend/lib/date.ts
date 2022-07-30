@@ -1,3 +1,4 @@
+import { JamsticLogger } from '@backendlib/logger'
 import TimeAgo, { LocaleData } from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 
@@ -21,7 +22,7 @@ export const formatDate = (date: Date | string | number) => dateTimeFormat.forma
 export const ago = (date: Date) => {
   const formatted = timeAgo.format(new Date(date.toLocaleString('en-US', { timeZone: ldjamTimeZone })))
   if (formatted === undefined) {
-    console.log(`Couldn't create 'ago' time from ${date}`)
+    JamsticLogger.log(`Couldn't create 'ago' time from ${date}`)
     return '-'
   }
   return formatted.toString()
@@ -90,12 +91,12 @@ const eventDates: { [name: string]: { [eventNumber: number]: string } } = {
 
 export const getLudumDareEventDate = (eventName: string, eventNumber: number) => {
   if (!Object.keys(eventDates).includes(eventName)) {
-    console.log(`Couldn't find Ludum Dare event ${eventName}`)
+    JamsticLogger.log(`Couldn't find Ludum Dare event ${eventName}`)
     return null
   }
   const chosenEvent = eventDates[eventName]
   if (!Object.keys(chosenEvent).map(Number).includes(eventNumber)) {
-    console.log(`Couldn't find Ludum Dare event ${eventName} number ${eventNumber}`)
+    JamsticLogger.log(`Couldn't find Ludum Dare event ${eventName} number ${eventNumber}`)
     return null
   }
   return new Date(chosenEvent[eventNumber])

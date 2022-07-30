@@ -1,3 +1,4 @@
+import { GenericPageContainer } from 'frontend/components/GenericPageContainer'
 import { GamesPageProps } from '../../backend/api/jams/types'
 import { gamesStaticProps } from '../../backend/gamesBackend'
 import { GamesPage } from '../../frontend/games/components/GamesPage'
@@ -8,9 +9,9 @@ const Games = (props: GamesPageProps) => {
   }
 
   return (
-    <>
+    <GenericPageContainer>
       <GamesPage {...props} />
-    </>
+    </GenericPageContainer>
   )
 }
 

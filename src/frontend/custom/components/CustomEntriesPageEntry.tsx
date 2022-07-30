@@ -1,8 +1,9 @@
 import { RelativePath } from '@lib/relative-path-helper'
+import Link from 'next/link'
 import styled from 'styled-components'
 import { GenericEntry } from '../../../types/types-custom'
 
-const CustomEntriesPageEntryContainer = styled.a<{ coverColors: string }>`
+const CustomEntriesPageEntryContainer = styled.div<{ coverColors: string }>`
   ${(props) => props.coverColors}
 
   position: relative;
@@ -11,6 +12,7 @@ const CustomEntriesPageEntryContainer = styled.a<{ coverColors: string }>`
   border-right: 2px solid var(--four);
   border-top: 2px solid var(--five);
   border-radius: 5px;
+  cursor: pointer;
 
   .game-meta {
     position: absolute;
@@ -73,19 +75,22 @@ export const CustomEntriesPageEntry = (entry: GenericEntry) => {
     <CustomEntriesPageEntryContainer
       key={entry.categorySlug + entry.slug}
       className='game-container'
-      href={`${RelativePath.Entry('custom', entry.categorySlug, entry.slug)}`}
       coverColors={entry.coverColors.css}
     >
-      <div className='game-meta'>
-        <h3>{entry.name}</h3>
-      </div>
-      <div className='game-picture-container'>
-        <img
-          className='game-picture'
-          src={RelativePath.Image('custom', entry.categorySlug, entry.slug, entry.cover)}
-          alt={`Cover picture of ${entry.name}`}
-        />
-      </div>
+      <Link href={`${RelativePath.Entry('custom', entry.categorySlug, entry.slug)}`}>
+        <a>
+          <div className='game-meta'>
+            <h3>{entry.name}</h3>
+          </div>
+          <div className='game-picture-container'>
+            <img
+              className='game-picture'
+              src={RelativePath.Image('custom', entry.categorySlug, entry.slug, entry.cover)}
+              alt={`Cover picture of ${entry.name}`}
+            />
+          </div>
+        </a>
+      </Link>
     </CustomEntriesPageEntryContainer>
   )
 }

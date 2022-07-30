@@ -1,8 +1,9 @@
 import { RelativePath } from '@lib/relative-path-helper'
+import Link from 'next/link'
 import styled from 'styled-components'
 import { GameEntry } from '../../../types/types-games'
 
-const GamesPageGameContainer = styled.a<{ coverColors: string }>`
+const GamesPageGameContainer = styled.div<{ coverColors: string }>`
   ${(props) => props.coverColors}
 
   position: relative;
@@ -11,6 +12,7 @@ const GamesPageGameContainer = styled.a<{ coverColors: string }>`
   border-right: 2px solid var(--four);
   border-top: 2px solid var(--five);
   border-radius: 5px;
+  cursor: pointer;
 
   .game-meta {
     position: absolute;
@@ -71,28 +73,30 @@ const GamesPageGameContainer = styled.a<{ coverColors: string }>`
 export const GamesPageGame = (entry: GameEntry) => {
   const { game, event } = entry
   return (
-    <GamesPageGameContainer
-      key={game.id}
-      className='game-container'
-      href={`games/${RelativePath.EntryFromGame(entry)}`}
-      coverColors={game.coverColors.css}
-    >
-      <div className='game-meta'>
-        <h3>{game.name}</h3>
-        <div className='game-meta-event'>
-          <div className='game-event-name'>{event.name}</div>
-          {game.results.overall.result !== null && (
-            <div className='game-event-result'>#{game.results.overall.result}</div>
-          )}
-        </div>
-      </div>
-      <div className='game-picture-container'>
-        <img
-          className='game-picture'
-          src={RelativePath.ImageFromGame(entry, game.cover)}
-          alt='Cover picture of {game.name}'
-        />
-      </div>
+    <GamesPageGameContainer key={game.id} className='game-container' coverColors={game.coverColors.css}>
+      <Link href={`/games/${RelativePath.EntryFromGame(entry)}`}>
+        <a>
+          <div className='game-meta'>
+            <h3>{game.name}</h3>
+            <div className='game-meta-event'>
+              <div className='game-event-name'>{event.name}</div>
+              {game.results.overall.result !== null && (
+                <>
+                  {' '}
+                  <div className='game-event-result'>#{game.results.overall.result}</div>
+                </>
+              )}
+            </div>
+          </div>
+          <div className='game-picture-container'>
+            <img
+              className='game-picture'
+              src={RelativePath.ImageFromGame(entry, game.cover)}
+              alt='Cover picture of {game.name}'
+            />
+          </div>
+        </a>
+      </Link>
     </GamesPageGameContainer>
   )
 }

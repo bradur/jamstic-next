@@ -1,3 +1,4 @@
+import { GenericPageContainer } from 'frontend/components/GenericPageContainer'
 import { customStaticProps } from '../../backend/customBackend'
 import { CustomEntriesPage } from '../../frontend/custom/components/CustomEntriesPage'
 import { CustomPageProps } from '../../types/types-custom'
@@ -8,9 +9,9 @@ const CustomEntries = (props: CustomPageProps) => {
   }
 
   return (
-    <>
+    <GenericPageContainer>
       <CustomEntriesPage {...props} />
-    </>
+    </GenericPageContainer>
   )
 }
 

@@ -1,10 +1,11 @@
 import axios from 'axios'
+import { JamsticLogger } from './logger'
 
 export const get = (url: string) => {
-  console.log(`GET to url: ${url}`)
+  JamsticLogger.log(`GET to url: ${url}`)
   return axios.get(url)
 }
 export const stream = (url: string) => {
-  console.log(`STREAM to url: ${url}`)
+  JamsticLogger.log(`STREAM to url: ${url}`)
   return axios({ url, responseType: 'stream' })
 }

@@ -1,7 +1,8 @@
+import Link from 'next/link'
 import styled from 'styled-components'
 
 const PageBreadcrumbContainer = styled.div`
-  max-width: 920px;
+  max-width: 980px;
   margin: 0 auto;
   .breadcrumb-back {
     font-size: 20px;
@@ -23,9 +24,9 @@ type PageBreadcrumbProps = {
 export const PageBreadcrumb = ({ route, title = 'back' }: PageBreadcrumbProps) => {
   return (
     <PageBreadcrumbContainer>
-      <a className='breadcrumb-back' href={`/${route}`}>
-        &lt;- {title}
-      </a>
+      <Link href={`/${route}`}>
+        <a className='breadcrumb-back'>&lt;- {title}</a>
+      </Link>
     </PageBreadcrumbContainer>
   )
 }

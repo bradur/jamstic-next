@@ -1,8 +1,7 @@
-import { RelativePath } from '@lib/relative-path-helper'
 import path, { join, resolve } from 'path'
 import { EntryImage } from 'types/types-custom'
 import { GameEntry, GameEntryImage, GameImageType } from 'types/types-games'
-import { findImageUrls } from '../../frontend/lib/md-helper'
+import { JamsticLogger } from './logger'
 
 const CONTENT_FOLDER = 'content'
 const DEBUG_FOLDER = 'debug'
@@ -25,33 +24,19 @@ const fileNameFromUrl = (url: string) => {
   try {
     processedUrl = new URL(url)
   } catch (error) {
-    console.log(`Error trying to parse url: ${url}`)
+    JamsticLogger.log(`Error trying to parse url: ${url}`)
     return 'error'
   }
   return path.basename(processedUrl.pathname)
 }
 const imgPath = (image: GameEntryImage, jamSlug: string, eventSlug = '', gameSlug = '') => {
   const imagePath = [jamSlug]
-  console.log(`Determining img path: ${gameSlug} ${image.pathType} ${image.originalUrl}`)
+  JamsticLogger.log(`Determining img path: ${gameSlug} ${image.pathType} ${image.originalUrl}`)
   if ([GameImageType.BODY, GameImageType.COMMENT].includes(image.pathType)) {
     imagePath.push(...[eventSlug, gameSlug])
   }
   imagePath.push(...[image.pathType, fileNameFromUrl(image.originalUrl)])
   return imagePath
-}
-
-export const makeImageUrlsLocal = (entry: GameEntry, text: string, imageType: GameImageType) => {
-  let replacedText = text
-  findImageUrls(replacedText).forEach((url) => {
-    replacedText = replacedText.replace(
-      url,
-      RelativePath.ImageFromGame(entry, {
-        originalUrl: url,
-        pathType: imageType,
-      }),
-    )
-  })
-  return replacedText
 }
 
 export class AbsolutePath {

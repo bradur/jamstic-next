@@ -1,5 +1,6 @@
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Link from 'next/link'
 import styled from 'styled-components'
 
 const fontSize = 16
@@ -29,17 +30,19 @@ export const CustomEntryLink = ({ href, title }: CustomEntryLinkProps) => {
   const external = href.includes('http://') || href.includes('https://')
   return (
     <CustomEntryLinkContainer>
-      <a href={href} title={title}>
-        {title}{' '}
-        {external && (
-          <FontAwesomeIcon
-            className='custom-entry-link-icon'
-            icon={faArrowUpRightFromSquare}
-            width={fontSize}
-            height={fontSize}
-          />
-        )}
-      </a>
+      <Link href={href}>
+        <a title={title}>
+          {title}{' '}
+          {external && (
+            <FontAwesomeIcon
+              className='custom-entry-link-icon'
+              icon={faArrowUpRightFromSquare}
+              width={fontSize}
+              height={fontSize}
+            />
+          )}
+        </a>
+      </Link>
     </CustomEntryLinkContainer>
   )
 }
