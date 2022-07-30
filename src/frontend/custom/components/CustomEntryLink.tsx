@@ -31,7 +31,7 @@ export const CustomEntryLink = ({ href, title }: CustomEntryLinkProps) => {
   return (
     <CustomEntryLinkContainer>
       <Link href={href}>
-        <a title={title}>
+        <a rel='prefetch' title={title}>
           {title}{' '}
           {external && (
             <FontAwesomeIcon

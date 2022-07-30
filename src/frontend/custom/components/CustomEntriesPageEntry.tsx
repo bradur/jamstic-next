@@ -77,8 +77,8 @@ export const CustomEntriesPageEntry = (entry: GenericEntry) => {
       className='game-container'
       coverColors={entry.coverColors.css}
     >
-      <Link href={`${RelativePath.Entry('custom', entry.categorySlug, entry.slug)}`}>
-        <a>
+      <Link href={`${RelativePath.CustomEntry(entry.categorySlug, entry.slug)}`}>
+        <a rel='prefetch'>
           <div className='game-meta'>
             <h3>{entry.name}</h3>
           </div>

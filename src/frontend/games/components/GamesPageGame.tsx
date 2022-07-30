@@ -74,8 +74,8 @@ export const GamesPageGame = (entry: GameEntry) => {
   const { game, event } = entry
   return (
     <GamesPageGameContainer key={game.id} className='game-container' coverColors={game.coverColors.css}>
-      <Link href={`/games/${RelativePath.EntryFromGame(entry)}`}>
-        <a>
+      <Link href={`${RelativePath.EntryFromGame(entry)}`}>
+        <a rel='prefetch'>
           <div className='game-meta'>
             <h3>{game.name}</h3>
             <div className='game-meta-event'>

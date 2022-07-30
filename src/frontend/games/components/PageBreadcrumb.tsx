@@ -25,7 +25,9 @@ export const PageBreadcrumb = ({ route, title = 'back' }: PageBreadcrumbProps) =
   return (
     <PageBreadcrumbContainer>
       <Link href={`/${route}`}>
-        <a className='breadcrumb-back'>&lt;- {title}</a>
+        <a rel='prefetch' className='breadcrumb-back'>
+          &lt;- {title}
+        </a>
       </Link>
     </PageBreadcrumbContainer>
   )

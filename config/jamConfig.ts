@@ -6,6 +6,7 @@ import { JamConfig } from 'backend/api/jams/types'
 type JamConfigType = {
   jams: JamConfig[]
 }
+
 export const jamConfig: JamConfigType = {
   jams: [
     {

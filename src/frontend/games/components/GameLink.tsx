@@ -32,7 +32,9 @@ export const GameLink = ({ href, title }: GameLinkProps) => {
     <GameLinkContainer>
       {external === false ? (
         <Link href={href}>
-          <a title={title}>{title}</a>
+          <a rel='prefetch' title={title}>
+            {title}
+          </a>
         </Link>
       ) : (
         <a title={title} href={href}>

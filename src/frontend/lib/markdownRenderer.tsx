@@ -64,11 +64,7 @@ export const getMarkedRenderer = () => ({
         )
       }
     }
-    return (
-      <Link key={href + text} href={href}>
-        <a title={text}>{text}</a>
-      </Link>
-    )
+    return <GameLink key={href + text} href={href} title={text} />
   },
   paragraph: (text: string) => {
     const textAsString = text.toString()

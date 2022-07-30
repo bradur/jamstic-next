@@ -5,7 +5,7 @@ import { FoundFile, GameEntry, GameEntryImage, GameImageType } from 'types/types
 import { findImageUrls } from './md-helper'
 
 const joinPath = (...args: string[]) => args.join('/').replaceAll('///', '/').replaceAll('//', '/')
-const RELATIVE_IMAGE_PATH = '/images/'
+const RELATIVE_IMAGE_PATH = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/`
 const DEFAULT_PROFILE_PIC = 'default-avatar.png'
 
 const fileNameFromUrl = (url: string) => {
@@ -49,7 +49,7 @@ const imgPath = (image: GameEntryImage, jamSlug: string, eventSlug = '', gameSlu
 
 export class RelativePath {
   static EntryFromGame = (entry: GameEntry) => joinPath(entry.jamSlug, entry.event.slug, entry.game.slug)
-  static Entry = (jamSlug: string, categorySlug: string, slug: string) => joinPath(jamSlug, categorySlug, slug)
+  static CustomEntry = (categorySlug: string, slug: string) => joinPath(categorySlug, slug)
   static Image = (jamSlug: string, categorySlug: string, slug: string, image: EntryImage) => {
     return joinPath(RELATIVE_IMAGE_PATH, jamSlug, categorySlug, slug, image.originalUrl)
   }
