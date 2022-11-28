@@ -1,9 +1,13 @@
 import { get } from '@backendlib/connector'
+import { removeUnnecessarySlashes } from '@lib/relative-path-helper'
 import { LDJamFeedResponse, LDJamProfileResponse } from './types'
 
 export class LDJamConnector {
   static _staticUrl() {
     return 'https://static.jam.vg/'
+  }
+  static _staticImageUrl() {
+    return 'https://static.jam.host/'
   }
   static _baseUrl() {
     return 'https://ldjam.com/'
@@ -57,6 +61,9 @@ export class LDJamConnector {
     return get(`${this.apiUrl()}comment/getbynode/${nodeId}`)
   }
 
+  static staticImageUrl(url: string) {
+    return removeUnnecessarySlashes(`${this._staticImageUrl()}${url}.jpg`)
+  }
   static staticUrl(url: string) {
     return `${this._staticUrl()}${url}`
   }

@@ -30,12 +30,6 @@ export const jamConfig: JamConfigType = {
       defaultAvatarUrl: 'https://static.alakajam.com/static/images/default-avatar.png',
       enabled: true,
     },
-    /*{
-      name: 'Alakajam',
-      slug: 'alakajam',
-      importer: AlakajamImporter,
-      defaultAvatarUrl: 'https://static.alakajam.com/static/images/default-avatar.png',
-    },*/
     //{ name: "Ludum Dare", games: ludumDareGames },
     //{ name: "Global Game Jam", games: ggjGames }
   ],

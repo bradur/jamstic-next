@@ -64,7 +64,7 @@ $ cp config/exampleConfig.json config/config.json
 $ npm install
 ```
 
-5. Run dev and open http://localhost:3000 in your browser
+5. Run dev and open http://localhost:3001 in your browser
 ```bash
 $ npm run dev
 ```

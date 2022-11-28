@@ -7,9 +7,9 @@ import {
   loadSavedEntries,
   writeJson,
 } from '@backendlib/file-helper'
+import { AbsolutePath } from '@backendlib/path-helper'
 import config from '@config/config.json'
 import { jamConfig } from '@config/jamConfig'
-import { AbsolutePath } from '@backendlib/path-helper'
 import { GameEntry, GameEntryUser, ProfileConfig } from 'types/types-games'
 import { ImportedData, Jam, JamConfig } from '../api/jams/types'
 import { readFileFromPath } from './functions'
@@ -47,7 +47,7 @@ const processEntries = async (entries: GameEntry[]) => {
   const processedEntries: GameEntry[] = entries.map(structuredClone)
   for (const entry of processedEntries) {
     entry.game.coverColors = await findGameCoverColors(entry)
-    entry.game.tags = findTags(entry)
+    entry.game.tags = Array.from(new Set(findTags(entry)))
   }
   return processedEntries
 }
@@ -61,7 +61,7 @@ const saveEntryData = (jamSlug: string, entries: GameEntry[]) => {
 }
 
 type ImportDataReturn = { jams: Jam[]; error: boolean | string }
-export const importData = async (): Promise<ImportDataReturn> => {
+export const importData = async (download = false): Promise<ImportDataReturn> => {
   const jamConfigs = jamConfig.jams
   const profileConfig = config as ProfileConfig
   const jams: Jam[] = []
@@ -81,24 +81,26 @@ export const importData = async (): Promise<ImportDataReturn> => {
       error = `Couldn't find profile in config.json for '${jamSlug}'`
       break
     }
-    const oldEntries = loadSavedEntries(jamSlug)
-    const importer = new jam.importer({
-      profileName: profileConfig.profiles[profile].profileName,
-      refetchOldEntries: REFETCH_OLD_ENTRIES,
-      oldEntries,
-      jamSlug,
-      users,
-    })
-    const importedData = await importer.import()
-    await downloadAvatarsAndImages(jamSlug, jam, importedData)
+    let entries = loadSavedEntries(jamSlug)
+    if (download) {
+      const importer = new jam.importer({
+        profileName: profileConfig.profiles[profile].profileName,
+        refetchOldEntries: REFETCH_OLD_ENTRIES,
+        oldEntries: entries,
+        jamSlug,
+        users,
+      })
+      const importedData = await importer.import()
+      await downloadAvatarsAndImages(jamSlug, jam, importedData)
+      entries = await processEntries(importedData.entries)
+      saveEntryData(jamSlug, entries)
+      saveUserData(jamSlug, importedData.users)
+    }
 
-    const processedEntries = await processEntries(importedData.entries)
-    saveEntryData(jamSlug, processedEntries)
-    saveUserData(jamSlug, importedData.users)
     jams.push({
       name: jam.name,
       slug: jam.slug,
-      entries: processedEntries,
+      entries,
     })
   }
   return { jams, error }

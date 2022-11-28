@@ -1,5 +1,6 @@
 import { RelativePath } from '@lib/relative-path-helper'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { GenericEntry } from '../../../types/types-custom'
 
@@ -71,13 +72,14 @@ const CustomEntriesPageEntryContainer = styled.div<{ coverColors: string }>`
 `
 
 export const CustomEntriesPageEntry = (entry: GenericEntry) => {
+  const router = useRouter()
   return (
     <CustomEntriesPageEntryContainer
       key={entry.categorySlug + entry.slug}
       className='game-container'
       coverColors={entry.coverColors.css}
     >
-      <Link href={`${RelativePath.CustomEntry(entry.categorySlug, entry.slug)}`}>
+      <Link href={RelativePath.LinkHref(router, RelativePath.CustomEntry(entry.categorySlug, entry.slug))}>
         <a rel='prefetch'>
           <div className='game-meta'>
             <h3>{entry.name}</h3>

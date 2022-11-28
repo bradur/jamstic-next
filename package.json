@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "dev-ts": "concurrently -n NEXT,TS -c magenta,cyan \"next dev -p 3001\" \"npm run ts --watch\"",
+    "dev": "next dev -p 3001",
+    "dev-ts": "concurrently -n NEXT,TS -c magenta,cyan \"next dev -p 3001\" \"npm run tsw\"",
+    "tsw": "tsc --watch --noEmit --incremental --preserveWatchOutput --pretty",
     "ts": "tsc --noEmit --incremental --preserveWatchOutput --pretty",
     "copynojekyll": "copyfiles .nojekyll ./out/",
     "build": "npm run pre-commit && next build && next export && npm run copynojekyll",

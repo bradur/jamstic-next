@@ -1,5 +1,6 @@
 import { RelativePath } from '@lib/relative-path-helper'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { GameEntry } from '../../../types/types-games'
 
@@ -72,9 +73,10 @@ const GamesPageGameContainer = styled.div<{ coverColors: string }>`
 
 export const GamesPageGame = (entry: GameEntry) => {
   const { game, event } = entry
+  const router = useRouter()
   return (
     <GamesPageGameContainer key={game.id} className='game-container' coverColors={game.coverColors.css}>
-      <Link href={`${RelativePath.EntryFromGame(entry)}`}>
+      <Link href={RelativePath.LinkHref(router, RelativePath.EntryFromGame(entry))}>
         <a rel='prefetch'>
           <div className='game-meta'>
             <h3>{game.name}</h3>

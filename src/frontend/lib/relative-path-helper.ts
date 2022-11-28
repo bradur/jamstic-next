@@ -1,10 +1,11 @@
 import { JamsticLogger } from '@backendlib/logger'
+import { NextRouter } from 'next/router'
 import slugify from 'slugify'
 import { EntryImage } from 'types/types-custom'
 import { FoundFile, GameEntry, GameEntryImage, GameImageType } from 'types/types-games'
 import { findImageUrls } from './md-helper'
 
-const joinPath = (...args: string[]) => args.join('/').replaceAll('///', '/').replaceAll('//', '/')
+const joinPath = (...args: string[]) => removeUnnecessarySlashes(args.join('/'))
 const RELATIVE_IMAGE_PATH = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/images/`
 const DEFAULT_PROFILE_PIC = 'default-avatar.png'
 
@@ -19,6 +20,17 @@ const fileNameFromUrl = (url: string) => {
   const pathname = processedUrl.pathname
   const pathSplit = pathname.split('/')
   return pathSplit.length > 0 ? pathSplit.at(-1) ?? pathname : pathname
+}
+
+export const removeUnnecessarySlashes = (url: string) => {
+  const possibleStarts = ['https://', 'http://', '://']
+  const prepend = possibleStarts.map((start) => (url.startsWith(start) ? start : '')).join('')
+  let newUrl = url
+  for (const start of possibleStarts) {
+    newUrl = newUrl.replaceAll(start, '')
+  }
+  newUrl = newUrl.replaceAll('////', '/').replaceAll('///', '/').replaceAll('//', '/')
+  return [...prepend, newUrl].join('')
 }
 
 export const makeImageUrlsLocal = (entry: GameEntry, text: string, imageType: GameImageType) => {
@@ -62,6 +74,9 @@ export class RelativePath {
   }
   static DefaultAvatar = (jamSlug: string) => {
     return joinPath(RELATIVE_IMAGE_PATH, jamSlug, DEFAULT_PROFILE_PIC)
+  }
+  static LinkHref = (router: NextRouter, linkPath: string) => {
+    return { pathname: [router.pathname, linkPath].join('/') }
   }
 }
 
