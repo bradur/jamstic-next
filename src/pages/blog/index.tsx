@@ -1,5 +1,6 @@
 import { postPath, RelativePath } from '@lib/relative-path-helper'
 import { blogStaticProps } from 'backend/blogBackend'
+import { BlogHome } from 'frontend/blog/components/BlogHome'
 import { GenericPageContainer } from 'frontend/components/GenericPageContainer'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -18,6 +19,7 @@ const BlogEntries = (props: PostsPageProps) => {
       <Head>
         <title>jamstic - Blog</title>
       </Head>
+      <BlogHome />
       <div>
         <h1>Blog</h1>
         {props.posts.map((post) => (
