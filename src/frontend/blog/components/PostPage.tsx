@@ -13,20 +13,26 @@ const PostPageContainer = styled.div`
   min-width: 980px;
 `
 
+export const RenderedPost = ({ post: { date, title, body } }: { post: PostEntry }) => {
+  return (
+    <>
+      <h1>
+        {title} - {formatDate(date)}
+      </h1>
+      <Markdown {...DEFAULT_MARKDOWN_OPTIONS} value={body} />
+    </>
+  )
+}
+
 export const PostPage = ({ error, post }: PostPageProps) => {
   if (error || post === null) {
     return <div>{error}</div>
   }
 
-  const { date, title, body } = post as PostEntry
-
   return (
     <PostPageContainer>
       <PageBreadcrumb route={'blog'} />
-      <h1>
-        {title} - {formatDate(date)}
-      </h1>
-      <Markdown {...DEFAULT_MARKDOWN_OPTIONS} value={body} />
+      <RenderedPost post={post as PostEntry} />
     </PostPageContainer>
   )
 }

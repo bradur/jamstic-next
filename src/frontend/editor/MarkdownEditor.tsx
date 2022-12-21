@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from 'react'
 import { Descendant, Node } from 'slate'
 import { Editable, Slate } from 'slate-react'
 import styled from 'styled-components'
@@ -14,7 +13,7 @@ const MarkdownEditorContainer = styled.div`
 const initialValue: Descendant[] = [
   {
     type: 'paragraph',
-    children: [{ text: '# Title' }],
+    children: [{ text: '' }],
   },
 ]
 
@@ -22,13 +21,9 @@ const serialize = (nodes: Node[]) => {
   return nodes.map((n) => Node.string(n)).join('\n')
 }
 
-export const MarkdownEditor = ({
-  editor,
-  setMarkdown,
-}: {
-  editor: CustomEditor
-  setMarkdown: Dispatch<SetStateAction<string>>
-}) => {
+type MarkdownEditorProps = { editor: CustomEditor; setValue: (value: string) => void; placeholder?: string }
+
+export const MarkdownEditor = ({ editor, setValue, placeholder = 'Type something here' }: MarkdownEditorProps) => {
   return (
     <MarkdownEditorContainer>
       <Slate
@@ -37,11 +32,11 @@ export const MarkdownEditor = ({
         onChange={(value) => {
           const isARealChange = editor.operations.some((operation) => operation.type !== 'set_selection')
           if (isARealChange) {
-            setMarkdown(serialize(value))
+            setValue(serialize(value))
           }
         }}
       >
-        <Editable />
+        <Editable placeholder={placeholder} />
       </Slate>
     </MarkdownEditorContainer>
   )
