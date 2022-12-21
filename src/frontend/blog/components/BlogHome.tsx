@@ -33,7 +33,7 @@ const SaveButton = styled.button`
 
 export const BlogHome = () => {
   const originalValue = ''
-  const [post, setPost] = useState<PostEntry>({ date: new Date(), title: '', body: '', slug: '' })
+  const [post, setPost] = useState<PostEntry>({ date: new Date(), title: '', body: '', slug: '', id: -1 })
   //const [editorValue, setEditorValue] = useState<string>(originalValue)
   //const [title, setTitle] = useState<string>('')
   const setEditorValue = (value: string) => {

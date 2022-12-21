@@ -1,8 +1,9 @@
 import { JamsticLogger } from '@backendlib/logger'
 import { NextRouter } from 'next/router'
 import slugify from 'slugify'
+import { PostEntry } from 'types/types-blog'
 import { EntryImage } from 'types/types-custom'
-import { FoundFile, GameEntry, GameEntryImage, GameImageType } from 'types/types-games'
+import { GameEntry, GameEntryImage, GameImageType } from 'types/types-games'
 import { findImageUrls } from './md-helper'
 
 const joinPath = (...args: string[]) => removeUnnecessarySlashes(args.join('/'))
@@ -80,5 +81,8 @@ export class RelativePath {
   }
 }
 
-export const postPath = (file: FoundFile) => slugifyPath(`${file.fileName.replaceAll('.json', '')}`)
-//export const postPath = (file: FoundFile) => file.fileName
+export const postPath = (post: PostEntry) => {
+  const date = new Date(post.date)
+  const slug = slugify(post.title)
+  return `${date.getFullYear()}/${slug}/${post.id}`
+}

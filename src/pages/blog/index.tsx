@@ -22,11 +22,15 @@ const BlogEntries = (props: PostsPageProps) => {
       <BlogHome />
       <div>
         <h1>Blog</h1>
-        {props.posts.map((post) => (
-          <Link key={post.fullPath} href={RelativePath.LinkHref(router, `${post.parentDirectory}/${postPath(post)}`)}>
-            <a rel='prefetch'>{postPath(post)}</a>
-          </Link>
-        ))}
+        <ul>
+          {props.posts.map((post) => (
+            <li key={post.id}>
+              <Link href={RelativePath.LinkHref(router, postPath(post))}>
+                <a rel='prefetch'>{postPath(post)}</a>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </GenericPageContainer>
   )

@@ -32,7 +32,7 @@ export const PostPage = ({ error, post }: PostPageProps) => {
   return (
     <PostPageContainer>
       <PageBreadcrumb route={'blog'} />
-      <RenderedPost post={post as PostEntry} />
+      <RenderedPost post={post} />
     </PostPageContainer>
   )
 }

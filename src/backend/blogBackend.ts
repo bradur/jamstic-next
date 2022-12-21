@@ -1,7 +1,7 @@
-import { getFiles, readFileToJson } from '@backendlib/functions'
-import { postPath } from '@lib/relative-path-helper'
+import { DBConnector } from '@backendlib/db'
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
-import { PostEntry, PostPageProps, PostsPageProps } from 'types/types-blog'
+import slugify from 'slugify'
+import { PostPageProps, PostsPageProps } from 'types/types-blog'
 
 type PageParams = {
   slug: string[]
@@ -10,49 +10,42 @@ type PageParams = {
 type SlugInfo = {
   yearSlug: string
   postSlug: string
+  id: number
 }
 
 const paramsToInfo = (params: PageParams): SlugInfo => {
   const { slug } = params
 
-  const [yearSlug, postSlug] = slug
+  const [yearSlug, postSlug, id] = slug
   return {
     yearSlug,
     postSlug,
+    id: parseInt(id, 10),
   }
 }
 
 export const blogStaticSlugProps = () => async ({
   params = { slug: [] },
 }: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<PostPageProps>> => {
-  const files = getFiles('content/blog')
-
-  const { yearSlug, postSlug } = paramsToInfo(params)
-
-  const post = files.find((file) => file.parentDirectory === yearSlug && postPath(file) === postSlug)
-  if (!post) {
-    return {
-      props: {
-        error: "Couldn't find file!",
-        post: null,
-      },
-    }
-  }
-  const postJSON = readFileToJson(post) as PostEntry
+  const { id } = paramsToInfo(params)
+  const db = await DBConnector.Initialize()
+  const post = await db.getPostById(id)
   return {
     props: {
       error: false,
-      post: postJSON,
+      post: post,
     },
   }
 }
 
 export const blogStaticSlugPaths = () => async (): Promise<GetStaticPathsResult<PageParams>> => {
-  const files = getFiles('content/blog')
+  const db = await DBConnector.Initialize()
+  const posts = await db.getAllPosts()
 
   const paths = {
-    paths: files.map((file) => {
-      const slg = { slug: [file.parentDirectory, postPath(file)] }
+    paths: posts.map((post) => {
+      const date = new Date(post.date)
+      const slg = { slug: [`${date.getFullYear()}`, slugify(post.title), `${post.id}`] }
       return {
         params: slg,
       }
@@ -64,11 +57,12 @@ export const blogStaticSlugPaths = () => async (): Promise<GetStaticPathsResult<
 }
 
 export const blogStaticProps = () => async (): Promise<GetStaticPropsResult<PostsPageProps>> => {
-  const files = getFiles('content/blog')
+  const db = await DBConnector.Initialize()
+  const posts = await db.getAllPosts()
   return {
     props: {
       error: false,
-      posts: files,
+      posts: posts,
     },
   }
 }

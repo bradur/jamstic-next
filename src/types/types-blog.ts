@@ -1,6 +1,5 @@
-import { FoundFile } from './types-games'
-
 export type PostEntry = {
+  id: number
   date: Date
   title: string
   slug: string
@@ -13,6 +12,6 @@ export type PostPageProps = {
 }
 
 export type PostsPageProps = {
-  posts: FoundFile[]
+  posts: PostEntry[]
   error: boolean | string
 }
