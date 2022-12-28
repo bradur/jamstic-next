@@ -7,7 +7,7 @@ type AllowedValues = string | number
 
 export class DBConnector {
   dbPath = 'databases/posts.sqlite3'
-  sqlGetAll = `SELECT id, title, body, date FROM posts;`
+  sqlGetAll = `SELECT id, title, body, date FROM posts ORDER BY date DESC;`
   sqlGetById = `SELECT id, title, body, date FROM posts WHERE id = ?;`
   static sqlCreateTable = `
   CREATE TABLE IF NOT EXISTS posts (
@@ -23,9 +23,9 @@ export class DBConnector {
   constructor() {
     createFolderIfItDoesntExist(this.dbPath)
     if (!fs.existsSync(this.dbPath)) {
-      console.log('could not find file, creating...')
+      console.log('[DB] could not find file, creating...')
       fs.writeFileSync(this.dbPath, '', { flag: 'wx' })
-      console.log('created!')
+      console.log('[DB] created!')
     }
   }
 
@@ -41,15 +41,13 @@ export class DBConnector {
       const results: PostEntry[] = []
       db.all(sql, parameters, (error: Error | null, rows: any[]) => {
         if (error) {
-          console.log('error:')
-          console.log(error)
+          console.log(`[DB] ERROR: ${error}`)
           reject()
           return
         }
         for (const row of rows) {
           results.push(row as PostEntry)
         }
-        console.log(JSON.stringify(results))
         resolve(results)
         db.close()
       })

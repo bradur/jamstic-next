@@ -35,13 +35,8 @@ a {
   text-decoration:none;
 }
 
-code {
-  font-family: menlo, inconsolata, monospace;
-  font-size: calc(1em - 2px);
-  color: #555;
-  background-color: #f0f0f0;
-  padding: 0.2em 0.4em;
-  border-radius: 2px;
+a:hover {
+  color:#ccc;
 }
 
 @media (min-width: 400px) {

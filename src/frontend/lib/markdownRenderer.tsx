@@ -2,7 +2,7 @@ import { createHash } from 'crypto'
 import { GameLink } from 'frontend/games/components/GameLink'
 import Link from 'next/link'
 import SyntaxHighlighter from 'react-syntax-highlighter'
-import { solarizedLight } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
+import { rainbow } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 import styled from 'styled-components'
 
 const VideoEmbedContainer = styled.div`
@@ -24,7 +24,7 @@ const attemptHash: { [key: string]: string } = {}
 export const getMarkedRenderer = () => ({
   code: (source: string, lang = 'txt') => {
     return (
-      <SyntaxHighlighter language={lang} style={solarizedLight}>
+      <SyntaxHighlighter showLineNumbers={true} language={lang} style={rainbow}>
         {source}
       </SyntaxHighlighter>
     )
