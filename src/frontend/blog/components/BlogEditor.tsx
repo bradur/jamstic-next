@@ -10,6 +10,19 @@ import { RenderedPost } from './RenderedPost'
 
 const BlogEditorContainer = styled.div``
 
+const BlogEditorTitle = styled.input`
+  margin: 20px 0;
+  background: #f9f9f9;
+  border-radius: 5px;
+  font-size: 20px;
+  line-height: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+`
+
 const SaveButton = styled.button`
   color: orange;
   font-weight: bold;
@@ -42,7 +55,7 @@ export const BlogEditor = () => {
   }
   return (
     <BlogEditorContainer>
-      <input onChange={handleTextareaChange} />
+      <BlogEditorTitle placeholder={'Title'} onChange={handleTextareaChange} />
       <MarkdownEditor editor={editor} setValue={setEditorValue} />
       <RenderedPost post={post} />
       <SaveButton onClick={handleSaveButtonClick}>Save</SaveButton>
