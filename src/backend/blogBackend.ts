@@ -1,7 +1,7 @@
-import { DBConnector } from '@backendlib/db'
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import slugify from 'slugify'
 import { PostPageProps, PostsPageProps } from 'types/types-blog'
+import { BlogDb } from './db/blogDb'
 
 type PageParams = {
   slug: string[]
@@ -28,7 +28,7 @@ export const blogStaticSlugProps = () => async ({
   params = { slug: [] },
 }: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<PostPageProps>> => {
   const { id } = paramsToInfo(params)
-  const db = await DBConnector.Initialize()
+  const db = await BlogDb.Initialize()
   const post = await db.getPostById(id)
   return {
     props: {
@@ -39,7 +39,7 @@ export const blogStaticSlugProps = () => async ({
 }
 
 export const blogStaticSlugPaths = () => async (): Promise<GetStaticPathsResult<PageParams>> => {
-  const db = await DBConnector.Initialize()
+  const db = await BlogDb.Initialize()
   const posts = await db.getAllPosts()
 
   const paths = {
@@ -57,7 +57,7 @@ export const blogStaticSlugPaths = () => async (): Promise<GetStaticPathsResult<
 }
 
 export const blogStaticProps = () => async (): Promise<GetStaticPropsResult<PostsPageProps>> => {
-  const db = await DBConnector.Initialize()
+  const db = await BlogDb.Initialize()
   const posts = await db.getAllPosts()
   return {
     props: {

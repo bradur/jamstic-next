@@ -6,33 +6,22 @@ import { createFolderIfItDoesntExist } from './file-helper'
 type AllowedValues = string | number
 
 export class DBConnector {
-  dbPath = 'databases/posts.sqlite3'
-  sqlGetAll = `SELECT id, title, body, date FROM posts ORDER BY date DESC;`
-  sqlGetById = `SELECT id, title, body, date FROM posts WHERE id = ?;`
-  static sqlCreateTable = `
-  CREATE TABLE IF NOT EXISTS posts (
-    id INTEGER PRIMARY KEY,
-    title TEXT NOT NULL,
-    body TEXT NOT NULL,
-    date INTEGER NOT NULL
-    );
-    `
-  sqlInsertPosts = `INSERT INTO posts (title, body, date)
-  VALUES (?, ?, ?);`
+  dbPath = ''
+  static sqlCreateTable = ''
 
-  constructor() {
+  constructor(dbPath = '') {
+    if (dbPath !== '') {
+      this.dbPath = dbPath
+    }
+    if (this.dbPath === '') {
+      throw Error('[DB] Dbpath must not be empty!')
+    }
     createFolderIfItDoesntExist(this.dbPath)
     if (!fs.existsSync(this.dbPath)) {
-      console.log('[DB] could not find file, creating...')
+      console.log(`[DB] could not find file, creating '${this.dbPath}'...`)
       fs.writeFileSync(this.dbPath, '', { flag: 'wx' })
-      console.log('[DB] created!')
+      console.log(`[DB] '${this.dbPath}' created!`)
     }
-  }
-
-  static async Initialize() {
-    const dbcon = new DBConnector()
-    await dbcon.sql(this.sqlCreateTable)
-    return dbcon
   }
 
   async sql(sql: string, parameters: AllowedValues[] = []): Promise<PostEntry[]> {
@@ -52,19 +41,5 @@ export class DBConnector {
         db.close()
       })
     })
-  }
-
-  async insertPost(post: PostEntry) {
-    const { date, title, body } = post
-    return this.sql(this.sqlInsertPosts, [title, body, date.getTime()])
-  }
-
-  async getPostById(id: number) {
-    const [post] = await this.sql(this.sqlGetById, [id])
-    return post
-  }
-
-  async getAllPosts() {
-    return this.sql(this.sqlGetAll)
   }
 }
