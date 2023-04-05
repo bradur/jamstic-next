@@ -19,12 +19,19 @@ const ParagraphAsDiv = styled.div`
   margin-inline-start: 0px;
   margin-inline-end: 0px;
 `
+
+
 const attemptHash: { [key: string]: string } = {}
+const makeHashFromSource = (source: string) => {
+  const count = Object.keys(attemptHash).filter((key) => key === source)
+  const hash = createHash('md5').update(source).digest('hex') + count
+  return hash
+}
 
 export const getMarkedRenderer = () => ({
   code: (source: string, lang = 'txt') => {
     return (
-      <SyntaxHighlighter showLineNumbers={true} language={lang} style={rainbow}>
+      <SyntaxHighlighter key={makeHashFromSource(source)} showLineNumbers={true} language={lang} style={rainbow}>
         {source}
       </SyntaxHighlighter>
     )
@@ -68,8 +75,7 @@ export const getMarkedRenderer = () => ({
   },
   paragraph: (text: string) => {
     const textAsString = text.toString()
-    const count = Object.keys(attemptHash).filter((key) => key === textAsString)
-    const hash = createHash('md5').update(text.toString()).digest('hex') + count
+    const hash = makeHashFromSource(textAsString)
     return <ParagraphAsDiv key={hash}>{text}</ParagraphAsDiv>
   },
 })
