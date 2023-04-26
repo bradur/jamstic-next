@@ -1,13 +1,13 @@
 import fs from 'fs'
 import { Database } from 'sqlite3'
-import { PostEntry } from 'types/types-blog'
 import { createFolderIfItDoesntExist } from './file-helper'
+import { JamsticLogger } from './logger'
 
 type AllowedValues = string | number
 
 export class DBConnector {
   dbPath = ''
-  static sqlCreateTable = ''
+  static sqlCreateTables: string[] = []
 
   constructor(dbPath = '') {
     if (dbPath !== '') {
@@ -18,24 +18,24 @@ export class DBConnector {
     }
     createFolderIfItDoesntExist(this.dbPath)
     if (!fs.existsSync(this.dbPath)) {
-      console.log(`[DB] could not find file, creating '${this.dbPath}'...`)
+      JamsticLogger.log(`[DB] could not find file, creating '${this.dbPath}'...`)
       fs.writeFileSync(this.dbPath, '', { flag: 'wx' })
-      console.log(`[DB] '${this.dbPath}' created!`)
+      JamsticLogger.log(`[DB] '${this.dbPath}' created!`)
     }
   }
 
-  async sql(sql: string, parameters: AllowedValues[] = []): Promise<PostEntry[]> {
+  async sql<T>(sql: string, parameters: AllowedValues[] = []): Promise<T[]> {
     return new Promise((resolve, reject) => {
       const db = new Database(this.dbPath)
-      const results: PostEntry[] = []
+      const results: T[] = []
       db.all(sql, parameters, (error: Error | null, rows: any[]) => {
         if (error) {
-          console.log(`[DB] ERROR: ${error}`)
+          JamsticLogger.log(`[DB] ERROR: ${error}`)
           reject()
           return
         }
         for (const row of rows) {
-          results.push(row as PostEntry)
+          results.push(row as T)
         }
         resolve(results)
         db.close()

@@ -33,6 +33,12 @@ export type GenericEntry = {
   date: number
 }
 
+export type GenericEntryInDb = GenericEntry & {
+  id: number
+  coverUrl: string
+  css: string
+}
+
 export type CustomPageProps = {
   error: boolean | string
   entries: GenericEntry[]

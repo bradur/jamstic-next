@@ -1,3 +1,4 @@
+import { JamsticLogger } from '@backendlib/logger'
 import { deleteApi, getApi } from '@lib/fetch-helper'
 import { RelativePath, postPath } from '@lib/relative-path-helper'
 import { useRouter } from 'next/router'
@@ -27,7 +28,7 @@ const PostControls = ({ post, forceUpdate }: { post: PostEntry; forceUpdate: Dis
   const handleRemoveButtonClick = async () => {
     const response = await deleteApi<string>({ url: `/api/blog/${post.id}` })
     if (response === 'removed') {
-      console.log('forceUpdate')
+      JamsticLogger.log('forceUpdate')
       forceUpdate()
     }
   }

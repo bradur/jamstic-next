@@ -6,7 +6,6 @@ import getColors from 'get-image-colors'
 import glob from 'glob'
 import imageType from 'image-type'
 import path from 'path'
-import { GenericEntry } from 'types/types-custom'
 import { GameEntry, GameEntryColor, GameEntryImage, GameEntryUser, GameImageType } from 'types/types-games'
 import { JamsticLogger } from './logger'
 
@@ -27,11 +26,6 @@ export const readJson = (filePath: PathLike) => {
     return null
   }
   return JSON.parse(fs.readFileSync(filePath, 'utf8'))
-}
-
-export const loadSavedGenericEntries = (jamType: string): GenericEntry[] => {
-  JamsticLogger.log('Load saved entries of ' + jamType)
-  return glob.sync(AbsolutePath.CustomEntries(jamType), {}).map((file) => readJson(file) as GenericEntry)
 }
 
 export const loadSavedEntries = (jamType: string): GameEntry[] => {

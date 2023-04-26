@@ -1,13 +1,9 @@
-import {
-  createFolderIfItDoesntExist,
-  findCoverColors,
-  loadSavedGenericEntries,
-  readJson,
-  writeJson,
-} from '@backendlib/file-helper'
+import { createFolderIfItDoesntExist, findCoverColors, writeJson } from '@backendlib/file-helper'
+import { JamsticLogger } from '@backendlib/logger'
 import { AbsolutePath } from '@backendlib/path-helper'
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
-import { CustomEntryPageProps, CustomPageProps, GenericEntry } from 'types/types-custom'
+import { CustomEntryPageProps, CustomPageProps } from 'types/types-custom'
+import { EntryDb } from './db/entryDB'
 
 type PageParams = {
   slug: string[]
@@ -33,34 +29,40 @@ const saveEntryData = (jamSlug: string, categorySlug: string, slug: string, data
   writeJson(filePath, data)
 }
 
-export const customStaticSlug = () => async ({
-  params = { slug: [] },
-}: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<CustomEntryPageProps>> => {
-  const { categorySlug, slug } = paramsToInfo(params)
-  const entry = readJson(AbsolutePath.CustomDataFile('custom', categorySlug, slug)) as GenericEntry
-  if (entry.coverColors === undefined || entry.coverColors.css === '') {
-    entry.coverColors = await findCoverColors(AbsolutePath.Image('custom', entry.categorySlug, entry.slug, entry.cover))
-    saveEntryData('custom', entry.categorySlug, entry.slug, entry)
-  }
-  if (!entry) {
+export const customStaticSlug =
+  () =>
+  async ({
+    params = { slug: [] },
+  }: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<CustomEntryPageProps>> => {
+    const { categorySlug, slug } = paramsToInfo(params)
+    const entry = await loadEntry(slug, categorySlug)
+    if (entry !== null) {
+      if (entry.coverColors === undefined || entry.coverColors.css === '') {
+        entry.coverColors = await findCoverColors(
+          AbsolutePath.Image('custom', entry.categorySlug, entry.slug, entry.cover),
+        )
+        JamsticLogger.log('wanna save covercolors!')
+      }
+    }
+    if (!entry) {
+      return {
+        props: {
+          error: true,
+          data: "Couldn't find file!",
+        },
+      }
+    }
+
     return {
       props: {
-        error: true,
-        data: "Couldn't find file!",
+        error: false,
+        data: entry,
       },
     }
   }
 
-  return {
-    props: {
-      error: false,
-      data: entry,
-    },
-  }
-}
-
 export const customStaticPathsSlug = () => async (): Promise<GetStaticPathsResult<PageParams>> => {
-  const entries = loadSavedGenericEntries('custom')
+  const entries = await loadEntries()
   return {
     paths: entries.map((entry) => {
       const slg = { slug: [entry.categorySlug, entry.slug] }
@@ -73,11 +75,21 @@ export const customStaticPathsSlug = () => async (): Promise<GetStaticPathsResul
 }
 
 export const customStaticProps = () => async (): Promise<GetStaticPropsResult<CustomPageProps>> => {
-  const entries = loadSavedGenericEntries('custom')
+  const entries = await loadEntries()
   return {
     props: {
       error: false,
       entries,
     },
   }
+}
+
+const loadEntry = async (slug: string, categorySlug: string) => {
+  const db = await EntryDb.Initialize()
+  return await db.getEntry(slug, categorySlug)
+}
+
+const loadEntries = async () => {
+  const db = await EntryDb.Initialize()
+  return await db.getAllEntries()
 }
