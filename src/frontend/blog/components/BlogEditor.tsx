@@ -1,7 +1,7 @@
 import { postApi } from '@lib/fetch-helper'
 import { slugifyPath } from '@lib/relative-path-helper'
 import { MarkdownEditor } from 'frontend/editor/MarkdownEditor'
-import { useState } from 'react'
+import { DispatchWithoutAction, useState } from 'react'
 import { createEditor } from 'slate'
 import { withReact } from 'slate-react'
 import styled from 'styled-components'
@@ -38,7 +38,7 @@ const SaveButton = styled.button`
     color: black;
   }
 `
-export const BlogEditor = () => {
+export const BlogEditor = ({ forceUpdate }: { forceUpdate: DispatchWithoutAction }) => {
   const originalValue = ''
   const [post, setPost] = useState<PostEntry>({ date: new Date(), title: '', body: '', slug: '', id: -1 })
 
@@ -47,7 +47,8 @@ export const BlogEditor = () => {
   }
   const [editor] = useState(() => withReact(createEditor()))
   const handleSaveButtonClick = async () => {
-    await postApi<string>({ url: '/api/blog/test', body: JSON.stringify(post) })
+    await postApi<string>({ url: '/api/blog/new', body: JSON.stringify(post) })
+    forceUpdate()
   }
 
   const handleTextareaChange = (event: React.ChangeEvent<HTMLInputElement>) => {

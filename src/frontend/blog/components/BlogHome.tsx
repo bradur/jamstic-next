@@ -1,7 +1,9 @@
-import { postPath, RelativePath } from '@lib/relative-path-helper'
+import { deleteApi, getApi } from '@lib/fetch-helper'
+import { RelativePath, postPath } from '@lib/relative-path-helper'
 import { useRouter } from 'next/router'
+import { DispatchWithoutAction, useState } from 'react'
 import styled from 'styled-components'
-import { PostsPageProps } from 'types/types-blog'
+import { PostEntry, PostsPageProps } from 'types/types-blog'
 import { BlogEditor } from './BlogEditor'
 import { RenderedPost } from './RenderedPost'
 
@@ -21,21 +23,44 @@ const BlogHomeContainer = styled.div`
   }
 `
 
-export const BlogHome = (props: PostsPageProps) => {
+const PostControls = ({ post, forceUpdate }: { post: PostEntry; forceUpdate: DispatchWithoutAction }) => {
+  const handleRemoveButtonClick = async () => {
+    const response = await deleteApi<string>({ url: `/api/blog/${post.id}` })
+    if (response === 'removed') {
+      console.log('forceUpdate')
+      forceUpdate()
+    }
+  }
+  return (
+    <div>
+      <button onClick={handleRemoveButtonClick}>remove</button>
+    </div>
+  )
+}
+
+export const BlogHome: React.FC<PostsPageProps> = (props: PostsPageProps) => {
   if (props.error !== false) {
     return <div>{props.error}</div>
+  }
+
+  const [posts, setPosts] = useState<PostEntry[]>(props.posts)
+
+  const forceUpdate = async () => {
+    const resp = await getApi<PostEntry[]>({ url: '/api/blog/all' })
+    setPosts(resp)
   }
 
   const isDevelopment = process.env.NODE_ENV === 'development'
   const router = useRouter()
   return (
     <BlogHomeContainer>
-      {isDevelopment && <BlogEditor />}
+      {isDevelopment && <BlogEditor forceUpdate={forceUpdate} />}
       <div>
         <h1>Blog</h1>
         <ul>
-          {props.posts.map((post) => (
+          {posts.map((post) => (
             <li key={post.id}>
+              {isDevelopment && <PostControls post={post} forceUpdate={forceUpdate} />}
               <RenderedPost
                 {...{
                   isPreview: true,

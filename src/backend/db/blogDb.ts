@@ -3,8 +3,8 @@ import { PostEntry } from 'types/types-blog'
 
 export class BlogDb extends DBConnector {
   static dbPath = 'databases/posts.sqlite3'
-  sqlGetAll = `SELECT id, title, body, date FROM posts ORDER BY date DESC;`
-  sqlGetById = `SELECT id, title, body, date FROM posts WHERE id = ?;`
+  sqlGetAll = 'SELECT id, title, body, date FROM posts ORDER BY date DESC;'
+  sqlGetById = 'SELECT id, title, body, date FROM posts WHERE id = ?;'
   static sqlCreateTable = `
   CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY,
@@ -13,8 +13,8 @@ export class BlogDb extends DBConnector {
     date INTEGER NOT NULL
     );
     `
-  sqlInsertPosts = `INSERT INTO posts (title, body, date)
-  VALUES (?, ?, ?);`
+  sqlInsertPosts = 'INSERT INTO posts (title, body, date) VALUES (?, ?, ?);'
+  sqlRemovePost = 'DELETE FROM posts WHERE id = ?;'
 
   static async Initialize() {
     const dbcon = new BlogDb(this.dbPath)
@@ -28,6 +28,10 @@ export class BlogDb extends DBConnector {
   async insertPost(post: PostEntry) {
     const { date, title, body } = post
     return this.sql(this.sqlInsertPosts, [title, body, date.getTime()])
+  }
+
+  async removePost(id: number) {
+    return this.sql(this.sqlRemovePost, [id])
   }
 
   async getPostById(id: number) {

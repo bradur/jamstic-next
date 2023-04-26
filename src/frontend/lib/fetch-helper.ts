@@ -11,6 +11,7 @@ const defaultHeaders = {
 
 export const getApi = async <T>(props: FetchProps): Promise<T> => fetchApi({ ...props, method: 'GET' })
 export const postApi = async <T>(props: FetchProps): Promise<T> => fetchApi({ ...props, method: 'POST' })
+export const deleteApi = async <T>(props: FetchProps): Promise<T> => fetchApi({ ...props, method: 'DELETE' })
 
 const fetchApi = async <T>({ url, body, method, headers = defaultHeaders }: FetchProps): Promise<T> => {
   const response = await window.fetch(url, {

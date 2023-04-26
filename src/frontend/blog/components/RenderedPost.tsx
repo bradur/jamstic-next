@@ -12,7 +12,7 @@ type RenderedPostProps = {
 }
 const RenderedPostContainer = styled.div`
   background: #f9f9f9;
-  margin: 50px 0;
+  margin: 0 0 50px 0;
   position: relative;
 `
 const PostContent = styled.div<{ isPreview: boolean }>`

@@ -16,6 +16,13 @@ export default async ({ method, body, query: slug }: NextApiRequest, response: N
     const db = await BlogDb.Initialize()
     const allPosts = await db.getAllPosts()
     response.status(200).json({ data: allPosts })
+  } else if (method === 'DELETE'){
+    const id = parseInt(slug.slug as string, 10)
+    console.log(id)
+    const db = await BlogDb.Initialize()
+    const resp = await db.removePost(id)
+    console.log(JSON.stringify(resp))
+    response.status(200).json({data: "removed"})
   }
   response.status(405)
 }
