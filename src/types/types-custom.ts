@@ -8,6 +8,7 @@ export enum EntryImageType {
 export type EntryImage = {
   type: EntryImageType
   originalUrl: string
+  base64?: string
 }
 
 export type EntryLink = {
@@ -37,6 +38,7 @@ export type GenericEntryInDb = GenericEntry & {
   id: number
   coverUrl: string
   css: string
+  coverImage: Buffer
 }
 
 export type CustomPageProps = {

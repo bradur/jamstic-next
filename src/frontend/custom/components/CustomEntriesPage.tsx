@@ -1,6 +1,10 @@
+import { getApi } from '@lib/fetch-helper'
 import { FilterProvider } from 'frontend/lib/filterContext'
+import { useState } from 'react'
 import styled from 'styled-components'
-import { CustomPageProps } from '../../../types/types-custom'
+import { isDevelopment } from 'utils'
+import { CustomPageProps, GenericEntry } from '../../../types/types-custom'
+import { CustomEntryEditor } from './CustomEntryEditor'
 import { CustomEntryGrid } from './CustomEntryGrid'
 
 const CustomPageContainer = styled.div`
@@ -28,11 +32,19 @@ const CustomPageContainer = styled.div`
 `
 
 export const CustomEntriesPage = (props: CustomPageProps) => {
+  const [entries, setEntries] = useState<GenericEntry[]>(props.entries)
+
+  const forceUpdate = async () => {
+    const resp = await getApi<GenericEntry[]>({ url: '/api/jams/other' })
+    setEntries(resp)
+  }
+
   return (
     <FilterProvider>
+      {isDevelopment && <CustomEntryEditor forceUpdate={forceUpdate} />}
       <CustomPageContainer>
         <h1>Custom games & projects </h1>
-        <CustomEntryGrid {...props}></CustomEntryGrid>
+        <CustomEntryGrid error={props.error} entries={entries}></CustomEntryGrid>
       </CustomPageContainer>
     </FilterProvider>
   )

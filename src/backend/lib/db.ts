@@ -3,7 +3,7 @@ import { Database } from 'sqlite3'
 import { createFolderIfItDoesntExist } from './file-helper'
 import { JamsticLogger } from './logger'
 
-type AllowedValues = string | number
+type AllowedValues = string | number | Buffer
 
 export class DBConnector {
   dbPath = ''

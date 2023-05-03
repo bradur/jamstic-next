@@ -87,7 +87,8 @@ export const CustomEntriesPageEntry = (entry: GenericEntry) => {
           <div className='game-picture-container'>
             <img
               className='game-picture'
-              src={RelativePath.Image('custom', entry.categorySlug, entry.slug, entry.cover)}
+              //src={RelativePath.Image('custom', entry.categorySlug, entry.slug, entry.cover)}
+              src={entry.cover.base64}
               alt={`Cover picture of ${entry.name}`}
             />
           </div>

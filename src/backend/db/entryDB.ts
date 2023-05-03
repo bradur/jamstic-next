@@ -4,13 +4,12 @@ import { EntryImageType, EntryLink, GenericEntry, GenericEntryInDb } from 'types
 
 export class EntryDb extends DBConnector {
   static dbPath = 'databases/entries.sqlite3'
-  sqlGetAll =
-    'SELECT name, slug, description, body, url, coverUrl, css, date, categorySlug FROM entries ORDER BY date DESC;'
-  sqlGetById = 'SELECT name, slug, description, body, url, coverUrl, css, date, categorySlug FROM entries WHERE id = ?;'
+  sqlGetAll = 'SELECT * FROM entries ORDER BY date DESC;'
+  sqlGetById = 'SELECT * FROM entries WHERE id = ?;'
   sqlGetIdByNameAndDate = 'SELECT id FROM entries WHERE name = ? AND date = ?;'
   sqlGetBySlugAndCategorySlug = 'SELECT * FROM entries WHERE slug = ? AND categorySlug = ?;'
   sqlInsertEntries =
-    'INSERT INTO entries (name, slug, description, body, url, coverUrl, css, date, categorySlug) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);'
+    'INSERT INTO entries (name, slug, description, body, url, css, date, categorySlug, coverImage, coverUrl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'
   sqlGetTagIdsByNames = 'SELECT id FROM tags WHERE name IN '
   sqlGetTagsByEntryId = `
   SELECT tags.name FROM entry_tags
@@ -31,6 +30,7 @@ export class EntryDb extends DBConnector {
     categorySlug TEXT NOT NULL,
     body TEXT NOT NULL,
     url TEXT NOT NULL,
+    coverImage BLOB NOT NULL,
     coverUrl TEXT NOT NULL,
     css TEXT NOT NULL,
     date INTEGER NOT NULL,
@@ -97,12 +97,40 @@ export class EntryDb extends DBConnector {
     return processedEntries
   }
 
-  async processEntry(entry: GenericEntryInDb): Promise<GenericEntry> {
-    entry.tags = await this.getTags(entry.id)
-    entry.links = await this.getLinks(entry.id)
-    entry.coverColors = { css: entry.css }
-    entry.cover = { type: EntryImageType.COVER, originalUrl: entry.coverUrl }
-    return entry
+  async processEntry({
+    id,
+    name,
+    slug,
+    description,
+    categorySlug,
+    body,
+    url,
+    css,
+    date,
+    coverImage,
+    coverUrl,
+  }: GenericEntryInDb): Promise<GenericEntry> {
+    const fileType = coverUrl.split('.').slice(-1)
+    const b64prefix = `data:image/${fileType};base64,`
+    const processedEntry: GenericEntry = {
+      name,
+      slug,
+      description,
+      categorySlug,
+      body,
+      url,
+      coverColors: { css: css },
+      date,
+      tags: await this.getTags(id),
+      links: await this.getLinks(id),
+      cover: {
+        type: EntryImageType.COVER,
+        originalUrl: coverUrl,
+        base64: `${b64prefix}${coverImage.toString('base64')}`,
+      },
+    }
+    console.log(processedEntry)
+    return processedEntry
   }
 
   async getTag(tagName: string) {
@@ -114,6 +142,9 @@ export class EntryDb extends DBConnector {
   }
 
   async insertTags(tags: string[]) {
+    if (tags.length < 1) {
+      return
+    }
     const values = tags.map((tag) => `(?)`).join(',')
     await this.sql(`${this.sqlInsertTags} ${values};`, tags)
   }
@@ -132,39 +163,47 @@ export class EntryDb extends DBConnector {
   }
 
   async insertLinks(entryId: number, links: EntryLink[]) {
+    if (links.length < 1) {
+      return
+    }
     const linksAndTitles = links.map(({ title, url }) => [title, url]).flat()
     const values = links.map((link) => `(${entryId}, ?, ?)`).join(',')
     await this.sql(`${this.sqlInsertLinks} ${values};`, linksAndTitles)
   }
 
-  async insertEntryTags(entryId: number, tagIds: number[]) {
+  async insertEntryTags(entryId: number, tags: string[]) {
+    const tagIds = await this.getTagIds(tags)
+    if (tagIds.length < 1) {
+      return
+    }
     const values = tagIds.map((tagId) => `(${entryId}, ?)`).join(',')
     await this.sql(`${this.sqlInsertEntryTags} ${values};`, tagIds)
   }
 
   async insertEntry(entry: GenericEntry) {
     const { name, slug, description, body, url, cover, coverColors, date, tags, links, categorySlug } = entry
+    if (cover.base64 === undefined) {
+      console.log('Error: No image base64.')
+      return
+    }
+    const imageAsFile = Buffer.from(cover.base64, 'base64')
     await this.sql(this.sqlInsertEntries, [
       name,
       slug,
       description,
       body,
       url,
-      cover.originalUrl,
       coverColors.css,
       date,
       categorySlug,
+      imageAsFile,
+      cover.originalUrl,
     ])
     const inserted = await this.sql<GenericEntryInDb>(this.sqlGetIdByNameAndDate, [name, date])
     if (inserted.length > 0) {
       const [entry] = inserted
       await this.insertTags(tags)
-      const tagIds = await this.getTagIds(tags)
-      if (tagIds.length > 0) {
-        await this.insertEntryTags(entry.id, tagIds)
-      } else {
-        JamsticLogger.log('No tags.')
-      }
+      await this.insertEntryTags(entry.id, tags)
       await this.insertLinks(entry.id, links)
     } else {
       JamsticLogger.log('Something went wrong!')

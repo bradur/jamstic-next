@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { DispatchWithoutAction, useState } from 'react'
 import styled from 'styled-components'
 import { PostEntry, PostsPageProps } from 'types/types-blog'
+import { isDevelopment } from 'utils'
 import { BlogEditor } from './BlogEditor'
 import { RenderedPost } from './RenderedPost'
 
@@ -51,7 +52,6 @@ export const BlogHome: React.FC<PostsPageProps> = (props: PostsPageProps) => {
     setPosts(resp)
   }
 
-  const isDevelopment = process.env.NODE_ENV === 'development'
   const router = useRouter()
   return (
     <BlogHomeContainer>

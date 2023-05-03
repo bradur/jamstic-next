@@ -25,7 +25,7 @@ const CustomEntryCoverImg = styled.div<{ imgUrl: string }>`
   max-width: 920px;
   height: 400px;
   box-shadow: inset 0px 5px 3px 1px var(--one);
-  margin-bottom:5px;
+  margin-bottom: 5px;
   background-image: url('${(props) => props.imgUrl}');
 
   &:hover {
@@ -59,13 +59,19 @@ const CustomEntryDescription = styled.div`
   padding: 20px;
 `
 
-export const CustomEntryPage = (entry: GenericEntry) => {
+export const CustomEntryPage = ({
+  entry,
+  hideBreadcrumb = true,
+}: {
+  entry: GenericEntry
+  hideBreadcrumb?: boolean
+}) => {
   const coverUrl = RelativePath.Image('custom', entry.categorySlug, entry.slug, entry.cover)
   const body = emoji.emojify(entry.body)
 
   return (
     <PageContainerWithCoverColors coverColors={entry.coverColors.css}>
-      <PageBreadcrumb route={'custom'} />
+      {!hideBreadcrumb && <PageBreadcrumb route={'custom'} />}
 
       <CustomEntryContainer>
         <CustomEntryTitle>{entry.name}</CustomEntryTitle>
