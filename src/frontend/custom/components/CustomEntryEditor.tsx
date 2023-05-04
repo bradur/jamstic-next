@@ -27,6 +27,15 @@ const CustomEntryEditorControls = styled.div`
   background: #f9f9f9;
   padding: 20px;
 `
+const CustomEntryEditorArea = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: 1fr;
+  grid-column-gap: 10px;
+  grid-row-gap: 0px;
+`
+const CustomEntryEditorPreview = styled.div``
+
 const CustomEntryEditorTitle = BaseInput
 const SaveButton = BaseButton
 export const CustomEntryEditor = ({ forceUpdate }: { forceUpdate: DispatchWithoutAction }) => {
@@ -64,7 +73,11 @@ export const CustomEntryEditor = ({ forceUpdate }: { forceUpdate: DispatchWithou
     forceUpdate()
   }
 
-  const handleTextareaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    console.log(event.target.value)
+    setEntry({ ...entry, description: event.target.value })
+  }
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEntry({ ...entry, name: event.target.value, slug: slugifyPath(event.target.value) })
   }
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,34 +88,47 @@ export const CustomEntryEditor = ({ forceUpdate }: { forceUpdate: DispatchWithou
   return (
     <CustomEntryEditorContainer>
       <h1>Create new entry</h1>
-      <CustomEntryEditorControls>
-        <BaseLabel>Title</BaseLabel>
-        <CustomEntryEditorTitle placeholder={'Title'} onChange={handleTextareaChange} />
-        <BaseLabel>Cover image</BaseLabel>
-        <ImageUpload onUpload={onUpload} />
-        <BaseLabel>Links</BaseLabel>
-        <LinksEditor entry={entry} setEntry={setEntry} />
-        <BaseLabel>Tags</BaseLabel>
-        <TagsEditor entry={entry} setEntry={setEntry} />
-        <BaseLabel>Date</BaseLabel>
-        <BaseInput onChange={handleDateChange} type='datetime-local' />
-        <BaseLabel>Description</BaseLabel>
-        <BaseTextarea rows={6} placeholder={'Description'} value={entry.description}></BaseTextarea>
-        <BaseLabel>Body</BaseLabel>
-        <MarkdownEditor placeholder={'Entry body'} editor={editor} setValue={setEditorValue} />
-        <SaveButton onClick={handleSaveButtonClick}>Save</SaveButton>
-      </CustomEntryEditorControls>
-      <h2>Preview</h2>
-      <ul>
-        <li>Slug: {entry.slug}</li>
-        <li>url: {link}</li>
-      </ul>
-      <EntriesContainer>
-        <CustomEntriesPageEntry entry={entry} />
-      </EntriesContainer>
-      <CustomEntryPageContainer>
-        <CustomEntryPage entry={entry} hideBreadcrumb={true} />
-      </CustomEntryPageContainer>
+      <CustomEntryEditorArea>
+        <CustomEntryEditorControls>
+          <BaseLabel>Title</BaseLabel>
+          <CustomEntryEditorTitle placeholder={'Title'} onChange={handleTitleChange} />
+          <BaseLabel>Cover image</BaseLabel>
+          <ImageUpload onUpload={onUpload} />
+          <BaseLabel>Links</BaseLabel>
+          <LinksEditor entry={entry} setEntry={setEntry} />
+          <BaseLabel>Tags</BaseLabel>
+          <TagsEditor entry={entry} setEntry={setEntry} />
+          <BaseLabel>Date</BaseLabel>
+          <BaseInput onChange={handleDateChange} type='datetime-local' />
+          <BaseLabel>Description</BaseLabel>
+          <BaseTextarea
+            rows={2}
+            placeholder={'Description'}
+            value={entry.description}
+            onChange={handleDescriptionChange}
+          ></BaseTextarea>
+          <BaseLabel>Body</BaseLabel>
+          <MarkdownEditor
+            editableProps={{ rows: 30, placeholder: 'Entry body' }}
+            editor={editor}
+            setValue={setEditorValue}
+          />
+          <SaveButton onClick={handleSaveButtonClick}>Save</SaveButton>
+        </CustomEntryEditorControls>
+        <CustomEntryEditorPreview>
+          <h2>Preview</h2>
+          <ul>
+            <li>Slug: {entry.slug}</li>
+            <li>url: {link}</li>
+          </ul>
+          <EntriesContainer>
+            <CustomEntriesPageEntry entry={entry} />
+          </EntriesContainer>
+          <CustomEntryPageContainer>
+            <CustomEntryPage entry={entry} hideBreadcrumb={true} />
+          </CustomEntryPageContainer>
+        </CustomEntryEditorPreview>
+      </CustomEntryEditorArea>
     </CustomEntryEditorContainer>
   )
 }

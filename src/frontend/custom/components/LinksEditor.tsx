@@ -1,4 +1,5 @@
 import { FakeInput } from 'frontend/components/Form/FakeInput'
+import { BaseButton } from 'frontend/components/Form/baseComponents'
 import React, { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
 import { EntryLink, GenericEntry } from 'types/types-custom'
@@ -14,6 +15,10 @@ const LinkColumn = styled.div`
   margin: auto;
   width: 50%;
   box-sizing: border-box;
+`
+
+const LinkButton = styled(BaseButton)`
+  margin-right: 5px;
 `
 export const LinksEditor = ({
   entry,
@@ -54,16 +59,16 @@ export const LinksEditor = ({
     entry.links.length > 0 && (entry.links[0].url.trim() === '' || entry.links[0].title.trim() === '')
   return (
     <div>
-      <button onClick={handleAddClick} disabled={newLinkIsEmpty}>
+      <LinkButton onClick={handleAddClick} disabled={newLinkIsEmpty}>
         + Add
-      </button>
-      <button onClick={handleRemoveClick} disabled={entry.links.length < 1}>
+      </LinkButton>
+      <LinkButton onClick={handleRemoveClick} disabled={entry.links.length < 1}>
         - Remove
-      </button>
+      </LinkButton>
       <div>
         {entry.links.map((link) => {
           return (
-            <div key={link.url}>
+            <div>
               <LinkContainer>
                 <LinkColumn>
                   <FakeInput

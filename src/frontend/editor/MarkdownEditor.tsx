@@ -1,5 +1,6 @@
 import { Descendant, Node } from 'slate'
 import { Editable, Slate } from 'slate-react'
+import { EditableProps } from 'slate-react/dist/components/editable'
 import styled from 'styled-components'
 import { CustomEditor } from './editorTypes'
 
@@ -21,9 +22,14 @@ const serialize = (nodes: Node[]) => {
   return nodes.map((n) => Node.string(n)).join('\n')
 }
 
-type MarkdownEditorProps = { editor: CustomEditor; setValue: (value: string) => void; placeholder?: string }
+type MarkdownEditorProps = {
+  editor: CustomEditor
+  setValue: (value: string) => void
+  editableProps?: EditableProps
+}
 
-export const MarkdownEditor = ({ editor, setValue, placeholder = 'Type something here' }: MarkdownEditorProps) => {
+export const MarkdownEditor = ({ editor, setValue, editableProps = {} }: MarkdownEditorProps) => {
+  const { placeholder = 'Type something here' } = editableProps
   return (
     <MarkdownEditorContainer>
       <Slate
@@ -36,7 +42,7 @@ export const MarkdownEditor = ({ editor, setValue, placeholder = 'Type something
           }
         }}
       >
-        <Editable placeholder={placeholder} />
+        <Editable {...editableProps} placeholder={placeholder} />
       </Slate>
     </MarkdownEditorContainer>
   )

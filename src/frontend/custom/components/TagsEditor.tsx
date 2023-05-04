@@ -70,7 +70,12 @@ export const TagsEditor = ({
   return (
     <div>
       <div>
-        <BaseInput value={tagValue} onChange={handleChange} onKeyDown={handleKeyDown} />
+        <BaseInput
+          placeholder='Start typing a tag...'
+          value={tagValue}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+        />
         {entry.tags.map((tag) => {
           return (
             <Tag>

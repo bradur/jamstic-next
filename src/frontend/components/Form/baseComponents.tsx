@@ -29,6 +29,16 @@ export const BaseLabel = styled.label`
 
 export const BaseButton = styled.button`
   ${BaseButtonLike}
+
+  &:disabled {
+    border-color: #ccc;
+    color: #ccc;
+  }
+
+  &:disabled:hover {
+    background: transparent;
+    cursor: default;
+  }
 `
 
 export const BaseGrid = styled.div<{ cellWidth: number; cellHeight: number }>`
@@ -51,6 +61,7 @@ export const BaseInputStyle = css`
   outline: none;
   width: 100%;
   box-sizing: border-box;
+  font-weight: normal;
 `
 
 export const BaseInput = styled.input`
@@ -68,4 +79,9 @@ export const BaseTextarea = styled.textarea`
   outline: none;
   width: 100%;
   box-sizing: border-box;
+
+  &::placeholder {
+    font-weight: normal;
+    font-style: italic;
+  }
 `
