@@ -186,7 +186,8 @@ export class EntryDb extends DBConnector {
       console.log('Error: No image base64.')
       return
     }
-    const imageAsFile = Buffer.from(cover.base64, 'base64')
+    const processedb64 = cover.base64.split(';base64,')[1]
+    const imageAsFile = Buffer.from(processedb64, 'base64')
     await this.sql(this.sqlInsertEntries, [
       name,
       slug,

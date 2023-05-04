@@ -14,8 +14,7 @@ export const readImageToB64 = async (image: File): Promise<string> => {
   reader.readAsDataURL(image)
   return new Promise<string>((resolve) => {
     reader.onload = () => {
-      const result = reader.result as string
-      resolve(result.split(';base64,')[1])
+      resolve(reader.result as string)
     }
   })
 }

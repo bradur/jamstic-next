@@ -1,6 +1,20 @@
+import { FakeInput } from 'frontend/components/Form/FakeInput'
 import React, { Dispatch, SetStateAction } from 'react'
+import styled from 'styled-components'
 import { EntryLink, GenericEntry } from 'types/types-custom'
 
+const LinkContainer = styled.div`
+  input {
+    margin: auto;
+    width: 50%;
+  }
+`
+const LinkColumn = styled.div`
+  display: inline-block;
+  margin: auto;
+  width: 50%;
+  box-sizing: border-box;
+`
 export const LinksEditor = ({
   entry,
   setEntry,
@@ -33,21 +47,39 @@ export const LinksEditor = ({
   }
   const handleAddClick = () => {
     const newLinks = entry.links
-    newLinks.push({ title: 'New title', url: 'http://url.here' })
+    newLinks.push({ title: '', url: '' })
     setEntry({ ...entry, links: newLinks })
   }
+  const newLinkIsEmpty =
+    entry.links.length > 0 && (entry.links[0].url.trim() === '' || entry.links[0].title.trim() === '')
   return (
     <div>
-      <button onClick={handleAddClick}>+ Add</button>
+      <button onClick={handleAddClick} disabled={newLinkIsEmpty}>
+        + Add
+      </button>
       <button onClick={handleRemoveClick} disabled={entry.links.length < 1}>
         - Remove
       </button>
       <div>
         {entry.links.map((link) => {
           return (
-            <div>
-              <input value={link.title} onChange={(event) => handleTitleInputChange(link, event)} />
-              <input value={link.url} onChange={(event) => handleUrlInputChange(link, event)} />
+            <div key={link.url}>
+              <LinkContainer>
+                <LinkColumn>
+                  <FakeInput
+                    value={link.title}
+                    onChange={(event) => handleTitleInputChange(link, event)}
+                    placeholder='Title'
+                  />
+                </LinkColumn>
+                <LinkColumn>
+                  <FakeInput
+                    value={link.url}
+                    onChange={(event) => handleUrlInputChange(link, event)}
+                    placeholder='url'
+                  />
+                </LinkColumn>
+              </LinkContainer>
             </div>
           )
         })}

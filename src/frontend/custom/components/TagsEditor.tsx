@@ -1,5 +1,41 @@
+import { BaseInput } from 'frontend/components/Form/baseComponents'
 import React, { Dispatch, SetStateAction, useState } from 'react'
+import styled from 'styled-components'
 import { GenericEntry } from 'types/types-custom'
+
+const Tag = styled.div`
+  display: inline-block;
+  margin: auto;
+  margin-top: 5px;
+  margin-right: 5px;
+  padding: 0 25px 0 5px;
+  border-radius: 3px;
+  background: white;
+  border: 1px solid #ccc;
+  position: relative;
+  height: 20px;
+  line-height: 20px;
+
+  button {
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    width: 20px;
+    padding: 0;
+    border-radius: 2px;
+    text-align: center;
+    line-height: 14px;
+    font-size: 14px;
+    margin: auto;
+    border: 0;
+    background: red;
+    color: white;
+    font-weight: bold;
+  }
+`
 
 export const TagsEditor = ({
   entry,
@@ -34,14 +70,13 @@ export const TagsEditor = ({
   return (
     <div>
       <div>
-        Tags
-        <input value={tagValue} onChange={handleChange} onKeyDown={handleKeyDown} />
+        <BaseInput value={tagValue} onChange={handleChange} onKeyDown={handleKeyDown} />
         {entry.tags.map((tag) => {
           return (
-            <div>
+            <Tag>
               <span>{tag}</span>
               <button onClick={() => handleRemoveClick(tag)}>x</button>
-            </div>
+            </Tag>
           )
         })}
       </div>

@@ -1,5 +1,7 @@
 import { postApi } from '@lib/fetch-helper'
 import { RelativePath, slugifyPath } from '@lib/relative-path-helper'
+import { EntriesContainer } from 'frontend/components/EntriesContainer'
+import { BaseButton, BaseInput, BaseLabel, BaseTextarea } from 'frontend/components/Form/baseComponents'
 import { ImageUpload } from 'frontend/components/ImageUpload'
 import { MarkdownEditor } from 'frontend/editor/MarkdownEditor'
 import { useRouter } from 'next/router'
@@ -8,6 +10,7 @@ import { createEditor } from 'slate'
 import { withReact } from 'slate-react'
 import styled from 'styled-components'
 import { EntryImageType, GenericEntry } from 'types/types-custom'
+import CustomEntriesPageEntry from './CustomEntriesPageEntry'
 import CustomEntryPage from './CustomEntryPage'
 import { LinksEditor } from './LinksEditor'
 import { TagsEditor } from './TagsEditor'
@@ -24,35 +27,8 @@ const CustomEntryEditorControls = styled.div`
   background: #f9f9f9;
   padding: 20px;
 `
-
-const CustomEntryEditorTitle = styled.input`
-  margin: 20px 0;
-  background: #f9f9f9;
-  border-radius: 5px;
-  font-size: 20px;
-  line-height: 20px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  outline: none;
-  width: 100%;
-  box-sizing: border-box;
-`
-
-const SaveButton = styled.button`
-  color: orange;
-  font-weight: bold;
-  background: transparent;
-  border: 1px solid orange;
-  padding: 5px;
-  text-align: center;
-  cursor: pointer;
-  margin: 5px 0;
-
-  &:hover {
-    background: rgba(255, 152, 0, 0.24);
-    color: black;
-  }
-`
+const CustomEntryEditorTitle = BaseInput
+const SaveButton = BaseButton
 export const CustomEntryEditor = ({ forceUpdate }: { forceUpdate: DispatchWithoutAction }) => {
   const [entry, setEntry] = useState<GenericEntry>({
     name: '',
@@ -74,8 +50,14 @@ export const CustomEntryEditor = ({ forceUpdate }: { forceUpdate: DispatchWithou
   const [editor] = useState(() => withReact(createEditor()))
 
   const onUpload = (imageAsB64: string, imageUrl: string) => {
-    entry.cover.base64 = imageAsB64
-    entry.cover.originalUrl = imageUrl
+    setEntry({
+      ...entry,
+      cover: {
+        base64: imageAsB64,
+        originalUrl: imageUrl,
+        type: EntryImageType.COVER,
+      },
+    })
   }
   const handleSaveButtonClick = async () => {
     await postApi<string>({ url: '/api/jams/new', body: JSON.stringify({ entry }) })
@@ -86,8 +68,6 @@ export const CustomEntryEditor = ({ forceUpdate }: { forceUpdate: DispatchWithou
     setEntry({ ...entry, name: event.target.value, slug: slugifyPath(event.target.value) })
   }
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log()
-    //const
     setEntry({ ...entry, date: new Date(event.target.value).getTime() })
   }
   const router = useRouter()
@@ -96,12 +76,19 @@ export const CustomEntryEditor = ({ forceUpdate }: { forceUpdate: DispatchWithou
     <CustomEntryEditorContainer>
       <h1>Create new entry</h1>
       <CustomEntryEditorControls>
+        <BaseLabel>Title</BaseLabel>
         <CustomEntryEditorTitle placeholder={'Title'} onChange={handleTextareaChange} />
+        <BaseLabel>Cover image</BaseLabel>
         <ImageUpload onUpload={onUpload} />
+        <BaseLabel>Links</BaseLabel>
         <LinksEditor entry={entry} setEntry={setEntry} />
+        <BaseLabel>Tags</BaseLabel>
         <TagsEditor entry={entry} setEntry={setEntry} />
-        <input onChange={handleDateChange} type='datetime-local' />
-        <textarea placeholder={'Description'} value={entry.description}></textarea>
+        <BaseLabel>Date</BaseLabel>
+        <BaseInput onChange={handleDateChange} type='datetime-local' />
+        <BaseLabel>Description</BaseLabel>
+        <BaseTextarea rows={6} placeholder={'Description'} value={entry.description}></BaseTextarea>
+        <BaseLabel>Body</BaseLabel>
         <MarkdownEditor placeholder={'Entry body'} editor={editor} setValue={setEditorValue} />
         <SaveButton onClick={handleSaveButtonClick}>Save</SaveButton>
       </CustomEntryEditorControls>
@@ -110,6 +97,9 @@ export const CustomEntryEditor = ({ forceUpdate }: { forceUpdate: DispatchWithou
         <li>Slug: {entry.slug}</li>
         <li>url: {link}</li>
       </ul>
+      <EntriesContainer>
+        <CustomEntriesPageEntry entry={entry} />
+      </EntriesContainer>
       <CustomEntryPageContainer>
         <CustomEntryPage entry={entry} hideBreadcrumb={true} />
       </CustomEntryPageContainer>

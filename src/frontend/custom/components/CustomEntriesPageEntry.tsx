@@ -29,6 +29,12 @@ const CustomEntriesPageEntryContainer = styled.div<{ coverColors: string }>`
     border: 1px solid var(--two);
   }
 
+  .game-picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
   .game-picture-container {
     margin: 0;
     font-size: 0;
@@ -71,7 +77,7 @@ const CustomEntriesPageEntryContainer = styled.div<{ coverColors: string }>`
   }
 `
 
-export const CustomEntriesPageEntry = (entry: GenericEntry) => {
+export const CustomEntriesPageEntry = ({ entry }: { entry: GenericEntry }) => {
   const router = useRouter()
   return (
     <CustomEntriesPageEntryContainer

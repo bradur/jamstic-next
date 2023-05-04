@@ -12,12 +12,6 @@ const CustomPageContainer = styled.div`
   margin: 0 auto;
   padding-bottom: 100px;
 
-  .game-picture {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
   @media (max-width: 1300px) {
     .games-page {
       max-width: 100%;

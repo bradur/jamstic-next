@@ -28,7 +28,7 @@ export const CustomEntryGrid = ({ entries }: CustomPageProps) => {
       </FilterInfoContainer>
       <EntriesContainer>
         {entryArray.map((entry) => (
-          <CustomEntriesPageEntry key={entry.categorySlug + entry.slug} {...entry} />
+          <CustomEntriesPageEntry key={entry.categorySlug + entry.slug} entry={entry} />
         ))}
       </EntriesContainer>
     </>
