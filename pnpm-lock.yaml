@@ -19,6 +19,9 @@ importers:
       axios:
         specifier: ^0.26.1
         version: 0.26.1
+      color.js:
+        specifier: ^1.2.0
+        version: 1.2.0
       get-image-colors:
         specifier: ^4.0.1
         version: 4.0.1
@@ -1948,6 +1951,10 @@ packages:
   /color-support@1.1.3:
     resolution: {integrity: sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==}
     hasBin: true
+    dev: false
+
+  /color.js@1.2.0:
+    resolution: {integrity: sha512-0ajlNgWWOR7EK9N6l2h0YKsZPzMCLQG5bheCoTGpGfhkR8tB5eQNItdua1oFHDTeq9JKgSzQJqo+Gp3V/xW+Lw==}
     dev: false
 
   /color@3.2.1:

@@ -12,7 +12,7 @@ const CustomEntry = (props: CustomEntryPageProps) => {
       <Head>
         <title>jamsticnext - {(props.data as GenericEntry).name}</title>
       </Head>
-      <CustomEntryPage entry={props.data as GenericEntry} />
+      <CustomEntryPage entry={props.data as GenericEntry} hideBreadcrumb={false} />
     </>
   )
 }

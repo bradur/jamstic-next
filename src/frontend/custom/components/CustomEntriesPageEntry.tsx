@@ -35,6 +35,10 @@ const CustomEntriesPageEntryContainer = styled.div<{ coverColors: string }>`
     object-fit: cover;
   }
 
+  .game-picture:hover {
+    object-fit: contain;
+  }
+
   .game-picture-container {
     margin: 0;
     font-size: 0;
@@ -93,7 +97,6 @@ export const CustomEntriesPageEntry = ({ entry }: { entry: GenericEntry }) => {
           <div className='game-picture-container'>
             <img
               className='game-picture'
-              //src={RelativePath.Image('custom', entry.categorySlug, entry.slug, entry.cover)}
               src={entry.cover.base64}
               alt={`Cover picture of ${entry.name}`}
             />

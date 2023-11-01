@@ -1,5 +1,6 @@
 import { postApi } from '@lib/fetch-helper'
 import { RelativePath, slugifyPath } from '@lib/relative-path-helper'
+import { prominent } from 'color.js'
 import { EntriesContainer } from 'frontend/components/EntriesContainer'
 import { BaseButton, BaseInput, BaseLabel, BaseTextarea } from 'frontend/components/Form/baseComponents'
 import { ImageUpload } from 'frontend/components/ImageUpload'
@@ -36,6 +37,51 @@ const CustomEntryEditorArea = styled.div`
 `
 const CustomEntryEditorPreview = styled.div``
 
+const ColorTest = styled.div<{ coverColors: string }>`
+  ${(props) => props.coverColors}
+
+  div {
+    display: inline-block;
+    margin: auto;
+    height: 50px;
+    width: 50px;
+  }
+
+  .game-palette-one {
+    background: var(--one);
+  }
+  .game-palette-two {
+    background: var(--two);
+  }
+  .game-palette-three {
+    background: var(--three);
+  }
+  .game-palette-four {
+    background: var(--four);
+  }
+  .game-palette-five {
+    background: var(--five);
+  }
+`
+
+const relativeLuminance = (color: number[]) => {
+  const min = 0.03928
+  const div = 12.92
+
+  const factor = 0.055
+  const divider = 1.055
+  const defo = 2.4
+
+  const [red, green, blue] = color.map((color) => {
+    const colorSmall = color / 255
+    return colorSmall <= min ? colorSmall / div : Math.pow((colorSmall + factor) / divider, defo)
+  })
+
+  return red * 0.2126 + green * 0.7152 + blue * 0.0722
+}
+
+type RGBColor = [r: number, g: number, b: number]
+
 const CustomEntryEditorTitle = BaseInput
 const SaveButton = BaseButton
 export const CustomEntryEditor = ({ forceUpdate }: { forceUpdate: DispatchWithoutAction }) => {
@@ -58,13 +104,37 @@ export const CustomEntryEditor = ({ forceUpdate }: { forceUpdate: DispatchWithou
   }
   const [editor] = useState(() => withReact(createEditor()))
 
-  const onUpload = (imageAsB64: string, imageUrl: string) => {
+  const rgbToHex = (rgbColor: RGBColor) => {
+    return `#${rgbColor.map((color) => color.toString(16)).join('')}`
+  }
+
+  const onUpload = async (imageAsB64: string, imageUrl: string) => {
+    ///const [one, two, three, four, five] = await prominent(imageAsB64, { amount: 5, format: 'hex', group: 20 })
+    const colors = (await prominent(imageAsB64, { amount: 5, format: 'array', group: 20 })) as RGBColor[]
+    colors.sort((colorA, colorB) => {
+      const luminA = relativeLuminance(colorA)
+      const luminB = relativeLuminance(colorB)
+      if (luminA > luminB) {
+        return 1
+      }
+      if (luminB > luminA) {
+        return -1
+      }
+      return 0
+    })
+    const [one, two, three, four, five] = colors
+    const css = Object.entries({ one, two, three, four, five })
+      .map(([name, color]) => `--${name}: ${rgbToHex(color)};`)
+      .join('')
     setEntry({
       ...entry,
       cover: {
         base64: imageAsB64,
         originalUrl: imageUrl,
         type: EntryImageType.COVER,
+      },
+      coverColors: {
+        css,
       },
     })
   }
@@ -121,6 +191,13 @@ export const CustomEntryEditor = ({ forceUpdate }: { forceUpdate: DispatchWithou
             <li>Slug: {entry.slug}</li>
             <li>url: {link}</li>
           </ul>
+          <ColorTest coverColors={entry.coverColors.css}>
+            <div className='game-palette-one'></div>
+            <div className='game-palette-two'></div>
+            <div className='game-palette-three'></div>
+            <div className='game-palette-four'></div>
+            <div className='game-palette-five'></div>
+          </ColorTest>
           <EntriesContainer>
             <CustomEntriesPageEntry entry={entry} />
           </EntriesContainer>

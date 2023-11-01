@@ -18,22 +18,24 @@ const CustomEntryContentContainer = styled.div`
   position: relative;
 `
 
-const CustomEntryCoverImg = styled.div<{ imgUrl: string }>`
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+const CustomEntryCoverImg = styled.div`
   max-width: 920px;
   height: 400px;
   box-shadow: inset 0px 5px 3px 1px var(--one);
   margin-bottom: 5px;
-  background-image: url('${(props) => props.imgUrl}');
-
-  &:hover {
-    background-size: contain;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  img:hover {
+    object-fit:contain;
   }
 `
 
-const PageContainerWithCoverColors = styled(PageContainer)<{
+const PageContainerWithCoverColors = styled(PageContainer) <{
   coverColors: string
 }>`
   ${(props) => props.coverColors}
@@ -76,7 +78,9 @@ export const CustomEntryPage = ({
       <CustomEntryContainer>
         <CustomEntryTitle>{entry.name}</CustomEntryTitle>
         <CustomEntryMeta {...entry} />
-        <CustomEntryCoverImg className='custom-entry-meta-cover' imgUrl={coverUrl} />
+        <CustomEntryCoverImg className='custom-entry-meta-cover'>
+          <img src={entry.cover.base64} />
+        </CustomEntryCoverImg>
         <CustomEntryContentContainer>
           <CustomEntryDescription>{entry.description}</CustomEntryDescription>
           <div className='custom-entry-content'>

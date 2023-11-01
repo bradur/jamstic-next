@@ -1,6 +1,3 @@
-import { createFolderIfItDoesntExist, findCoverColors, writeJson } from '@backendlib/file-helper'
-import { JamsticLogger } from '@backendlib/logger'
-import { AbsolutePath } from '@backendlib/path-helper'
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import { CustomEntryPageProps, CustomPageProps } from 'types/types-custom'
 import { EntryDb } from './db/entryDB'
@@ -23,43 +20,29 @@ const paramsToInfo = (params: PageParams): SlugInfo => {
   }
 }
 
-const saveEntryData = (jamSlug: string, categorySlug: string, slug: string, data: object) => {
-  const filePath = AbsolutePath.CustomDataFile(jamSlug, categorySlug, slug)
-  createFolderIfItDoesntExist(filePath)
-  writeJson(filePath, data)
-}
-
 export const customStaticSlug =
   () =>
-  async ({
-    params = { slug: [] },
-  }: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<CustomEntryPageProps>> => {
-    const { categorySlug, slug } = paramsToInfo(params)
-    const entry = await loadEntry(slug, categorySlug)
-    if (entry !== null) {
-      if (entry.coverColors === undefined || entry.coverColors.css === '') {
-        entry.coverColors = await findCoverColors(
-          AbsolutePath.Image('custom', entry.categorySlug, entry.slug, entry.cover),
-        )
-        JamsticLogger.log('wanna save covercolors!')
+    async ({
+      params = { slug: [] },
+    }: GetStaticPropsContext<PageParams>): Promise<GetStaticPropsResult<CustomEntryPageProps>> => {
+      const { categorySlug, slug } = paramsToInfo(params)
+      const entry = await loadEntry(slug, categorySlug)
+      if (!entry) {
+        return {
+          props: {
+            error: true,
+            data: "Couldn't find file!",
+          },
+        }
       }
-    }
-    if (!entry) {
+
       return {
         props: {
-          error: true,
-          data: "Couldn't find file!",
+          error: false,
+          data: entry,
         },
       }
     }
-
-    return {
-      props: {
-        error: false,
-        data: entry,
-      },
-    }
-  }
 
 export const customStaticPathsSlug = () => async (): Promise<GetStaticPathsResult<PageParams>> => {
   const entries = await loadEntries()

@@ -10,6 +10,15 @@ type JamRequest = {
   entry: GenericEntry
 }
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '100mb' // Set desired value here
+    }
+  }
+}
+
+
 export default async ({ method, body, query: slug }: NextApiRequest, response: NextApiResponse<JamResponse>) => {
   /*const jamSlug = Array.isArray(slug) && slug.length > 0 ? slug[0] : slug
   const jam = jamConfig.jams.find((jam) => jam.slug === jamSlug)
