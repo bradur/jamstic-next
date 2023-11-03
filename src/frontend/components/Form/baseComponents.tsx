@@ -10,6 +10,7 @@ export const BaseButtonLike = css`
   cursor: pointer;
   margin: 5px 0;
   display: inline-block;
+  box-sizing:border-box;
 
   &:hover {
     background: rgba(255, 152, 0, 0.24);
@@ -84,4 +85,22 @@ export const BaseTextarea = styled.textarea`
     font-weight: normal;
     font-style: italic;
   }
+`
+
+export const BaseTagLike = css`
+  display: inline-block;
+  margin: auto;
+  margin-top: 5px;
+  margin-right: 5px;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: white;
+  border: 1px solid #ccc;
+  position: relative;
+  height: 20px;
+  line-height: 20px;
+`
+
+export const BaseTag = styled.div`
+  ${BaseTagLike}
 `

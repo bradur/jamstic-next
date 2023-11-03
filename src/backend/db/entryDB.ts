@@ -119,7 +119,7 @@ export class EntryDb extends DBConnector {
       categorySlug,
       body,
       url,
-      coverColors: { css: css },
+      coverColors: { css: css, colors: [] },
       date,
       tags: await this.getTags(id),
       links: await this.getLinks(id),

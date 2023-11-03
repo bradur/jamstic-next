@@ -16,7 +16,16 @@ export type EntryLink = {
   url: string
 }
 
+export type RGBColor = [r: number, g: number, b: number]
+
 export type EntryColor = {
+  name: string
+  rgb: RGBColor
+  hex: string
+}
+
+export type EntryColorPalette = {
+  colors: EntryColor[]
   css: string
 }
 
@@ -30,7 +39,7 @@ export type GenericEntry = {
   tags: string[]
   cover: EntryImage
   links: EntryLink[]
-  coverColors: EntryColor
+  coverColors: EntryColorPalette
   date: number
 }
 

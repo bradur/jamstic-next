@@ -1,20 +1,14 @@
-import { BaseInput } from 'frontend/components/Form/baseComponents'
+import { BaseInput, BaseTag } from 'frontend/components/Form/baseComponents'
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import styled from 'styled-components'
 import { GenericEntry } from 'types/types-custom'
 
-const Tag = styled.div`
-  display: inline-block;
-  margin: auto;
-  margin-top: 5px;
-  margin-right: 5px;
+const TagEditorContainer = styled.div`
+  position:relative;
+`
+
+const Tag = styled(BaseTag)`
   padding: 0 25px 0 5px;
-  border-radius: 3px;
-  background: white;
-  border: 1px solid #ccc;
-  position: relative;
-  height: 20px;
-  line-height: 20px;
 
   button {
     cursor: pointer;
@@ -37,6 +31,16 @@ const Tag = styled.div`
   }
 `
 
+const EnterHint = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding: 0 5px;
+  margin: auto;
+  color:#ccc;
+`
+
 export const TagsEditor = ({
   entry,
   setEntry,
@@ -49,14 +53,14 @@ export const TagsEditor = ({
     setTagValue(event.currentTarget.value)
   }
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !entry.tags.includes(tagValue.trim())) {
       addTag(tagValue)
       setTagValue('')
     }
   }
   const addTag = (tag: string) => {
     const newTags = entry.tags
-    newTags.push(tag)
+    newTags.push(tag.trim())
     setEntry({ ...entry, tags: newTags })
   }
   const handleRemoveClick = (tag: string) => {
@@ -69,22 +73,31 @@ export const TagsEditor = ({
   }
   return (
     <div>
-      <div>
+      <TagEditorContainer>
         <BaseInput
           placeholder='Start typing a tag...'
           value={tagValue}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
         />
+        {entry.tags.includes(tagValue.trim()) ? (
+          <EnterHint>Tag already exists!</EnterHint>
+        ) : (
+          <>
+            {tagValue.trim().length > 0 && (
+              <EnterHint>Press Enter to save tag</EnterHint>
+            )}
+          </>
+        )}
         {entry.tags.map((tag) => {
           return (
-            <Tag>
+            <Tag key={tag}>
               <span>{tag}</span>
               <button onClick={() => handleRemoveClick(tag)}>x</button>
             </Tag>
           )
         })}
-      </div>
+      </TagEditorContainer>
     </div>
   )
 }

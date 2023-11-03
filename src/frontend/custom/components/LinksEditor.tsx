@@ -17,8 +17,21 @@ const LinkColumn = styled.div`
   box-sizing: border-box;
 `
 
+const LinkButtonContainer = styled.div`
+  display:flex;
+  flex-grow:1;
+`
 const LinkButton = styled(BaseButton)`
-  margin-right: 5px;
+  width: 150px;
+  height:40px;
+  font-size:20px;
+
+  &:first-child{
+    margin-right:2px;
+  }
+  &:last-child{
+    margin-left:2px;
+  }
 `
 export const LinksEditor = ({
   entry,
@@ -59,12 +72,14 @@ export const LinksEditor = ({
     entry.links.length > 0 && (entry.links[0].url.trim() === '' || entry.links[0].title.trim() === '')
   return (
     <div>
-      <LinkButton onClick={handleAddClick} disabled={newLinkIsEmpty}>
-        + Add
-      </LinkButton>
-      <LinkButton onClick={handleRemoveClick} disabled={entry.links.length < 1}>
-        - Remove
-      </LinkButton>
+      <LinkButtonContainer>
+        <LinkButton onClick={handleAddClick} disabled={newLinkIsEmpty}>
+          + Add link
+        </LinkButton>
+        <LinkButton onClick={handleRemoveClick} disabled={entry.links.length < 1}>
+          - Remove link
+        </LinkButton>
+      </LinkButtonContainer>
       <div>
         {entry.links.map((link) => {
           return (

@@ -1,3 +1,4 @@
+import { BaseTag } from 'frontend/components/Form/baseComponents'
 import { ago, formatDate, parseDate } from 'frontend/lib/date'
 import styled from 'styled-components'
 import { GenericEntry } from '../../../types/types-custom'
@@ -40,6 +41,9 @@ const CustomEntryMetaContainer = styled.div`
   }
 `
 
+const CustomEntryTag = styled(BaseTag)`
+`
+
 export const CustomEntryMeta = (entry: GenericEntry) => {
   return (
     <CustomEntryMetaContainer>
@@ -55,6 +59,12 @@ export const CustomEntryMeta = (entry: GenericEntry) => {
           <CustomEntryLink key={entry.url} href={entry.url} title='Original url' />
           {entry.links.map((link) => (
             <CustomEntryLink key={link.url} href={link.url} title={link.title} />
+          ))}
+        </div>
+        <div className='game-meta-section'>
+          <h2>Tags</h2>
+          {entry.tags.map((tag) => (
+            <CustomEntryTag key={tag}>{tag}</CustomEntryTag>
           ))}
         </div>
       </div>

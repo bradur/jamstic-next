@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Router } from 'next/router'
 import styled from 'styled-components'
+import { isDevelopment } from 'utils'
 
 const SiteNavigationContainer = styled.nav`
   border-bottom: 1px solid #eee;
@@ -77,6 +78,9 @@ const SiteNavigation = ({ router }: Props) => {
       title: 'custom',
     },
   ]
+  if (isDevelopment) {
+    routes.push({ href: '/manage', name: 'manage', title: 'manage' })
+  }
   return (
     <SiteNavigationContainer>
       <ul>
