@@ -32,6 +32,10 @@ const CustomEntryPageContainer = styled.div`
   width:1280px;
   zoom: 0.5;
 `
+const PreviewPlaceholder = styled.div`
+  font-style:italic;
+  color:#ccc;
+`
 const CustomEntryEditorTaskbar = styled.div`
   position:absolute;
   z-index:10;
@@ -163,6 +167,7 @@ const defaultEntry = {
   date: new Date().getTime(),
 }
 
+
 export const CustomEntryEditor = ({ closeCallback, forceUpdate }: Props) => {
   const [entryHasChanged, setEntryHasChanged] = useState<boolean>(false)
   const [entry, setEntry] = useState<GenericEntry>({ ...defaultEntry })
@@ -251,7 +256,7 @@ export const CustomEntryEditor = ({ closeCallback, forceUpdate }: Props) => {
             </div>
             <div>
               <MarkdownEditor
-                editableProps={{ rows: 30, placeholder: 'Entry body' }}
+                editableProps={{ rows: 30, placeholder: 'Entry body', style: { minHeight: '100px' } }}
                 editor={editor}
                 setValue={setEditorValue}
               />
@@ -261,7 +266,7 @@ export const CustomEntryEditor = ({ closeCallback, forceUpdate }: Props) => {
         </CustomEntryEditorControls>
 
         <PreviewArea className={isHidden ? '' : 'controls-visible'}>
-          <PreviewTitle>Preview of entry page at 50% zoom</PreviewTitle>
+          <PreviewTitle>Preview: entry page (50% zoom)</PreviewTitle>
           <CustomEntryEditorPreviewView>
             {entryHasChanged ? (
               <>
@@ -273,11 +278,10 @@ export const CustomEntryEditor = ({ closeCallback, forceUpdate }: Props) => {
                 </CustomEntryEditorPreview>
               </>
             ) : (
-
-              <span>Edit the form to see a preview of the entry</span>
+              <PreviewPlaceholder>- Edit the form -</PreviewPlaceholder>
             )}
           </CustomEntryEditorPreviewView>
-          <PreviewTitle>Preview on entry grid at 50% zoom</PreviewTitle>
+          <PreviewTitle>Preview: Grid (50% zoom)</PreviewTitle>
           {entryHasChanged ? (
             <CustomEntryPreview>
               <EntriesContainer>
@@ -287,7 +291,7 @@ export const CustomEntryEditor = ({ closeCallback, forceUpdate }: Props) => {
               </EntriesContainer>
             </CustomEntryPreview>
           ) : (
-            <span>Edit the form to see a preview of the entry</span>
+            <PreviewPlaceholder>- Edit the form -</PreviewPlaceholder>
           )}
         </PreviewArea>
 

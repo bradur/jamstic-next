@@ -34,7 +34,7 @@ export const MarkdownEditor = ({ editor, setValue, editableProps = {} }: Markdow
     <MarkdownEditorContainer>
       <Slate
         editor={editor}
-        value={initialValue}
+        initialValue={initialValue}
         onChange={(value) => {
           const isARealChange = editor.operations.some((operation) => operation.type !== 'set_selection')
           if (isARealChange) {
